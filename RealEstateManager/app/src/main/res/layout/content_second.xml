@@ -8,4 +8,10 @@
     tools:context=".ui.second.SecondActivity"
     tools:showIn="@layout/app_bar_second">
 
+    <FrameLayout
+        android:id="@+id/fragment_container_second"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
 </android.support.constraint.ConstraintLayout>

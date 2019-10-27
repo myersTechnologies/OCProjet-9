@@ -8,13 +8,15 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.House;
 
 import java.util.List;
 
 public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapter.ViewHolder>  {
 
-    public ListFragmentAdapter(){
-
+    List<House> houses;
+    public ListFragmentAdapter(List<House> houses){
+        this.houses = houses;
     }
 
     @Override
@@ -25,20 +27,33 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        House house = houses.get(position);
+        holder.houseName.setText(house.getName());
+        holder.houseAdress.setText(house.getCity());
+        holder.housePrice.setText("$" + " " + String.valueOf(house.getPrice()));
+        holder.houseImage.setImageResource(house.getImages().get(0));
 
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return houses.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder  {
 
+        private ImageView houseImage;
+        private TextView houseName;
+        private TextView houseAdress;
+        private TextView housePrice;
 
         private ViewHolder(View itemView) {
             super(itemView);
 
+            houseImage = itemView.findViewById(R.id.house_img);
+            houseName = itemView.findViewById(R.id.house_title);
+            housePrice = itemView.findViewById(R.id.house_price);
+            houseAdress = itemView.findViewById(R.id.house_location_city);
 
         }
     }

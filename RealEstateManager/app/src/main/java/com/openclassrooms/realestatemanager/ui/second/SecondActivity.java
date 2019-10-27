@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.second;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +30,9 @@ public class SecondActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        changeFragment(new ListFragment(), "ListFragment");
+
     }
 
     @Override
@@ -64,12 +69,16 @@ public class SecondActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    private void changeFragment(Fragment fragment, String value){
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
     }
 }

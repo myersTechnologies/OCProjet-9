@@ -1,15 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.main;
 
-import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.fragments.ConnectionFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.MainFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.main.ConnectionFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 

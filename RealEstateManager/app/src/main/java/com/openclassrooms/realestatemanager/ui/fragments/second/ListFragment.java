@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,10 +12,14 @@ import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +31,7 @@ public class ListFragment extends Fragment {
     private ListFragmentAdapter adapter;
     private LinearLayoutManager layoutManager;
     private  List<House> houses;
+    private RealEstateManagerAPIService service;
     public ListFragment() {
         // Required empty public constructor
     }
@@ -37,7 +43,7 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
-        RealEstateManagerAPIService service = DI.getService();
+        service = DI.getService();
 
         houses = new ArrayList<>();
         Photo photo = new Photo(R.drawable.main_image, "Facade");
@@ -57,4 +63,26 @@ public class ListFragment extends Fragment {
             housesList.setAdapter(adapter);
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void changeFragmentOnClick(DetailsEvent event){
+        service.setHouse(event.house);
+        changeFragment(new MediaFragment(), "MediaFragment");
+    }
+
+    private void changeFragment(Fragment fragment, String value){
+       getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
+    }
 }

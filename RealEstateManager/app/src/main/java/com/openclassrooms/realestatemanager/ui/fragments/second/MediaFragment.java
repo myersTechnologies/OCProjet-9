@@ -11,8 +11,11 @@ import android.widget.GridView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.second.MediaFragmentAdapter;
+
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,5 +40,6 @@ public class MediaFragment extends Fragment {
         photosList.setAdapter(adapter);
         return view;
     }
+
 
 }

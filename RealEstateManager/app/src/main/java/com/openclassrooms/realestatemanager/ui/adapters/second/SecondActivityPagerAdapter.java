@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.openclassrooms.realestatemanager.ui.fragments.second.DetailsFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.second.InfoFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.MediaFragment;
 
@@ -23,7 +23,7 @@ public class SecondActivityPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return MediaFragment.newInstance();
             case 2:
-                return DetailsFragment.newInstance();
+                return InfoFragment.newInstance();
             default:
                 return null;
         }

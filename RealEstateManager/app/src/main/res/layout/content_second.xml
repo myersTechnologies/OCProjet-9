@@ -42,7 +42,6 @@
                 android:text="Description"
                 />
 
-
         </android.support.design.widget.TabLayout>
     </android.support.design.widget.AppBarLayout>
 

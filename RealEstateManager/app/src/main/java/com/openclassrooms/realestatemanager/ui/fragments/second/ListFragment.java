@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -57,13 +55,15 @@ public class ListFragment extends Fragment {
 
         houses = new ArrayList<>();
         Photo photo = new Photo(R.drawable.main_image, "Facade");
+        Photo photo2 = new Photo(R.drawable.main_image_2, "Hall");
         List<Photo> img = new ArrayList<>();
         img.add(photo);
+        img.add(photo2);
         House house = new House(img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
                 "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
                 "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
                 "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
-                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd");
+                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 8, 2, 4);
         houses.add(house);
         adapter = new ListFragmentAdapter(houses);
         service.setHouse(house);

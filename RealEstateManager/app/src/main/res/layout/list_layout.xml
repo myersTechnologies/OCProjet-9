@@ -9,7 +9,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
         <ImageView
             android:id="@+id/house_img"
             android:layout_width="100dp"

@@ -1,9 +1,8 @@
-package com.openclassrooms.realestatemanager.ui.fragments.second;
+package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,8 @@ import android.widget.GridView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.second.MediaFragmentAdapter;
-
-import org.greenrobot.eventbus.Subscribe;
+import com.openclassrooms.realestatemanager.ui.adapters.details.MediaFragmentAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.adapters.second;
+package com.openclassrooms.realestatemanager.ui.adapters.details;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

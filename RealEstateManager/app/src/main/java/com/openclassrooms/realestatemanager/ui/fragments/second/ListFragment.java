@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
+import com.openclassrooms.realestatemanager.ui.details.DetailsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,9 +66,15 @@ public class ListFragment extends Fragment {
                 "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
                 "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
                 "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 8, 2, 4);
+
+        House house1 = new House(img, "Manoir", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
+                "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+                "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
+                "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
+                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 10, 2, 4);
         houses.add(house);
-        adapter = new ListFragmentAdapter(houses);
-        service.setHouse(house);
+        houses.add(house1);
+        adapter = new ListFragmentAdapter(houses, getActivity());
         initList();
         return view;
     }
@@ -92,7 +100,6 @@ public class ListFragment extends Fragment {
     @Subscribe
     public void changeFragmentOnClick(DetailsEvent event) {
         service.setHouse(event.house);
-
     }
 }
 

@@ -1,9 +1,8 @@
-package com.openclassrooms.realestatemanager.ui.fragments.second;
+package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import android.view.ViewGroup;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.second.InfoFragmentAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
 
 /**
  * A simple {@link Fragment} subclass.

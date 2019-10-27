@@ -1,7 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.adapters.second;
 
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,6 +13,7 @@ import android.widget.TextView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.ui.details.DetailsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,10 +21,12 @@ import java.util.List;
 
 public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapter.ViewHolder>  {
 
-    List<House> houses;
+    private List<House> houses;
+    private Context context;
 
-    public ListFragmentAdapter(List<House> houses){
+    public ListFragmentAdapter(List<House> houses, Context context){
         this.houses = houses;
+        this.context = context;
     }
 
     @Override
@@ -40,6 +47,25 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new DetailsEvent(house));
+                Intent intent = new Intent(context, DetailsActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.itemView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    view.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                } else {
+
+                }
+
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL)
+                {
+                    view.setBackgroundColor(Color.TRANSPARENT);
+                }
+                return false;
             }
         });
 

@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.second;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -13,18 +14,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
-import android.widget.TableLayout;
 
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.adapters.second.SecondActivityPagerAdapter;
+import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
+import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private SecondActivityPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +36,7 @@ public class SecondActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        tabLayout = findViewById(R.id.tabs);
-        viewPager = findViewById(R.id.container);
-        pagerAdapter = new SecondActivityPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-
+        changeFragment(new ListFragment(), "ListFragment");
 
     }
 
@@ -72,6 +62,8 @@ public class SecondActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.add:
+                Intent intent = new Intent(this, AddHouseActivity.class);
+                startActivity(intent);
                 return true;
             case R.id.modify:
                 return true;
@@ -92,6 +84,9 @@ public class SecondActivity extends AppCompatActivity
         return true;
     }
 
+    private void changeFragment(Fragment fragment, String value) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
 
+    }
 
 }

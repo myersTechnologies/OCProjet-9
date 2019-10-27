@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -30,8 +31,17 @@ public class ListFragment extends Fragment {
     private RecyclerView housesList;
     private ListFragmentAdapter adapter;
     private LinearLayoutManager layoutManager;
-    private  List<House> houses;
+    private List<House> houses;
     private RealEstateManagerAPIService service;
+    private static ListFragment listFragment;
+
+    public static ListFragment newInstance(){
+        if (listFragment == null) {
+            listFragment = new ListFragment();
+        }
+        return listFragment;
+    }
+
     public ListFragment() {
         // Required empty public constructor
     }
@@ -50,7 +60,10 @@ public class ListFragment extends Fragment {
         List<Photo> img = new ArrayList<>();
         img.add(photo);
         House house = new House(img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
-                "71100", 78.500999);
+                "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
+                "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
+                "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
+                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd");
         houses.add(house);
         adapter = new ListFragmentAdapter(houses);
         service.setHouse(house);
@@ -58,9 +71,9 @@ public class ListFragment extends Fragment {
         return view;
     }
 
-    private void initList(){
-            housesList.setLayoutManager(layoutManager);
-            housesList.setAdapter(adapter);
+    private void initList() {
+        housesList.setLayoutManager(layoutManager);
+        housesList.setAdapter(adapter);
     }
 
 
@@ -77,12 +90,10 @@ public class ListFragment extends Fragment {
     }
 
     @Subscribe
-    public void changeFragmentOnClick(DetailsEvent event){
+    public void changeFragmentOnClick(DetailsEvent event) {
         service.setHouse(event.house);
-        changeFragment(new MediaFragment(), "MediaFragment");
-    }
 
-    private void changeFragment(Fragment fragment, String value){
-       getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
     }
 }
+
+

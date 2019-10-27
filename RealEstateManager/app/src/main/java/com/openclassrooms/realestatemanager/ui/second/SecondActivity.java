@@ -1,8 +1,10 @@
 package com.openclassrooms.realestatemanager.ui.second;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
@@ -11,11 +13,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TableLayout;
+
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
+import com.openclassrooms.realestatemanager.ui.adapters.second.SecondActivityPagerAdapter;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private SecondActivityPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +40,13 @@ public class SecondActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
-        changeFragment(new ListFragment(), "ListFragment");
+        tabLayout = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.container);
+        pagerAdapter = new SecondActivityPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
 
     }
 
@@ -55,7 +70,7 @@ public class SecondActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.add:
                 return true;
             case R.id.modify:
@@ -78,7 +93,5 @@ public class SecondActivity extends AppCompatActivity
     }
 
 
-    private void changeFragment(Fragment fragment, String value){
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
-    }
+
 }

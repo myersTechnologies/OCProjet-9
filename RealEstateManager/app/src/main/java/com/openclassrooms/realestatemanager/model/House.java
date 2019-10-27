@@ -12,9 +12,10 @@ public class House {
     private String country;
     private String zipCode;
     private double price;
+    private String description;
 
     public House(List<Photo> images,String name, String adress, String city, String state,
-                 String country, String zipCode, double price) {
+                 String country, String zipCode, double price, String description) {
         this.images = images;
         this.name = name;
         this.adress =adress;
@@ -23,6 +24,7 @@ public class House {
         this.country = country;
         this.zipCode = zipCode;
         this.price = price;
+        this.description = description;
     }
 
     public List<Photo> getImages() {
@@ -35,6 +37,14 @@ public class House {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setImages(List<Photo> images) {

@@ -24,6 +24,13 @@ public class MediaFragment extends Fragment {
 
     private GridView photosList;
     private MediaFragmentAdapter adapter;
+    private static MediaFragment mediaFragment;
+    public static MediaFragment newInstance(){
+        if (mediaFragment == null) {
+            mediaFragment = new MediaFragment();
+        }
+        return mediaFragment;
+    }
 
     public MediaFragment() {
         // Required empty public constructor

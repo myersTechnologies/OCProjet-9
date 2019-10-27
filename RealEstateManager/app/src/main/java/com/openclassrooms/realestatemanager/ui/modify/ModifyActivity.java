@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.addhouse;
+package com.openclassrooms.realestatemanager.ui.modify;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -16,18 +16,17 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.details.DetailsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+public class ModifyActivity extends AppCompatActivity {
 
-public class AddHouseActivity extends AppCompatActivity {
-
-    private RecyclerView addNewHouseToDoList;
+    private RecyclerView modifyHouseList;
     private LinearLayoutManager layoutManager;
-    private AddNewHouseAdapter adapter;
+    private ModifyAdapter adapter;
     private RealEstateManagerAPIService service;
     private int surface;
     private int rooms;
@@ -44,18 +43,19 @@ public class AddHouseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_house);
+        setContentView(R.layout.activity_modify);
         service = DI.getService();
-        Toolbar toolbar = findViewById(R.id.toolbar_new_house);
+        Toolbar toolbar = findViewById(R.id.toolbar_modify_house);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        addNewHouseToDoList = findViewById(R.id.new_house_list);
+        modifyHouseList = findViewById(R.id.modify_list);
         layoutManager = new LinearLayoutManager(this);
-        addNewHouseToDoList.setLayoutManager(layoutManager);
-        adapter = new AddNewHouseAdapter();
-        addNewHouseToDoList.setAdapter(adapter);
+        modifyHouseList.setLayoutManager(layoutManager);
+        adapter = new ModifyAdapter(service.getHouse());
+        modifyHouseList.setAdapter(adapter);
+
     }
 
     @Override
@@ -83,7 +83,7 @@ public class AddHouseActivity extends AppCompatActivity {
     }
 
     private void getViewsAndAddHouse(){
-        View view = addNewHouseToDoList.getChildAt(0);
+        View view = modifyHouseList.getChildAt(0);
         EditText surfaceET = view.findViewById(R.id.surface_edit_text);
         EditText roomsET = view.findViewById(R.id.rooms_edit_text);
         EditText bathRoomsET = view.findViewById(R.id.bathrooms_edit_text);
@@ -112,7 +112,7 @@ public class AddHouseActivity extends AppCompatActivity {
         photos.add(photo);
 
 
-        House house = new House(photos, "Maison", road, city, state, country, zipcode, price, description, surface,
+        House house = new House(service.getHouse().getImages(), service.getHouse().getName(), road, city, state, country, zipcode, price, description, surface,
                 rooms, bathrooms, bedrooms);
 
 

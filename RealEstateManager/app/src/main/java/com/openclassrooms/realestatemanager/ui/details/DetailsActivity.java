@@ -9,9 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DetailsActivityPagerAdapter;
 import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
+import com.openclassrooms.realestatemanager.ui.modify.ModifyActivity;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -19,6 +22,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private DetailsActivityPagerAdapter pagerAdapter;
+    private RealEstateManagerAPIService service = DI.getService();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class DetailsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(service.getHouse().getName());
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.container);
         pagerAdapter = new DetailsActivityPagerAdapter(getSupportFragmentManager());
@@ -53,8 +58,13 @@ public class DetailsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.modify:
+                Intent modifyIntent = new Intent(this, ModifyActivity.class);
+                startActivity(modifyIntent);
                 return true;
             case R.id.search:
+                return true;
+            case android.R.id.home:
+                onBackPressed();
                 return true;
         }
 

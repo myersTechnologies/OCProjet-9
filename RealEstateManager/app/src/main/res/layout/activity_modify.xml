@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.addhouse.AddHouseActivity">
+    tools:context=".ui.modify.ModifyActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -13,17 +13,17 @@
         app:layout_constraintTop_toTopOf="parent"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_new_house"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"/>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_modify_house"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"/>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/new_house_list"
+        android:id="@+id/modify_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"/>
+        android:layout_marginTop="?attr/actionBarSize"></android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

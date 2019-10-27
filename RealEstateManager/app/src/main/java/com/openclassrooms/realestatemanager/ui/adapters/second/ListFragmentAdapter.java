@@ -56,7 +56,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    view.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+                    view.setBackgroundColor(Color.parseColor("#A2C8E9"));
                 } else {
 
                 }

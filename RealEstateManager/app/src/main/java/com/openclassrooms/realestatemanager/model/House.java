@@ -1,11 +1,10 @@
 package com.openclassrooms.realestatemanager.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class House {
 
-    private List<Integer> images;
+    private List<Photo> images;
     private String name;
     private String adress;
     private String city;
@@ -14,7 +13,7 @@ public class House {
     private String zipCode;
     private double price;
 
-    public House(List<Integer> images,String name, String adress, String city, String state,
+    public House(List<Photo> images,String name, String adress, String city, String state,
                  String country, String zipCode, double price) {
         this.images = images;
         this.name = name;
@@ -26,7 +25,7 @@ public class House {
         this.price = price;
     }
 
-    public List<Integer> getImages() {
+    public List<Photo> getImages() {
         return images;
     }
 
@@ -38,11 +37,11 @@ public class House {
         this.price = price;
     }
 
-    public void setImages(List<Integer> images) {
+    public void setImages(List<Photo> images) {
         this.images = images;
     }
 
-    public void addImage(int image){
+    public void addImage(Photo image){
         images.add(image);
     }
 

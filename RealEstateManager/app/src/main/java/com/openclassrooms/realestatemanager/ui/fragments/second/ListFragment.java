@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
 
 import java.util.ArrayList;
@@ -34,15 +37,17 @@ public class ListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
-
+        RealEstateManagerAPIService service = DI.getService();
 
         houses = new ArrayList<>();
-        List<Integer> img = new ArrayList<>();
-        img.add(R.drawable.main_image);
+        Photo photo = new Photo(R.drawable.main_image, "Facade");
+        List<Photo> img = new ArrayList<>();
+        img.add(photo);
         House house = new House(img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
                 "71100", 78.500999);
         houses.add(house);
         adapter = new ListFragmentAdapter(houses);
+        service.setHouse(house);
         initList();
         return view;
     }

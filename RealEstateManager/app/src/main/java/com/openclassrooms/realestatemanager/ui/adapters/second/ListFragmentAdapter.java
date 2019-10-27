@@ -31,7 +31,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         holder.houseName.setText(house.getName());
         holder.houseAdress.setText(house.getCity());
         holder.housePrice.setText("$" + " " + String.valueOf(house.getPrice()));
-        holder.houseImage.setImageResource(house.getImages().get(0));
+        holder.houseImage.setImageResource(house.getImages().get(0).getPhotoUrl());
 
     }
 

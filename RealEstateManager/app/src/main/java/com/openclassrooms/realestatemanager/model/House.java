@@ -17,8 +17,9 @@ public class House {
     private int roomsNumber;
     private int bathroomsNumber;
     private int bedroomsNumber;
+    private int id;
 
-    public House(List<Photo> images,String name, String adress, String city, String state,
+    public House(int id, List<Photo> images,String name, String adress, String city, String state,
                  String country, String zipCode, double price, String description, int surface, int roomsNumber,
                  int bathroomsNumber, int bedroomsNumber) {
         this.images = images;
@@ -34,6 +35,7 @@ public class House {
         this.roomsNumber = roomsNumber;
         this.bathroomsNumber = bathroomsNumber;
         this.bedroomsNumber = bedroomsNumber;
+        this.id = id;
     }
 
     public List<Photo> getImages() {
@@ -142,5 +144,13 @@ public class House {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -29,6 +29,8 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         this.context = context;
     }
 
+
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_layout, parent, false);
@@ -36,7 +38,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final House house = houses.get(position);
         holder.houseName.setText(house.getName());
         holder.houseAdress.setText(house.getCity());
@@ -49,6 +51,16 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
                 EventBus.getDefault().post(new DetailsEvent(house));
                 Intent intent = new Intent(context, DetailsActivity.class);
                 context.startActivity(intent);
+                view.setBackgroundColor(Color.parseColor("#A2C8E9"));
+                holder.itemView.setBackgroundColor(Color.parseColor("#A2C8E9"));
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                view.setBackgroundColor(Color.parseColor("#A2C8E9"));
+                return false;
             }
         });
 

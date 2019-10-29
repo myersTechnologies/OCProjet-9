@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/house_name_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_edit_color_black_24"/>
+
+    <TextView
+        android:id="@+id/name_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="name"
+        android:textSize="15dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="5dp"
+        />
+
+    <EditText
+        android:id="@+id/name_edit_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/name_title"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center" />
+
+    <ImageView
+        android:id="@+id/house_description_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toBottomOf="@id/name_edit_text_edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/baseline_settings_overscan_black_18dp"/>
+
+    <TextView
+        android:id="@+id/surface_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/name_edit_text_edit"
+        android:text="Surface"
+        android:textSize="15dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="5dp"
+        />
+
+    <EditText
+        android:id="@+id/surface_edit_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/surface_title"
+        android:layout_marginTop="5dp"
+        android:textSize="15sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:inputType="number"/>
+
+    <ImageView
+        android:id="@+id/rooms_img"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintTop_toBottomOf="@id/surface_edit_text_edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/baseline_home_black_18dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/rooms_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/rooms_img"
+        app:layout_constraintTop_toBottomOf="@id/surface_edit_text_edit"
+        app:layout_constraintTop_toTopOf="@id/rooms_img"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:text="Number of rooms"/>
+
+    <EditText
+        android:id="@+id/rooms_edit_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/rooms_img"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:inputType="number"/>
+
+    <ImageView
+        android:id="@+id/bathrooms_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/rooms_edit_text_edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/ic_hot_tub_black_24dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/bathrooms_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/bathrooms_img"
+        app:layout_constraintTop_toBottomOf="@id/rooms_edit_text_edit"
+        app:layout_constraintTop_toTopOf="@id/bathrooms_img"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:text="Number of bathrooms"/>
+
+    <EditText
+        android:id="@+id/bathrooms_edit_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bathrooms_img"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:inputType="number"
+        />
+
+    <ImageView
+        android:id="@+id/bedrooms_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bathrooms_edit_text_edit"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:src="@drawable/ic_hotel_black_24dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/bedrooms_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/bedrooms_img"
+        app:layout_constraintTop_toBottomOf="@id/bathrooms_title"
+        app:layout_constraintTop_toTopOf="@id/bedrooms_img"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="15sp"
+        android:text="Number of bedrooms"/>
+
+    <EditText
+        android:id="@+id/bedrooms_edit_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bedrooms_title"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:inputType="number"
+        />
+
+
+    <TextView
+        android:id="@+id/price_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bedrooms_edit_text_edit"
+        android:text="Price"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/price_text_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/price_title"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Price"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        />
+
+
+
+
+
+</android.support.constraint.ConstraintLayout>

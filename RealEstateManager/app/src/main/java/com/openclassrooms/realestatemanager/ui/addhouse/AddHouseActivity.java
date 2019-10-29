@@ -29,17 +29,7 @@ public class AddHouseActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private AddNewHouseAdapter adapter;
     private RealEstateManagerAPIService service;
-    private int surface;
-    private int rooms;
-    private int bathrooms;
-    private int bedrooms;
-    private String road;
-    private String city;
-    private String zipcode;
-    private String state;
-    private String country;
-    private String description;
-    private double price;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,40 +72,26 @@ public class AddHouseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void getViewsAndAddHouse(){
-        View view = addNewHouseToDoList.getChildAt(0);
-        EditText surfaceET = view.findViewById(R.id.surface_edit_text);
-        EditText roomsET = view.findViewById(R.id.rooms_edit_text);
-        EditText bathRoomsET = view.findViewById(R.id.bathrooms_edit_text);
-        EditText bedRoomsRT = view.findViewById(R.id.bedrooms_edit_text);
-        EditText roadET = view.findViewById(R.id.location_edit_text);
-        EditText cityET = view.findViewById(R.id.location_edit_city_text);
-        EditText zipCodeET = view.findViewById(R.id.location_edit_zc_text);
-        EditText stateET = view.findViewById(R.id.location_edit_state_text);
-        EditText countryET = view.findViewById(R.id.location_edit_country_text);
-        EditText descriptionET = view.findViewById(R.id.description_edit_text);
-        EditText priceET = view.findViewById(R.id.price_text);
+    private void getViewsAndAddHouse() {
 
-        surface = Integer.parseInt(surfaceET.getText().toString());
-        rooms = Integer.parseInt(roomsET.getText().toString());
-        bathrooms = Integer.parseInt(bathRoomsET.getText().toString());
-        bedrooms = Integer.parseInt(bedRoomsRT.getText().toString());
-        road = roadET.getText().toString();
-        city = cityET.getText().toString();
-        zipcode = zipCodeET.getText().toString();
-        state = stateET.getText().toString();
-        country = countryET.getText().toString();
-        description = descriptionET.getText().toString();
-        price = Double.parseDouble(priceET.getText().toString());
+
         List<Photo> photos = new ArrayList<>();
-        Photo photo = new Photo(R.drawable.main_image, "Cour");
+
+        Photo photo = new Photo(R.drawable.main_image, "Chambre");
+        Photo phot2 = new Photo(R.drawable.main_image_2, "Cuisine");
         photos.add(photo);
+        photos.add(phot2);
 
 
-        House house = new House(photos, "Maison", road, city, state, country, zipcode, price, description, surface,
-                rooms, bathrooms, bedrooms);
-
+        House house = AddNewHouseAdapter.getHouse();
 
         service.setHouse(house);
+        house.setImages(photos);
+        house.setId(service.getHousesList().size() + 1);
+        service.addHouseToList(house);
+
+
+
     }
+
 }

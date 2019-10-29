@@ -22,9 +22,7 @@ public class MediaFragment extends Fragment {
     private MediaFragmentAdapter adapter;
     private static MediaFragment mediaFragment;
     public static MediaFragment newInstance(){
-        if (mediaFragment == null) {
-            mediaFragment = new MediaFragment();
-        }
+        mediaFragment = new MediaFragment();
         return mediaFragment;
     }
 

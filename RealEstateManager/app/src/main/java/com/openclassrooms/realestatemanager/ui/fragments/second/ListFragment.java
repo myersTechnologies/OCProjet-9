@@ -46,6 +46,11 @@ public class ListFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,20 +66,22 @@ public class ListFragment extends Fragment {
         List<Photo> img = new ArrayList<>();
         img.add(photo);
         img.add(photo2);
-        House house = new House(img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
+        House house = new House(0,img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
                 "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
                 "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
                 "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
                 "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 8, 2, 4);
 
-        House house1 = new House(img, "Manoir", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
+        House house1 = new House(1,img, "Manoir", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
                 "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
                 "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
                 "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
                 "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 10, 2, 4);
         houses.add(house);
         houses.add(house1);
-        adapter = new ListFragmentAdapter(houses, getActivity());
+        service.addHouseToList(house);
+        service.addHouseToList(house1);
+        adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
         initList();
         return view;
     }

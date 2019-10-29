@@ -26,9 +26,7 @@ public class InfoFragment extends Fragment {
     private InfoFragmentAdapter adapter;
 
     public static InfoFragment newInstance(){
-        if (infoFragment == null){
-            infoFragment = new InfoFragment();
-        }
+        infoFragment = new InfoFragment();
         return infoFragment;
     }
 

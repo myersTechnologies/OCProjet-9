@@ -23,4 +23,11 @@ public class ExampleUnitTest {
         String date = dateFormat.format(new Date());
         assertEquals(date, "30/10/2019");
     }
+
+    @Test
+    public void convertEuroToDollar(){
+        double dollars = 41.50;
+        double convertion = dollars * 0.90;
+        assertTrue(convertion == 37.35);
+    }
 }

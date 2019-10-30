@@ -36,7 +36,8 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public AddNewHouseAdapter(){
         this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
-                null, 0, null,0, 0, 0, 0, true, Utils.getTodayDate());
+                null, 0, null,0, 0, 0, 0, true,
+                Utils.getTodayDate());
 
     }
 
@@ -134,31 +135,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     } else {
                         statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
                         statusViewHolder.available.setChecked(true);
-                        if (statusViewHolder.sold.isChecked()) {
-                            statusViewHolder.sold.setChecked(false);
-                            statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
-                        }
                         house.setAvailable(true);
                     }
                 }
             });
-            statusViewHolder.sold.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (statusViewHolder.sold.isChecked()){
-                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
-                        statusViewHolder.sold.setChecked(false);
-                    } else {
-                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
-                        statusViewHolder.sold.setChecked(true);
-                        if (statusViewHolder.available.isChecked()){
-                            statusViewHolder.available.setChecked(false);
-                            statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
-                        }
-                        house.setAvailable(false);
-                    }
-                }
-            });
+            statusViewHolder.sold.setEnabled(false);
         }
     }
 

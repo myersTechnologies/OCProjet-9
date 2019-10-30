@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 
 import com.openclassrooms.realestatemanager.DI.DI;
@@ -28,12 +29,13 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int LAYOUT_TREE = 2;
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
+    private int LAYOUT_SIX = 5;
 
     private static House house;
 
     public AddNewHouseAdapter(){
         this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
-                null, 0, null,0, 0, 0, 0);
+                null, 0, null,0, 0, 0, 0, true);
 
     }
 
@@ -67,7 +69,10 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (viewType == LAYOUT_FIVE){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_list_layout, parent, false);
             viewHolder = new ImageViewViewHolder(view);
-
+        }
+        if (viewType == LAYOUT_SIX){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sell_status_layout, parent, false);
+            viewHolder = new StatusViewHolder(view);
         }
         return viewHolder;
     }
@@ -92,6 +97,9 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             case 4:
                 layout = LAYOUT_FIVE;
                 return layout;
+            case 5:
+                layout = LAYOUT_SIX;
+                return layout;
         }
         return layout;
     }
@@ -114,6 +122,42 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             PhotoListAdapter adapter;
             adapter = new PhotoListAdapter(house.getImages());
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
+        } else if (holderView.getItemViewType() == LAYOUT_SIX){
+            final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
+            statusViewHolder.available.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (statusViewHolder.available.isChecked()){
+                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        statusViewHolder.available.setChecked(false);
+                    } else {
+                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+                        statusViewHolder.available.setChecked(true);
+                        if (statusViewHolder.sold.isChecked()) {
+                            statusViewHolder.sold.setChecked(false);
+                            statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        }
+                        house.setAvailable(true);
+                    }
+                }
+            });
+            statusViewHolder.sold.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (statusViewHolder.sold.isChecked()){
+                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        statusViewHolder.sold.setChecked(false);
+                    } else {
+                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+                        statusViewHolder.sold.setChecked(true);
+                        if (statusViewHolder.available.isChecked()){
+                            statusViewHolder.available.setChecked(false);
+                            statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        }
+                        house.setAvailable(false);
+                    }
+                }
+            });
         }
     }
 
@@ -301,7 +345,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 6;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder  {
@@ -372,8 +416,18 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public TitleViewHolder(View itemView) {
             super(itemView);
+        }
+    }
 
+    static class StatusViewHolder extends RecyclerView.ViewHolder{
+        private CheckedTextView available;
+        private CheckedTextView sold;
 
+        public StatusViewHolder(View itemView) {
+            super(itemView);
+
+            available = itemView.findViewById(R.id.to_sell_checktxt);
+            sold = itemView.findViewById(R.id.sold_checkedtxt);
         }
     }
 

@@ -55,13 +55,15 @@ public class SecondActivity extends AppCompatActivity
 
         changeFragment(new ListFragment(), "ListFragment");
 
-        userName.setText(service.getUser().getName());
-        userEmail.setText(service.getUser().getEmail());
-        if (service.getUser().getPhotoUri().contains("google")) {
-            Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
-        } else {
-            Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
-                    .apply(RequestOptions.circleCropTransform()).into(userPhoto);
+        if (service.getUser() != null) {
+            userName.setText(service.getUser().getName());
+            userEmail.setText(service.getUser().getEmail());
+            if (service.getUser().getPhotoUri().contains("google")) {
+                Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
+            } else {
+                Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
+                        .apply(RequestOptions.circleCropTransform()).into(userPhoto);
+            }
         }
 
 

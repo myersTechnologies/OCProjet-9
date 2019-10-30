@@ -47,6 +47,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.second.SecondActivity;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -104,12 +105,34 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         // If using in a fragment
         loginButton.setFragment(this);
 
-        signInWithFacebook();
-        signInWithGoogle();
+
+        if (!Utils.isInternetAvailable(getActivity())) {
+            loginButton.setEnabled(false);
+            googleSignIn.setEnabled(false);
+        } else {
+            loginButton.setEnabled(true);
+            googleSignIn.setEnabled(true);
+            signInWithFacebook();
+            signInWithGoogle();
+        }
 
 
         return view;
 
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (service.getUser() == null) {
+            signInWithFacebook();
+            signInWithGoogle();
+        } else {
+            Intent intent = new Intent(getContext(), SecondActivity.class);
+            startActivity(intent);
+        }
 
     }
 
@@ -212,9 +235,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("users");
-        if (databaseRef.child(userId).getKey().isEmpty()) {
-            databaseRef.child(userId).setValue(user);
-        }
+        databaseRef.child(userId).setValue(user);
+
 
     }
 

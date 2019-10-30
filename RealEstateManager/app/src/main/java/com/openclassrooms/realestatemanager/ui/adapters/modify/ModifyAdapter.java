@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 
 import java.util.ArrayList;
 
@@ -68,6 +70,11 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             viewHolder = new ImageViewViewHolder(view);
 
         }
+
+        if (viewType == LAYOUT_SIX){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.sell_status_layout, parent, false);
+            viewHolder = new StatusViewHolder(view);
+        }
         return viewHolder;
     }
 
@@ -90,6 +97,9 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 return layout;
             case 4:
                 layout = LAYOUT_FIVE;
+                return layout;
+            case 5:
+                layout = LAYOUT_SIX;
                 return layout;
         }
         return layout;
@@ -117,6 +127,49 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              PhotoListAdapter adapter;
              adapter = new PhotoListAdapter(house.getImages());
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
+        } if (holderView.getItemViewType() == LAYOUT_SIX){
+            final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
+            if (house.isAvailable()){
+                statusViewHolder.available.setChecked(true);
+                statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+            } else {
+                statusViewHolder.sold.setChecked(true);
+                statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+            }
+            statusViewHolder.available.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (statusViewHolder.available.isChecked()){
+                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        statusViewHolder.available.setChecked(false);
+                    } else {
+                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+                        statusViewHolder.available.setChecked(true);
+                        if (statusViewHolder.sold.isChecked()) {
+                            statusViewHolder.sold.setChecked(false);
+                            statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        }
+                        house.setAvailable(true);
+                    }
+                }
+            });
+            statusViewHolder.sold.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (statusViewHolder.sold.isChecked()){
+                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        statusViewHolder.sold.setChecked(false);
+                    } else {
+                        statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+                        statusViewHolder.sold.setChecked(true);
+                        if (statusViewHolder.available.isChecked()){
+                            statusViewHolder.available.setChecked(false);
+                            statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        }
+                        house.setAvailable(false);
+                    }
+                }
+            });
         }
     }
 
@@ -400,6 +453,19 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         }
     }
+    static class StatusViewHolder extends RecyclerView.ViewHolder{
+        private CheckedTextView available;
+        private CheckedTextView sold;
+
+        public StatusViewHolder(View itemView) {
+            super(itemView);
+
+            available = itemView.findViewById(R.id.to_sell_checktxt);
+            sold = itemView.findViewById(R.id.sold_checkedtxt);
+        }
+    }
+
+
 
     public static House gethouse(){
         return house;

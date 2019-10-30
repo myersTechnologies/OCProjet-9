@@ -105,7 +105,7 @@ public class AddHouseActivity extends AppCompatActivity {
         if (requestCode == 90) {
 
             AlertDialog.Builder notifyNewPhoto = new AlertDialog.Builder(this);
-            notifyNewPhoto.setCancelable(true);
+            notifyNewPhoto.setCancelable(false);
             notifyNewPhoto.setTitle("Add a description");
             notifyNewPhoto.setMessage("What kind of room is it?");
             notifyNewPhoto.setIcon(R.drawable.ic_add_blue_24dp);

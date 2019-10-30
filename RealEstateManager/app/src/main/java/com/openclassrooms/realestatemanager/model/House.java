@@ -18,10 +18,11 @@ public class House {
     private int bathroomsNumber;
     private int bedroomsNumber;
     private int id;
+    private boolean available;
 
     public House(int id, List<Photo> images,String name, String adress, String city, String state,
                  String country, String zipCode, double price, String description, int surface, int roomsNumber,
-                 int bathroomsNumber, int bedroomsNumber) {
+                 int bathroomsNumber, int bedroomsNumber, boolean available) {
         this.images = images;
         this.name = name;
         this.adress =adress;
@@ -36,6 +37,15 @@ public class House {
         this.bathroomsNumber = bathroomsNumber;
         this.bedroomsNumber = bedroomsNumber;
         this.id = id;
+        this.available = available;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 
     public List<Photo> getImages() {

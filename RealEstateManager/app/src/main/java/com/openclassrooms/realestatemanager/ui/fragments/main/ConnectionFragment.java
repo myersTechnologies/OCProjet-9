@@ -38,6 +38,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
        int MY_CAMERA_REQUEST_CODE = 100;
        int MY_STORAGE_REQUEST_CODE = 90;
        int MY_LOCATION_REQUEST_CODE = 80;
+       int MY_MANAGER_REQUEST_CODE = 75;
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);

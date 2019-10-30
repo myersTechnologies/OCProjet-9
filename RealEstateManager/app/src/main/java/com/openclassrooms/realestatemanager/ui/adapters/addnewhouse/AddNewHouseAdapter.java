@@ -9,22 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -35,12 +28,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int LAYOUT_TREE = 2;
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
-    private int LAYOUT_SIX = 5;
 
     private static House house;
 
     public AddNewHouseAdapter(){
-        this.house = new House(0,null, null, null,null,null,null,
+        this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
                 null, 0, null,0, 0, 0, 0);
 
     }
@@ -120,11 +112,9 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
             PhotoListAdapter adapter;
-            if (house.getImages() != null) {
-                adapter = new PhotoListAdapter(house.getImages());
-            } else {
-                adapter = new PhotoListAdapter(new ArrayList<Photo>());
-            }
+
+            adapter = new PhotoListAdapter(house.getImages());
+
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         }
     }

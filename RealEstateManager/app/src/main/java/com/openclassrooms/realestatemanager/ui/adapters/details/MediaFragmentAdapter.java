@@ -2,6 +2,10 @@ package com.openclassrooms.realestatemanager.ui.adapters.details;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,19 +14,28 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.fragments.main.ConnectionFragment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class MediaFragmentAdapter extends BaseAdapter {
 
     private List<Photo> photos;
     private Context context;
+    private RealEstateManagerAPIService service;
 
     public MediaFragmentAdapter(List<Photo> photos, Context context) {
         this.photos = photos;
         this.context = context;
+        service = DI.getService();
     }
 
     @Override
@@ -42,33 +55,45 @@ public class MediaFragmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ViewHolderItem viewHolder;
+        final ViewHolderItem viewHolder;
 
         if (view == null) {
 
-            // inflate the layout
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             view = inflater.inflate(R.layout.media_frag_layout, viewGroup, false);
 
-            // well set up the ViewHolder
             viewHolder = new ViewHolderItem();
             viewHolder.imgDescription = view.findViewById(R.id.media_image_description);
 
             viewHolder.houseImg = view.findViewById(R.id.media_frag_img_view);
-            // store the holder with the view.
             view.setTag(viewHolder);
 
 
         } else {
-            // we've just avoided calling findViewById() on resource everytime
-            // just use the viewHolder
             viewHolder = (ViewHolderItem) view.getTag();
         }
 
-        viewHolder.houseImg.setImageResource(photos.get(i).getPhotoUrl());
+
+        try {
+            String url = service.getRealPathFromUri(photos.get(i).getPhotoUrl());
+            final File imageFile = new File(url);
+            if (imageFile.exists()) {
+                android.os.Handler loadingHandler = new Handler();
+                loadingHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewHolder.houseImg.setImageBitmap(service.decodeSampledBitmapFromResource(null, imageFile, 100, 100));
+                    }
+                }, 500);
+            }
+        }catch (Exception e){}
+
+
         viewHolder.imgDescription.setText(photos.get(i).getDescription());
         return view;
     }
+
+
 
     static class ViewHolderItem {
         TextView imgDescription;

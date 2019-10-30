@@ -59,30 +59,12 @@ public class ListFragment extends Fragment {
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
         service = DI.getService();
-
         houses = new ArrayList<>();
-        Photo photo = new Photo(R.drawable.main_image, "Facade");
-        Photo photo2 = new Photo(R.drawable.main_image_2, "Hall");
-        List<Photo> img = new ArrayList<>();
-        img.add(photo);
-        img.add(photo2);
-        House house = new House(0,img, "Loft", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
-                "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
-                "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
-                "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
-                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 8, 2, 4);
+        if (service.getHousesList() != null) {
+            adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
+            initList();
+        }
 
-        House house1 = new House(1,img, "Manoir", "78a avenue de paris", "Chalon sur saone", "Saone et loire", "France",
-                "71100", 78.500999, "hkjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk" +
-                "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkjkjjdbbdhbbwhbwhbwvx" +
-                "jbjbjbsjbsjbsjsbjsbjsbsjbsjsbjsbsbsjbsjbsjdhjdhjsbjbsjb" +
-                "knjdjdkjdjkdjdkdjkdjjdknsns,sns,nssnnbd", 750, 10, 2, 4);
-        houses.add(house);
-        houses.add(house1);
-        service.addHouseToList(house);
-        service.addHouseToList(house1);
-        adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
-        initList();
         return view;
     }
 

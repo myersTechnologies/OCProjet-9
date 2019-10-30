@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.modify;
 
+import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -28,6 +29,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
+
 
 
     public ModifyAdapter(House house){

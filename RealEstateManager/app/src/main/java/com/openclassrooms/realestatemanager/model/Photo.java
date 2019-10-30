@@ -1,19 +1,32 @@
 package com.openclassrooms.realestatemanager.model;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 public class Photo {
-    private int photoUrl;
+    private int id;
+    private Uri photoUrl;
     private String description;
 
-    public Photo(int photoUrl, String description) {
+    public Photo(int id, Uri photoUrl, String description) {
+        this.id = id;
         this.photoUrl = photoUrl;
         this.description = description;
     }
 
-    public int getPhotoUrl() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Uri getPhotoUrl() {
         return photoUrl;
     }
 
-    public void setPhotoUrl(int photoUrl) {
+    public void setPhotoUrl(Uri photoUrl) {
         this.photoUrl = photoUrl;
     }
 

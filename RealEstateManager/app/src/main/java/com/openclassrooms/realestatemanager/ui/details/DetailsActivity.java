@@ -15,6 +15,7 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DetailsActivityPagerAdapter;
 import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.modify.ModifyActivity;
+import com.openclassrooms.realestatemanager.ui.second.SecondActivity;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -40,6 +41,8 @@ public class DetailsActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
+        service.setActivity(this);
     }
 
     @Override
@@ -64,7 +67,8 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.search:
                 return true;
             case android.R.id.home:
-                onBackPressed();
+                Intent listIntent = new Intent(this, SecondActivity.class);
+                startActivity(listIntent);
                 return true;
         }
 

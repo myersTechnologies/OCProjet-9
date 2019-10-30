@@ -17,6 +17,7 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 
@@ -35,7 +36,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public AddNewHouseAdapter(){
         this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
-                null, 0, null,0, 0, 0, 0, true);
+                null, 0, null,0, 0, 0, 0, true, Utils.getTodayDate());
 
     }
 

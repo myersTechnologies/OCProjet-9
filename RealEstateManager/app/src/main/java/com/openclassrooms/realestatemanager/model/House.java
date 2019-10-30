@@ -19,10 +19,11 @@ public class House {
     private int bedroomsNumber;
     private int id;
     private boolean available;
+    private String onLineDate;
 
     public House(int id, List<Photo> images,String name, String adress, String city, String state,
                  String country, String zipCode, double price, String description, int surface, int roomsNumber,
-                 int bathroomsNumber, int bedroomsNumber, boolean available) {
+                 int bathroomsNumber, int bedroomsNumber, boolean available, String onLineDate) {
         this.images = images;
         this.name = name;
         this.adress =adress;
@@ -38,6 +39,15 @@ public class House {
         this.bedroomsNumber = bedroomsNumber;
         this.id = id;
         this.available = available;
+        this.onLineDate = onLineDate;
+    }
+
+    public String getOnLineDate() {
+        return onLineDate;
+    }
+
+    public void setOnLineDate(String onLineDate) {
+        this.onLineDate = onLineDate;
     }
 
     public boolean isAvailable() {

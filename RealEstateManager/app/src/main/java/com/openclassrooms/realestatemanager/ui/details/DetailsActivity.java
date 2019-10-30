@@ -42,7 +42,7 @@ public class DetailsActivity extends AppCompatActivity {
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
-        service.setActivity(this);
+        service.setActivity(this, "Details");
     }
 
     @Override

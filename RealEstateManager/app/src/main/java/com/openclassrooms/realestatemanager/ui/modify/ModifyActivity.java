@@ -42,7 +42,7 @@ public class ModifyActivity extends AppCompatActivity {
 
     private RecyclerView modifyHouseList;
     private LinearLayoutManager layoutManager;
-    private ModifyAdapter adapter;
+    private  static ModifyAdapter  adapter;
     private RealEstateManagerAPIService service;
     private LinkedHashMap<String, List<String>> listHouseDetails;
     private LinkedHashMap<String, String> houseDescription;
@@ -64,7 +64,7 @@ public class ModifyActivity extends AppCompatActivity {
         adapter = new ModifyAdapter(service.getHouse());
         modifyHouseList.setAdapter(adapter);
 
-        service.setActivity(this);
+        service.setActivity(this, "Modify");
 
 
     }
@@ -130,13 +130,7 @@ public class ModifyActivity extends AppCompatActivity {
                     Uri imageUri = data.getData();
                     Photo photo = new Photo(AddNewHouseAdapter.getHouse().getImages().size() + 1, imageUri, descriptionText.getText().toString());
                     AddNewHouseAdapter.getHouse().addImage(photo);
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
-                        }
-                    }, 500);
+                    adapter.notifyDataSetChanged();
                 }
             });
 
@@ -154,6 +148,9 @@ public class ModifyActivity extends AppCompatActivity {
         }
     }
 
+    public static ModifyAdapter getAdapter(){
+        return adapter;
+    }
 
 }
 

@@ -38,7 +38,9 @@
         android:textSize="15sp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:gravity="center" />
+        android:gravity="center"
+        android:inputType="text"
+        android:maxLines="1"/>
 
     <ImageView
         android:id="@+id/house_description_image"
@@ -74,7 +76,8 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:gravity="center"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:maxLines="1"/>
 
     <ImageView
         android:id="@+id/rooms_img"
@@ -110,7 +113,9 @@
         android:layout_marginRight="10dp"
         android:textSize="15sp"
         android:gravity="center"
-        android:inputType="number"/>
+        android:inputType="number"
+        android:maxLines="1"
+        />
 
     <ImageView
         android:id="@+id/bathrooms_img"
@@ -147,6 +152,7 @@
         android:textSize="15sp"
         android:gravity="center"
         android:inputType="number"
+        android:maxLines="1"
         />
 
     <ImageView
@@ -184,6 +190,7 @@
         android:gravity="center"
         android:textSize="15sp"
         android:inputType="number"
+        android:maxLines="1"
         />
 
 
@@ -212,6 +219,7 @@
         android:textSize="15sp"
         android:gravity="center"
         android:inputType="numberDecimal"
+        android:maxLines="1"
         />
 
 

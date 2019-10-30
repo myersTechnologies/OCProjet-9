@@ -115,11 +115,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
              imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
              PhotoListAdapter adapter;
-             if (house.getImages() != null) {
-                 adapter = new PhotoListAdapter(house.getImages());
-             } else {
-                 adapter = new PhotoListAdapter(new ArrayList<Photo>());
-             }
+             adapter = new PhotoListAdapter(house.getImages());
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         }
     }

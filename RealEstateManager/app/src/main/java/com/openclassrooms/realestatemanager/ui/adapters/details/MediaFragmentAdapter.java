@@ -2,11 +2,7 @@ package com.openclassrooms.realestatemanager.ui.adapters.details;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +14,8 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.fragments.main.ConnectionFragment;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class MediaFragmentAdapter extends BaseAdapter {
@@ -68,11 +60,9 @@ public class MediaFragmentAdapter extends BaseAdapter {
             viewHolder.houseImg = view.findViewById(R.id.media_frag_img_view);
             view.setTag(viewHolder);
 
-
         } else {
             viewHolder = (ViewHolderItem) view.getTag();
         }
-
 
         try {
             String url = service.getRealPathFromUri(photos.get(i).getPhotoUrl());
@@ -84,7 +74,7 @@ public class MediaFragmentAdapter extends BaseAdapter {
                     public void run() {
                         viewHolder.houseImg.setImageBitmap(service.decodeSampledBitmapFromResource(null, imageFile, 100, 100));
                     }
-                }, 500);
+                }, 100);
             }
         }catch (Exception e){}
 

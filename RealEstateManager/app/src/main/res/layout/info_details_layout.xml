@@ -23,7 +23,8 @@
         android:textSize="15dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="10dp"
-        android:textColor="@android:color/black"/>
+        android:textColor="@android:color/black"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/surface_text"
@@ -169,7 +170,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:gravity="center"/>
+        android:gravity="center"
+        />
 
     <TextView
         android:id="@+id/description_title"

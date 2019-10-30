@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.User;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class APIService implements RealEstateManagerAPIService {
     private House house;
     private List<House> housesList;
     private Activity activity;
+    private String activityName;
+    private User user;
 
     @Override
     public void setHouse(House house) {
@@ -47,9 +50,16 @@ public class APIService implements RealEstateManagerAPIService {
     }
 
     @Override
-    public void setActivity(Activity activity) {
+    public void setActivity(Activity activity, String name) {
         this.activity = activity;
+        this.activityName = name;
     }
+
+    @Override
+    public String activityName() {
+        return activityName;
+    }
+
 
     @Override
     public Activity getActivity() {
@@ -78,6 +88,16 @@ public class APIService implements RealEstateManagerAPIService {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
     }
 
     public int calculateInSampleSize(

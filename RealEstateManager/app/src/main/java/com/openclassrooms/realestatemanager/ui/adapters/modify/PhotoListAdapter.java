@@ -29,6 +29,8 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.modify.ModifyActivity;
 
 import java.io.File;
@@ -51,7 +53,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
         Uri photoUri = Uri.parse(service.getActivity().getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
         addPhoto = new Photo(photos.size() + 1 ,photoUri, "Add new photo");
         if (photos.size() > 0) {
-            if (!photos.get(photos.size() -1).getPhotoUrl().toString().equals(addPhoto.getPhotoUrl().toString())) {
+            if (!photos.get(photos.size() -1).getPhotoUrl().equals(addPhoto.getPhotoUrl())) {
                 photos.add(addPhoto);
             }
         } else {
@@ -68,7 +70,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         viewHolder = holder;
-
+        final int i = position;
         try {
 
             String url = service.getRealPathFromUri(photos.get(position).getPhotoUrl());
@@ -84,6 +86,27 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
             public void onClick(View view) {
                 if (holder.descriptionText.getText().equals("Add new photo")){
                     showDialogAddNewPhoto(holder);
+                }
+            }
+        });
+
+        if (photos.get(i).getDescription().equals("Add new photo")){
+            holder.deleteImage.setVisibility(View.INVISIBLE);
+        } else {
+            holder.deleteImage.setVisibility(View.VISIBLE);
+        }
+
+        holder.deleteImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (service.activityName().equals("AddHouse")) {
+                    photos.remove(addPhoto);
+                    AddNewHouseAdapter.getHouse().getImages().remove(photos.get(i));
+                    AddHouseActivity.getAdapter().notifyDataSetChanged();
+                } else if (service.activityName().equals("Modify")) {
+                    photos.remove(addPhoto);
+                    ModifyAdapter.gethouse().getImages().remove(photos.get(i));
+                    ModifyActivity.getAdapter().notifyDataSetChanged();
                 }
             }
         });
@@ -144,12 +167,14 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
         private ImageView houseImg;
         private TextView descriptionText;
+        private ImageView deleteImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             houseImg = itemView.findViewById(R.id.edit_img_view);
             descriptionText = itemView.findViewById(R.id.media_image_description_edit);
+            deleteImage = itemView.findViewById(R.id.delete_img_view);
         }
     }
 

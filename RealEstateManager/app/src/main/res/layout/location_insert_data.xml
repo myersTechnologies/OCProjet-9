@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -27,7 +28,9 @@
         android:layout_marginRight="10dp"
         android:textColor="@android:color/black"
         android:textSize="15sp"
-        android:text="Location"/>
+        android:text="Location"
+        android:maxLines="1"
+        android:inputType="text"/>
 
     <EditText
         android:id="@+id/location_edit_text_edit"
@@ -39,7 +42,8 @@
         android:layout_marginRight="10dp"
         android:gravity="center"
         android:textSize="15dp"
-        android:hint="number and name of the road"/>
+        android:hint="number and name of the road"
+        android:inputType="text"/>
     <EditText
         android:id="@+id/location_edit_city_text_edit"
         android:layout_width="match_parent"
@@ -51,21 +55,21 @@
         android:gravity="center"
         android:hint="city"
         android:textSize="15sp"
+        android:maxLines="1"
+        android:inputType="text"
         />
 
     <EditText
         android:id="@+id/location_edit_zc_text_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/location_edit_city_text_edit"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:gravity="center"
         android:hint="zip code"
-        android:textSize="15sp"
         android:inputType="number"
-        />
+        android:textSize="15sp"
+        app:layout_constraintTop_toBottomOf="@id/location_edit_city_text_edit"
+        tools:layout_editor_absoluteX="10dp" />
 
     <EditText
         android:id="@+id/location_edit_state_text_edit"
@@ -78,6 +82,8 @@
         android:gravity="center"
         android:hint="state"
         android:textSize="15sp"
+        android:maxLines="1"
+        android:inputType="text"
         />
 
     <EditText
@@ -91,6 +97,8 @@
         android:gravity="center"
         android:hint="country"
         android:textSize="15sp"
+        android:maxLines="1"
+        android:inputType="text"
         />
 
 </android.support.constraint.ConstraintLayout>

@@ -37,7 +37,7 @@ public class AddHouseActivity extends AppCompatActivity {
 
     private RecyclerView addNewHouseToDoList;
     private LinearLayoutManager layoutManager;
-    private AddNewHouseAdapter adapter;
+    private static AddNewHouseAdapter adapter;
     private RealEstateManagerAPIService service;
 
 
@@ -57,7 +57,7 @@ public class AddHouseActivity extends AppCompatActivity {
         adapter = new AddNewHouseAdapter();
         addNewHouseToDoList.setAdapter(adapter);
 
-        service.setActivity(this);
+        service.setActivity(this, "AddHouse");
     }
 
     @Override
@@ -85,7 +85,6 @@ public class AddHouseActivity extends AppCompatActivity {
 
     private void getViewsAndAddHouse() {
 
-
         House house = AddNewHouseAdapter.getHouse();
         service.setHouse(house);
         house.setId(service.getHousesList().size() + 1);
@@ -101,6 +100,7 @@ public class AddHouseActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, 90);
         }
+
 
         if (requestCode == 90) {
 
@@ -138,6 +138,10 @@ public class AddHouseActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    public static AddNewHouseAdapter getAdapter(){
+        return adapter;
     }
 
 

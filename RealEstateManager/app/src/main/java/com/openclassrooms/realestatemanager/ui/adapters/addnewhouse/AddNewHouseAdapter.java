@@ -112,9 +112,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
             PhotoListAdapter adapter;
-
             adapter = new PhotoListAdapter(house.getImages());
-
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         }
     }
@@ -130,7 +128,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setName(editable.toString());
+                if (editable.toString() != "") {
+                    house.setName(editable.toString());
+                } else{
+
+                }
             }
         });
 

@@ -18,15 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        changeFragment(new MainFragment(), "MainFrag" );
+        changeFragment(new ConnectionFragment(), "ConnectionFrag");
 
-        Handler loadingHandler = new Handler();
-        loadingHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                changeFragment(new ConnectionFragment(), "ConnectionFrag");
-            }
-        }, 3000);
     }
 
     private void changeFragment(Fragment fragment, String value){

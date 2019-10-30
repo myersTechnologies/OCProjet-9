@@ -14,29 +14,56 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private TextView userName, userEmail;
+    private ImageView userPhoto;
+    private RealEstateManagerAPIService service;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+        service = DI.getService();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        userName = navigationView.getHeaderView(0).findViewById(R.id.user_name_nav_text);
+        userEmail = navigationView.getHeaderView(0).findViewById(R.id.textView);
+        userPhoto = navigationView.getHeaderView(0).findViewById(R.id.imageView);
 
         changeFragment(new ListFragment(), "ListFragment");
+
+        userName.setText(service.getUser().getName());
+        userEmail.setText(service.getUser().getEmail());
+        if (service.getUser().getPhotoUri().contains("google")) {
+            Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
+        } else {
+            Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
+                    .apply(RequestOptions.circleCropTransform()).into(userPhoto);
+        }
+
 
     }
 

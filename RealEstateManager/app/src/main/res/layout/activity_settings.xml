@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.main.MainActivity"
-    android:gravity="center">
+    tools:context=".ui.activities.settings.Settings">
 
-
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/settings_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        ></android.support.v7.widget.RecyclerView>
 
 </android.support.constraint.ConstraintLayout>

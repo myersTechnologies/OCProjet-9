@@ -2,12 +2,8 @@ package com.openclassrooms.realestatemanager.ui.adapters.second;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,14 +14,11 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapter.ViewHolder>  {
@@ -53,7 +46,10 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         final House house = houses.get(position);
         holder.houseName.setText(house.getName());
         holder.houseAdress.setText(house.getCity());
-        holder.housePrice.setText("$" + " " + String.valueOf(house.getPrice()));
+        Double price = Double.parseDouble(house.getPrice());
+        if (service.getPreferences().getMonetarySystem() == "€") {
+            holder.housePrice.setText("$" + " " + house.getPrice());
+        }
         try {
             String url = service.getRealPathFromUri(house.getImages().get(position).getPhotoUrl());
             File imageFile = new File(url);

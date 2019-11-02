@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.ui.details;
+package com.openclassrooms.realestatemanager.ui.activities.details;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
@@ -13,9 +13,9 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DetailsActivityPagerAdapter;
-import com.openclassrooms.realestatemanager.ui.addhouse.AddHouseActivity;
-import com.openclassrooms.realestatemanager.ui.modify.ModifyActivity;
-import com.openclassrooms.realestatemanager.ui.second.SecondActivity;
+import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
+import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
+import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -49,6 +49,8 @@ public class DetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.second, menu);
+        MenuItem item = menu.findItem(R.id.modify);
+        item.setVisible(true);
         return true;
     }
 

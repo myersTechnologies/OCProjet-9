@@ -9,21 +9,28 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
     private static House house;
+    private String[] houseTypes = new String[]{"Select...", "Maison", "Appartement", "Terrain", "Propriété", "Commerce", "Bureau",
+    "Immeuble", "Parking/Garage", "Château", "Manoir"};
 
     private int LAYOUT_ONE = 0;
     private int LAYOUT_TWO = 1;
@@ -32,10 +39,12 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
 
+    private static List<EditText> data;
 
 
     public ModifyAdapter(House house){
         this.house = house;
+        data = new ArrayList<>();
     }
 
     @Override
@@ -110,6 +119,9 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (holderView.getItemViewType() == LAYOUT_ONE) {
             ViewHolder holder = (ViewHolder) holderView;
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            holder.nameText.setAdapter(adapter);
             setTextToViewHolder(holder);
             setTextWatchersViewHolder(holder);
         } else if (holderView.getItemViewType() == LAYOUT_TWO){
@@ -159,6 +171,9 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if (statusViewHolder.sold.isChecked()){
                         statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
                         statusViewHolder.sold.setChecked(false);
+                        if (house.getSoldDate() != null){
+                            house.setSoldDate(null);
+                        }
                     } else {
                         statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
                         statusViewHolder.sold.setChecked(true);
@@ -167,6 +182,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
                         }
                         house.setAvailable(false);
+                        house.setSoldDate(Utils.getTodayDate());
                     }
                 }
             });
@@ -174,12 +190,15 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTextToViewHolder(ViewHolder holder){
-        holder.nameText.setText(house.getName());
+        for (int i = 0; i < houseTypes.length; i++){
+            if (holder.nameText.getItemAtPosition(i).toString().equals(house.getName()));
+            holder.nameText.setSelection(i);
+        }
         holder.surfaceText.setText(String.valueOf(house.getSurface()));
         holder.roomsText.setText(String.valueOf(house.getRoomsNumber()));
         holder.bathroomsText.setText(String.valueOf(house.getBathroomsNumber()));
         holder.bedroomsText.setText(String.valueOf(house.getBedroomsNumber()));
-        holder.price.setText(String.valueOf(house.getPrice()));
+        holder.price.setText(house.getPrice());
     }
 
     private void setLocationTextToViewHolder(LocationViewHolder locationViewHolder){
@@ -195,17 +214,16 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTextWatchersViewHolder(final ViewHolder holder){
-        holder.nameText.addTextChangedListener(new TextWatcher() {
+
+        holder.nameText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                house.setName(adapterView.getItemAtPosition(i).toString());
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                house.setName(editable.toString());
             }
         });
 
@@ -282,7 +300,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setPrice(Double.parseDouble(editable.toString()));
+                    house.setPrice(editable.toString());
                 }
             }
         });
@@ -373,13 +391,13 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 6;
     }
 
 
     static class ViewHolder extends RecyclerView.ViewHolder  {
 
-        private EditText nameText;
+        private Spinner nameText;
         private EditText surfaceText;
         private EditText roomsText;
         private EditText bathroomsText;
@@ -395,6 +413,16 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             bedroomsText = itemView.findViewById(R.id.bedrooms_edit_text_edit);
             price = itemView.findViewById(R.id.price_text_edit);
 
+            surfaceText.setTag("Surface");
+            roomsText.setTag("Rooms");
+            bathroomsText.setTag("Bathrooms");
+            bedroomsText.setTag("Bedrooms");
+
+            data.add(surfaceText);
+            data.add(roomsText);
+            data.add(bathroomsText);
+            data.add(bedroomsText);
+            data.add(price);
 
         }
     }
@@ -407,6 +435,8 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(itemView);
 
             descriptionContent = itemView.findViewById(R.id.description_edit_text_edit);
+            descriptionContent.setTag("Description");
+            data.add(descriptionContent);
 
         }
     }
@@ -427,11 +457,21 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             zipCode = itemView.findViewById(R.id.location_edit_zc_text_edit);
             state = itemView.findViewById(R.id.location_edit_state_text_edit);
             country = itemView.findViewById(R.id.location_edit_country_text_edit);
+
+            locationText.setTag("Road and Adress");
+            city.setTag("City");
+            zipCode.setTag("ZipCode");
+            state.setTag("State");
+            country.setTag("Country");
+
+            data.add(locationText);
+            data.add(city);
+            data.add(zipCode);
+            data.add(state);
+            data.add(country);
         }
     }
     static class ImageViewViewHolder extends RecyclerView.ViewHolder{
-
-
 
         private RecyclerView imageRecyclerView;
 
@@ -439,7 +479,6 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(itemView);
 
             imageRecyclerView = itemView.findViewById(R.id.photos_items_list);
-
 
         }
     }
@@ -466,6 +505,9 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
 
+    public static List<EditText> getData(){
+        return data;
+    }
 
     public static House gethouse(){
         return house;

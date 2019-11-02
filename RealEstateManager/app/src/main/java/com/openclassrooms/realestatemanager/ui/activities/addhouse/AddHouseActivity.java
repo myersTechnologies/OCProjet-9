@@ -1,17 +1,19 @@
-package com.openclassrooms.realestatemanager.ui.addhouse;
+package com.openclassrooms.realestatemanager.ui.activities.addhouse;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,10 +28,12 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
-import com.openclassrooms.realestatemanager.ui.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -39,6 +43,7 @@ public class AddHouseActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private static AddNewHouseAdapter adapter;
     private RealEstateManagerAPIService service;
+    private List<String> textEmpty;
 
 
     @Override
@@ -75,21 +80,91 @@ public class AddHouseActivity extends AppCompatActivity {
                 onBackPressed();
                 return true;
             case R.id.confirm_add:
-                getViewsAndAddHouse();
-                Intent intent = new Intent(this, DetailsActivity.class);
-                startActivity(intent);
+                if (checkAllData(AddNewHouseAdapter.getData())) {
+                    getViewsAndAddHouse();
+                    Intent intent = new Intent(this, DetailsActivity.class);
+                    startActivity(intent);
+                } else {
+                    setDialogErrorEmptyCases();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    private boolean checkAllData(List<EditText> data){
+        textEmpty = new ArrayList<>();
+        List<Photo> checkPhotos = AddNewHouseAdapter.getHouse().getImages();
+        checkPhotos.remove( AddNewHouseAdapter.getHouse().getImages().size() - 1);
+        int dataSize = 0;
+        if (AddNewHouseAdapter.getHouse().getName() != "Select..."){
+            dataSize++;
+        } else {
+            textEmpty.add("Name");
+        }
+        for (EditText e : data){
+            if (!isEmpty(e)){
+                dataSize++;
+            } else {
+                textEmpty.add(String.valueOf(e.getTag()));
+            }
+        }
+
+        if (AddNewHouseAdapter.getHouse().isAvailable()){
+            dataSize++;
+        } else {
+            textEmpty.add("Availability");
+        }
+
+
+        if (checkPhotos.size() >= 1){
+            dataSize++;
+        } else {
+            textEmpty.add("Photos");
+        }
+
+        int totalSize = data.size() + 3;
+
+        if (dataSize == totalSize) {
+            return true;
+        } else {
+            AddNewHouseAdapter.getHouse().addImage(PhotoListAdapter.getAddPhoto());
+            return false;
+        }
+    }
+
+    private boolean isEmpty(EditText editText){
+        return editText.length() == 0|| editText.equals("");
+    }
+
+    private void setDialogErrorEmptyCases(){
+        String unCompleteCases = TextUtils.join(", ", textEmpty);
+        AlertDialog.Builder notifyError = new AlertDialog.Builder(this);
+        notifyError.setCancelable(false);
+        notifyError.setTitle("Error");
+        notifyError.setMessage("Please fill these cases : " + unCompleteCases);
+        notifyError.setIcon(R.drawable.ic_clear_black_24dp);
+
+        notifyError.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        AlertDialog alert = notifyError.create();
+        alert.show();
     }
 
     private void getViewsAndAddHouse() {
 
         House house = AddNewHouseAdapter.getHouse();
-        service.setHouse(house);
+        if (service.getUser() != null){
+            house.setAgentId(service.getUser().getUserId());
+        }
         house.setId(service.getHousesList().size() + 1);
         service.addHouseToList(house);
-        service.getHouse().getImages().remove(PhotoListAdapter.getAddPhoto());
+        service.setHouse(house);
+        sendNotification(house);
 
     }
 
@@ -100,7 +175,6 @@ public class AddHouseActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, 90);
         }
-
 
         if (requestCode == 90) {
 
@@ -140,9 +214,35 @@ public class AddHouseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == 105){
+            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, 100);
+        } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == 95){
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(intent, 90);
+        }
+    }
+
     public static AddNewHouseAdapter getAdapter(){
         return adapter;
     }
 
+    private void sendNotification(House house){
+        String message = "You added " + house.getName() + " with success";
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.logo)
+                .setAutoCancel(true)
+                .setContentTitle("Success ! ");
+        builder.setStyle(new Notification.BigTextStyle()
+                .bigText(message));
+
+        NotificationManager notif = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        notif.notify(0, builder.build());
+    }
 
 }

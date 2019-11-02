@@ -10,12 +10,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp">
         <ImageView
             android:id="@+id/house_img"
             android:layout_width="100dp"
-            android:layout_height="100dp" />
+            android:layout_height="100dp"
+            android:scaleType="fitXY"/>
         <LinearLayout
             android:layout_marginLeft="15dp"
             android:layout_width="match_parent"

@@ -10,7 +10,8 @@
         android:id="@+id/modify"
         android:title="modify"
         app:showAsAction="always"
-        android:icon="@drawable/ic_create_black_24dp"/>
+        android:icon="@drawable/ic_create_black_24dp"
+        android:visible="false"/>
     <item
         android:id="@+id/search"
         android:title="search"

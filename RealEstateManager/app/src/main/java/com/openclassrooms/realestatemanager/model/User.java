@@ -1,10 +1,10 @@
 package com.openclassrooms.realestatemanager.model;
 
 public class User {
-    String userId;
-    String name;
-    String email;
-    String photoUri;
+    private String userId;
+    private String name;
+    private String email;
+    private String photoUri;
 
 
     public User(String userId, String name, String email, String photoUri) {

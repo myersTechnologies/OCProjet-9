@@ -1,4 +1,4 @@
-package com.openclassrooms.firebase;
+package com.openclassrooms.realestatemanager.firebase;
 
 public class FirebaseService implements FirebaseHelper {
 }

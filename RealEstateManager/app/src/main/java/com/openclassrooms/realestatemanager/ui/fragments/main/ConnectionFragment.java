@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +45,7 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.second.SecondActivity;
+import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -87,22 +86,23 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
        int MY_CAMERA_REQUEST_CODE = 100;
        int MY_STORAGE_REQUEST_CODE = 90;
        int MY_LOCATION_REQUEST_CODE = 80;
-       int MY_MANAGER_REQUEST_CODE = 75;
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-        } else if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
-        } else if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
+        }
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
+        }
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
         }
 
         callbackManager = CallbackManager.Factory.create();
 
-        googleSignIn = (SignInButton) view.findViewById(R.id.signInGoogle);
-        loginButton = (LoginButton) view.findViewById(R.id.login_button);
+        googleSignIn = view.findViewById(R.id.signInGoogle);
+        loginButton =  view.findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
-        // If using in a fragment
         loginButton.setFragment(this);
 
 
@@ -112,13 +112,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         } else {
             loginButton.setEnabled(true);
             googleSignIn.setEnabled(true);
-            signInWithFacebook();
-            signInWithGoogle();
+            if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                onAuthSuccess(FirebaseAuth.getInstance().getCurrentUser());
+                Intent intent = new Intent(getContext(), SecondActivity.class);
+                startActivity(intent);
+            } else {
+                signInWithFacebook();
+                signInWithGoogle();
+            }
         }
 
-
         return view;
-
 
     }
 
@@ -126,12 +130,12 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
-        if (service.getUser() == null) {
-            signInWithFacebook();
-            signInWithGoogle();
-        } else {
+        if (service.getUser() != null){
             Intent intent = new Intent(getContext(), SecondActivity.class);
             startActivity(intent);
+        } else {
+            signInWithFacebook();
+            signInWithGoogle();
         }
 
     }
@@ -275,4 +279,5 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }
         }
     }
+
 }

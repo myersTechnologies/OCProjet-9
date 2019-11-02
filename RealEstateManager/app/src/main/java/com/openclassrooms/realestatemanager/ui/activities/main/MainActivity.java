@@ -1,13 +1,11 @@
-package com.openclassrooms.realestatemanager.ui.main;
+package com.openclassrooms.realestatemanager.ui.activities.main;
 
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.fragments.main.ConnectionFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.main.MainFragment;
 
 public class MainActivity extends AppCompatActivity {
 

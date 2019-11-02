@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 
 import java.io.File;
@@ -26,5 +27,7 @@ public interface RealEstateManagerAPIService {
     Bitmap decodeSampledBitmapFromResource(Resources res, File imageFile, int reqWidth, int reqHeight);
     void setUser(User user);
     User getUser();
+    void setPreferences(Preferences preferences);
+    Preferences getPreferences();
 
 }

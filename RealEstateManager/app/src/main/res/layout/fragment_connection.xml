@@ -3,31 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.main.ConnectionFragment">
+    tools:context=".ui.fragments.main.ConnectionFragment"
+    android:background="#DDF1FA">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/main_image_2"
-            android:scaleType="fitXY"/>
+            android:layout_height="500dp"
+            android:src="@drawable/logo"
+            android:layout_alignParentTop="true"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="200dp"
-        android:layout_gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="40sp"
-        android:text="Connect \nto \nReal Estate Manager"
-        android:textAlignment="center"
-        />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,10 +32,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"/>
         <com.google.android.gms.common.SignInButton
             android:id="@+id/signInGoogle"
-            android:layout_width="180dp"
+            android:layout_width="260dp"
             android:layout_height="50dp"
             android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
@@ -54,7 +50,7 @@
 
         <Button
             android:id="@+id/offline_login"
-            android:layout_width="180dp"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:text="OffLine"
             android:layout_marginTop="30dp"

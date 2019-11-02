@@ -11,7 +11,7 @@ public class House {
     private String state;
     private String country;
     private String zipCode;
-    private double price;
+    private String price;
     private String description;
     private int surface;
     private int roomsNumber;
@@ -20,9 +20,11 @@ public class House {
     private int id;
     private boolean available;
     private String onLineDate;
+    private String soldDate;
+    private String AgentId;
 
     public House(int id, List<Photo> images,String name, String adress, String city, String state,
-                 String country, String zipCode, double price, String description, int surface, int roomsNumber,
+                 String country, String zipCode, String price, String description, int surface, int roomsNumber,
                  int bathroomsNumber, int bedroomsNumber, boolean available, String onLineDate) {
         this.images = images;
         this.name = name;
@@ -50,6 +52,22 @@ public class House {
         this.onLineDate = onLineDate;
     }
 
+    public String getAgentId() {
+        return AgentId;
+    }
+
+    public void setAgentId(String agentId) {
+        AgentId = agentId;
+    }
+
+    public String getSoldDate() {
+        return soldDate;
+    }
+
+    public void setSoldDate(String soldDate) {
+        this.soldDate = soldDate;
+    }
+
     public boolean isAvailable() {
         return available;
     }
@@ -62,11 +80,11 @@ public class House {
         return images;
     }
 
-    public double getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

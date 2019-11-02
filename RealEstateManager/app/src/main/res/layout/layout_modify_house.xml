@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="name"
+        android:text="Name"
         android:textSize="15dp"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="10dp"
@@ -29,7 +29,7 @@
         android:layout_marginTop="5dp"
         />
 
-    <EditText
+    <Spinner
         android:id="@+id/name_edit_text_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,9 +38,7 @@
         android:textSize="15sp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:gravity="center"
-        android:inputType="text"
-        android:maxLines="1"/>
+        android:gravity="center" />
 
     <ImageView
         android:id="@+id/house_description_image"
@@ -211,14 +209,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/price_title"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:hint="Price"
         android:textSize="15sp"
         android:gravity="center"
-        android:inputType="numberDecimal"
+        android:inputType="number"
+        android:digits="0123456789,"
         android:maxLines="1"
         />
 

@@ -9,16 +9,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapter.ViewHolder>  {
@@ -46,8 +51,25 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         final House house = houses.get(position);
         holder.houseName.setText(house.getName());
         holder.houseAdress.setText(house.getCity());
-        Double price = Double.parseDouble(house.getPrice());
-        if (service.getPreferences().getMonetarySystem() == "€") {
+        String valeurString = house.getPrice();
+        String valeurBrute = valeurString.replaceAll(",", "").replace(".", "");
+        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+        if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "$") {
+            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
+            String resultSplit = resultString.replace(",", ".");
+            String decimalReplacement = resultSplit.replaceAll("\\s", ",");
+            holder.housePrice.setText("€" + " " + decimalReplacement);
+        }
+        if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "€"){
+            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
+            String resultSplit = resultString.replace(",", ".");
+            String decimalReplacement = resultSplit.replaceAll("\\s", ",");
+            holder.housePrice.setText("$ " + decimalReplacement);
+        }
+        if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "€"){
+            holder.housePrice.setText("€" + " " + house.getPrice());
+        }
+        if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "$"){
             holder.housePrice.setText("$" + " " + house.getPrice());
         }
         try {
@@ -68,6 +90,8 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         });
 
     }
+
+
 
     @Override
     public int getItemCount() {

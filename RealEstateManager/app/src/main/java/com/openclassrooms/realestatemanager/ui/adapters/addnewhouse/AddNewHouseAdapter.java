@@ -45,7 +45,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public AddNewHouseAdapter(){
         this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
                 null, "0", null,0, 0, 0, 0, false,
-                Utils.getTodayDate());
+                Utils.getTodayDate(), service.getPreferences().getMonetarySystem());
         data = new ArrayList<>();
 
     }

@@ -22,10 +22,11 @@ public class House {
     private String onLineDate;
     private String soldDate;
     private String AgentId;
+    private String monetarySystem;
 
     public House(int id, List<Photo> images,String name, String adress, String city, String state,
                  String country, String zipCode, String price, String description, int surface, int roomsNumber,
-                 int bathroomsNumber, int bedroomsNumber, boolean available, String onLineDate) {
+                 int bathroomsNumber, int bedroomsNumber, boolean available, String onLineDate, String monetarySystem) {
         this.images = images;
         this.name = name;
         this.adress =adress;
@@ -42,6 +43,7 @@ public class House {
         this.id = id;
         this.available = available;
         this.onLineDate = onLineDate;
+        this.monetarySystem = monetarySystem;
     }
 
     public String getOnLineDate() {
@@ -190,5 +192,13 @@ public class House {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getMonetarySystem() {
+        return monetarySystem;
+    }
+
+    public void setMonetarySystem(String monetarySystem) {
+        this.monetarySystem = monetarySystem;
     }
 }

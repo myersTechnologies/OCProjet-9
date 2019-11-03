@@ -21,8 +21,12 @@ public class Utils {
      * @param dollars
      * @return
      */
-    public static double convertDollarToEuro(double dollars){
-        return dollars * 0.90;
+    public static int convertDollarToEuro(int dollars){
+        return (int) Math.abs(dollars * 0.90);
+    }
+
+    public static int convertEuroToDollar(int euros){
+        return (int) Math.abs(euros * 1.12);
     }
 
     /**

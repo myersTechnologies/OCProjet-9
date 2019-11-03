@@ -19,9 +19,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.util.Util;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,6 +37,10 @@ import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActiv
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.ui.activities.main.MainActivity;
+import com.openclassrooms.realestatemanager.utils.Utils;
+
+import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -88,7 +94,7 @@ public class SecondActivity extends AppCompatActivity
             userName.setText(service.getPreferences().getUserName());
             userEmail.setText(service.getUser().getEmail());
 
-            if (service.getPreferences().getUserPhoto() != null){
+            if (service.getPreferences().getUserPhoto() != null) {
                 Glide.with(this).load(service.getPreferences().getUserPhoto()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
             } else {
                 if (service.getUser().getPhotoUri().contains("google")) {
@@ -99,17 +105,13 @@ public class SecondActivity extends AppCompatActivity
                 }
             }
 
-            if (service.getPreferences().getMenuImage() != null){
+            if (service.getPreferences().getMenuImage() != null) {
                 Glide.with(this).load(service.getPreferences().getMenuImage()).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
 
-
         }
-
-
-
 
     }
 

@@ -65,6 +65,7 @@ public class ListFragment extends Fragment {
         return view;
     }
 
+
     private void initList() {
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
@@ -75,6 +76,7 @@ public class ListFragment extends Fragment {
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

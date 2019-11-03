@@ -24,6 +24,7 @@ import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseA
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
@@ -119,9 +120,6 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         if (holderView.getItemViewType() == LAYOUT_ONE) {
             ViewHolder holder = (ViewHolder) holderView;
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            holder.nameText.setAdapter(adapter);
             setTextToViewHolder(holder);
             setTextWatchersViewHolder(holder);
         } else if (holderView.getItemViewType() == LAYOUT_TWO){
@@ -190,10 +188,10 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTextToViewHolder(ViewHolder holder){
-        for (int i = 0; i < houseTypes.length; i++){
-            if (holder.nameText.getItemAtPosition(i).toString().equals(house.getName()));
-            holder.nameText.setSelection(i);
-        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        holder.nameText.setAdapter(adapter);
+        holder.nameText.setSelection(Arrays.asList(houseTypes).indexOf(house.getName()));
         holder.surfaceText.setText(String.valueOf(house.getSurface()));
         holder.roomsText.setText(String.valueOf(house.getRoomsNumber()));
         holder.bathroomsText.setText(String.valueOf(house.getBathroomsNumber()));

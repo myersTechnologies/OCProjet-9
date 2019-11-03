@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -28,12 +28,10 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -61,6 +59,9 @@ public class AddHouseActivity extends AppCompatActivity {
         addNewHouseToDoList.setLayoutManager(layoutManager);
         adapter = new AddNewHouseAdapter();
         addNewHouseToDoList.setAdapter(adapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
+                layoutManager.getOrientation());
+        addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
 
         service.setActivity(this, "AddHouse");
     }
@@ -193,7 +194,8 @@ public class AddHouseActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
-                    Photo photo = new Photo(AddNewHouseAdapter.getHouse().getImages().size() + 1, imageUri, descriptionText.getText().toString());
+                    Photo photo = new Photo(AddNewHouseAdapter.getHouse().getImages().size() + 1, imageUri, descriptionText.getText().toString(),
+                           String.valueOf(AddNewHouseAdapter.getHouse().getId()));
                     AddNewHouseAdapter.getHouse().addImage(photo);
                     adapter.notifyDataSetChanged();
                 }

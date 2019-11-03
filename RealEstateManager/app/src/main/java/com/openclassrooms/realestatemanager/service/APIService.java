@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 
@@ -24,6 +25,9 @@ public class APIService implements RealEstateManagerAPIService {
     private String activityName;
     private User user;
     private Preferences preferences;
+    private Photo photo;
+    private List<House> myHouses;
+    private List<User> users;
 
     @Override
     public void setHouse(House house) {
@@ -110,6 +114,36 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public Preferences getPreferences() {
         return preferences;
+    }
+
+    @Override
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
+    @Override
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    @Override
+    public void setMyHousesList(List<House> myHouses) {
+        this.myHouses = myHouses;
+    }
+
+    @Override
+    public List<House> getMyHouses() {
+        return myHouses;
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return users;
+    }
+
+    @Override
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public int calculateInSampleSize(

@@ -40,7 +40,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
         this.photos = photos;
         service = DI.getService();
         Uri photoUri = Uri.parse(service.getActivity().getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
-        addPhoto = new Photo(photos.size() + 1 ,photoUri, "Add new photo");
+        addPhoto = new Photo(photos.size() + 1 ,photoUri, "Add new photo", String.valueOf(AddNewHouseAdapter.getHouse().getId()));
         if (photos.size() > 0) {
             if (!photos.get(photos.size() -1).getPhotoUrl().equals(addPhoto.getPhotoUrl())) {
                 photos.add(addPhoto);

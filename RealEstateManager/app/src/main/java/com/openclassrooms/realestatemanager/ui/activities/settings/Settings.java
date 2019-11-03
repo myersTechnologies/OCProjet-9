@@ -7,16 +7,12 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.view.View;
-import android.widget.CompoundButton;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.settings.SettingsAdapter;
 
 public class Settings extends AppCompatActivity {
@@ -31,6 +27,12 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        Toolbar toolbar = findViewById(R.id.toolbar_settings);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = findViewById(R.id.settings_rv);
         layoutManager = new LinearLayoutManager(this);
@@ -60,6 +62,17 @@ public class Settings extends AppCompatActivity {
             settingsAdapter.notifyDataSetChanged();
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+            return super.onOptionsItemSelected(item);
     }
 
 }

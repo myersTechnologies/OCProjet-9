@@ -31,16 +31,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Preferences;
+import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
+import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.ui.activities.main.MainActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -48,6 +53,8 @@ public class SecondActivity extends AppCompatActivity
     private TextView userName, userEmail;
     private ImageView userPhoto, imageHeader;
     private RealEstateManagerAPIService service;
+    private List<House> myHouses;
+    private List<User> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +120,27 @@ public class SecondActivity extends AppCompatActivity
 
         }
 
+        service.setMyHousesList(getMyHouses());
+        service.setUsers(getUsersList());
+
+    }
+
+    public List<House> getMyHouses(){
+        myHouses = new ArrayList<>();
+        for (int i = 0; i < service.getHousesList().size(); i++){
+            if (service.getHousesList().get(i).getAgentId().equals(service.getUser().getUserId())){
+                myHouses.add(service.getHousesList().get(i));
+            }
+        }
+        return myHouses;
+    }
+
+    public List<User> getUsersList(){
+
+        users = new ArrayList<>();
+        users.add(service.getUser());
+
+        return users;
     }
 
     @Override
@@ -175,6 +203,8 @@ public class SecondActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_analytics:
+                Intent analitycs = new Intent(this, AnalitycsActivity.class);
+                startActivity(analitycs);
                 break;
             case R.id.nav_tools:
                 Intent settings = new Intent(this, Settings.class);

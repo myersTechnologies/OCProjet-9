@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui.adapters.details;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,13 @@ import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.events.DetailsEvent;
+import com.openclassrooms.realestatemanager.events.ImageEvent;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.List;
@@ -46,7 +52,7 @@ public class MediaFragmentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(final int i, View view, ViewGroup viewGroup) {
         final ViewHolderItem viewHolder;
 
         if (view == null) {
@@ -78,6 +84,15 @@ public class MediaFragmentAdapter extends BaseAdapter {
             }
         }catch (Exception e){}
 
+        viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new ImageEvent(photos.get(i)));
+                Intent intent = new Intent(context, FullScreenImage.class);
+                context.startActivity(intent);
+
+            }
+        });
 
         viewHolder.imgDescription.setText(photos.get(i).getDescription());
         return view;

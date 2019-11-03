@@ -23,6 +23,7 @@ import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -157,6 +158,9 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.nameText.setAdapter(adapter);
+        if (house.getName() != null){
+            holder.nameText.setSelection(Arrays.asList(houseTypes).indexOf(house.getName()));
+        }
 
         holder.nameText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

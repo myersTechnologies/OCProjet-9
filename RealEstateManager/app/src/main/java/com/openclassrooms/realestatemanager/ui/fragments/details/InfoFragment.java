@@ -48,6 +48,7 @@ public class InfoFragment extends Fragment {
         infoList.setAdapter(adapter);
 
 
+
         return view;
     }
 

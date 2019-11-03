@@ -53,17 +53,15 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         holder.houseAdress.setText(house.getCity());
         String valeurString = house.getPrice();
         String valeurBrute = valeurString.replaceAll(",", "").replace(".", "");
-        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
         if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "$") {
             String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
-            String resultSplit = resultString.replace(",", ".");
-            String decimalReplacement = resultSplit.replaceAll("\\s", ",");
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
             holder.housePrice.setText("€" + " " + decimalReplacement);
         }
         if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "€"){
             String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
-            String resultSplit = resultString.replace(",", ".");
-            String decimalReplacement = resultSplit.replaceAll("\\s", ",");
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
             holder.housePrice.setText("$ " + decimalReplacement);
         }
         if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "€"){

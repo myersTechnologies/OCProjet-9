@@ -7,11 +7,21 @@ public class Photo {
     private int id;
     private Uri photoUrl;
     private String description;
+    private String houseId;
 
-    public Photo(int id, Uri photoUrl, String description) {
+    public Photo(int id, Uri photoUrl, String description, String houseId) {
         this.id = id;
         this.photoUrl = photoUrl;
         this.description = description;
+        this.houseId = houseId;
+    }
+
+    public String getHouseId() {
+        return houseId;
+    }
+
+    public void setHouseId(String houseId) {
+        this.houseId = houseId;
     }
 
     public int getId() {

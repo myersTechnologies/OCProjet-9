@@ -7,16 +7,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.events.ImageEvent;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.MediaFragmentAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,6 +32,7 @@ public class MediaFragment extends Fragment {
     private MediaFragmentAdapter adapter;
     private static MediaFragment mediaFragment;
     private RealEstateManagerAPIService service = DI.getService();
+
     public static MediaFragment newInstance(){
         mediaFragment = new MediaFragment();
         return mediaFragment;
@@ -40,10 +46,17 @@ public class MediaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
        View view = inflater.inflate(R.layout.fragment_media, container, false);
        photosList = view.findViewById(R.id.photos_list);
         RealEstateManagerAPIService service = DI.getService();
-        adapter = new MediaFragmentAdapter(service.getHouse().getImages(), getActivity());
+        List<Photo> mediaPhotos = new ArrayList<>();
+        for (int i = 0; i < service.getPhotos().size(); i++){
+            if (service.getPhotos().get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))){
+                mediaPhotos.add(service.getPhotos().get(i));
+            }
+        }
+        adapter = new MediaFragmentAdapter(mediaPhotos, getActivity());
         photosList.setAdapter(adapter);
         return view;
     }

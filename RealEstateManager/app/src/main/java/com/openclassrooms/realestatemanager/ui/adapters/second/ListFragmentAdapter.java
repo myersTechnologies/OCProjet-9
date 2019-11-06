@@ -8,12 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.Util;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
@@ -23,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +36,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     private List<House> houses;
     private Context context;
     private RealEstateManagerAPIService service;
+    private House house;
 
     public ListFragmentAdapter(List<House> houses, Context context){
         this.houses = houses;
@@ -47,12 +53,16 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        final House house = houses.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        house = houses.get(position);
         holder.houseName.setText(house.getName());
-        holder.houseAdress.setText(house.getCity());
+        for (int i = 0; i < service.getAdressesList().size(); i++){
+            if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
+                holder.houseAdress.setText(service.getAdressesList().get(i).getCity());
+            }
+        }
         String valeurString = house.getPrice();
-        String valeurBrute = valeurString.replaceAll(",", "").replace(".", "");
+        String valeurBrute = valeurString.replaceAll(",", "");
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "$") {
             String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
@@ -70,20 +80,23 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "$"){
             holder.housePrice.setText("$" + " " + house.getPrice());
         }
-        try {
-            String url = service.getRealPathFromUri(house.getImages().get(position).getPhotoUrl());
-            File imageFile = new File(url);
-            holder.houseImage.setImageBitmap(service.decodeSampledBitmapFromResource(null, imageFile, 100, 100));
-        } catch (Exception e){
 
+        List<Photo> photoList = new ArrayList<>();
+
+        for (int i = 0; i < service.getPhotos().size(); i++){
+            Photo photo = service.getPhotos().get(i);
+            if (photo.getHouseId().equals(String.valueOf(house.getId()))){
+                photoList.add(photo);
+            }
         }
+
+        Glide.with(holder.itemView.getContext()).load(photoList.get(0).getPhotoUrl()).into(holder.houseImage);
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EventBus.getDefault().post(new DetailsEvent(house));
-                Intent intent = new Intent(context, DetailsActivity.class);
-                context.startActivity(intent);
+                EventBus.getDefault().post(new DetailsEvent(houses.get(position)));
             }
         });
 

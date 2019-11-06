@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,6 +16,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,7 +49,7 @@ public class ListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        initList();
     }
 
     @Override
@@ -59,7 +61,6 @@ public class ListFragment extends Fragment {
         service = DI.getService();
         houses = new ArrayList<>();
         if (service.getHousesList() != null) {
-            adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
             initList();
         }
 
@@ -72,6 +73,7 @@ public class ListFragment extends Fragment {
 
 
     private void initList() {
+        adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
     }
@@ -93,6 +95,8 @@ public class ListFragment extends Fragment {
     @Subscribe
     public void changeFragmentOnClick(DetailsEvent event) {
         service.setHouse(event.house);
+        Intent intent = new Intent(getContext(), DetailsActivity.class);
+        startActivity(intent);
     }
 }
 

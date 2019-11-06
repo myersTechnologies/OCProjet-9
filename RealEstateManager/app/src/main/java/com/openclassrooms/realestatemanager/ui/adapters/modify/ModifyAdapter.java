@@ -17,12 +17,15 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,12 +43,16 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
 
+    private AdressHouse adressHouse;
+
     private static List<EditText> data;
 
+    private static List<Photo> photos;
 
-    public ModifyAdapter(House house){
+    public ModifyAdapter(House house, List<Photo> photos){
         this.house = house;
         data = new ArrayList<>();
+        this.photos = photos;
     }
 
     @Override
@@ -135,7 +142,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
              imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
              PhotoListAdapter adapter;
-             adapter = new PhotoListAdapter(house.getImages());
+             adapter = new PhotoListAdapter(photos);
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
@@ -200,11 +207,17 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setLocationTextToViewHolder(LocationViewHolder locationViewHolder){
-        locationViewHolder.locationText.setText(house.getAdress());
-        locationViewHolder.city.setText(house.getCity());
-        locationViewHolder.zipCode.setText(house.getZipCode());
-        locationViewHolder.state.setText(house.getState());
-        locationViewHolder.country.setText(house.getCountry());
+        List<AdressHouse> adresses = DI.getService().getAdressesList();
+        for (int i = 0; i < adresses.size(); i++){
+            if (adresses.get(i).getHouseId().equals(String.valueOf(house.getId()))){
+                adressHouse = adresses.get(i);
+            }
+        }
+        locationViewHolder.locationText.setText(adressHouse.getAdress());
+        locationViewHolder.city.setText(adressHouse.getCity());
+        locationViewHolder.zipCode.setText(adressHouse.getZipCode());
+        locationViewHolder.state.setText(adressHouse.getState());
+        locationViewHolder.country.setText(adressHouse.getCountry());
     }
 
     private void setDescriptionTextToViewHolder(DescriptionViewHolder descriptionHolder){
@@ -293,12 +306,18 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setPrice(editable.toString());
+                    DecimalFormat formatter = new DecimalFormat("###,###,###");
+                    if (editable.toString().contains(",")) {
+                        house.setPrice(formatter.format(Integer.parseInt(editable.toString().replaceAll(",", ""))).replaceAll("\\s", ","));
+                    } else {
+                        house.setPrice(formatter.format(Integer.parseInt(editable.toString())).replaceAll("\\s", ","));
+                    }
                 }
             }
         });
@@ -315,7 +334,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             @Override
             public void afterTextChanged(Editable editable) {
-               house.setAdress(editable.toString());
+               adressHouse.setAdress(editable.toString());
             }
         });
         locationViewHolder.city.addTextChangedListener(new TextWatcher() {
@@ -327,7 +346,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setCity(editable.toString());
+                adressHouse.setCity(editable.toString());
             }
         });
         locationViewHolder.zipCode.addTextChangedListener(new TextWatcher() {
@@ -340,7 +359,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setZipCode(editable.toString());
+                    adressHouse.setZipCode(editable.toString());
                 }
             }
         });
@@ -355,7 +374,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setState(editable.toString());
+                adressHouse.setState(editable.toString());
             }
         });
         locationViewHolder.country.addTextChangedListener(new TextWatcher() {
@@ -367,7 +386,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setCountry(editable.toString());
+                adressHouse.setCountry(editable.toString());
             }
         });
     }
@@ -509,6 +528,11 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     public static House gethouse(){
         return house;
+    }
+
+
+    public static List<Photo> getPhotos(){
+        return photos;
     }
 
 }

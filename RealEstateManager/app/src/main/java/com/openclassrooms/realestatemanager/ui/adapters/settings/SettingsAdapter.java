@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
@@ -46,12 +47,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private RealEstateManagerAPIService service = DI.getService();
     private Context context;
-    private Preferences preferences;
     private static String click;
+    private FirebaseHelper firebaseHelper = DI.getFirebaseDatabase();
 
     public SettingsAdapter(Context context) {
         this.context = context;
-        preferences = service.getPreferences();
     }
 
     @Override
@@ -65,16 +65,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder = new ViewHolder(view);
         }
 
-        if (viewType == 1)
+        if(viewType== 1)
         {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_name_layout,parent,false);
-            viewHolder= new UserNameViewHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.money_type_layout,parent,false);
+            viewHolder = new ViewHolder(view);
         }
+
 
         if (viewType == 2)
         {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_image_layout,parent,false);
-            viewHolder= new ImageViewHolder(view);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_name_layout,parent,false);
+            viewHolder= new UserNameViewHolder(view);
         }
 
         if (viewType == 3)
@@ -83,11 +84,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder= new ImageViewHolder(view);
         }
 
-
-        if (viewType == 4){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
-            viewHolder= new DeleteTypeViewHolder(view);
+        if (viewType == 4)
+        {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_image_layout,parent,false);
+            viewHolder= new ImageViewHolder(view);
         }
+
 
         if (viewType == 5){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
@@ -95,6 +97,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         if (viewType == 6){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
+            viewHolder= new DeleteTypeViewHolder(view);
+        }
+
+        if (viewType == 7){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
             viewHolder= new DeleteTypeViewHolder(view);
         }
@@ -107,38 +114,44 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holderView.getItemViewType() == 0) {
             ViewHolder holder = (ViewHolder) holderView;
             getSwitchListener(holder);
-        }  else if (holderView.getItemViewType() == 1){
+        } else  if (holderView.getItemViewType() == 1) {
+            ViewHolder holder = (ViewHolder) holderView;
+            holder.titleText.setText("Unit Measure");
+            holder.choice1Text.setText("sq");
+            holder.choice2Text.setText("m");
+            getMeasureListener(holder);
+        }  else if (holderView.getItemViewType() == 2){
             UserNameViewHolder userNameViewHolder = (UserNameViewHolder) holderView;
             userNameViewHolder.editText.setHint(service.getUser().getName());
             getUserNameTextListener(userNameViewHolder);
-        } else if (holderView.getItemViewType() == 2){
+        } else if (holderView.getItemViewType() == 3){
             ImageViewHolder imageViewHolder = (ImageViewHolder) holderView;
             imageViewHolder.textView.setText("User image");
 
-            if (preferences.getUserPhoto() != null){
-                Glide.with(context).load(service.getPreferences().getUserPhoto()).apply(RequestOptions.circleCropTransform()).into(imageViewHolder.imageView);
+            if (service.getPreferences().getUserPhoto() != null){
+                Glide.with(context).load(Uri.parse(service.getPreferences().getUserPhoto())).apply(RequestOptions.circleCropTransform()).into(imageViewHolder.imageView);
             } else {
                 Glide.with(context).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(imageViewHolder.imageView);
                 getImageUserListener(imageViewHolder);
             }
-        } else if (holderView.getItemViewType() == 3){
+        } else if (holderView.getItemViewType() == 4){
             ImageViewHolder imageViewHolder = (ImageViewHolder) holderView;
-            if (preferences.getMenuImage() != null){
-                Glide.with(context).load(service.getPreferences().getMenuImage()).into(imageViewHolder.imageView);
+            if (service.getPreferences().getMenuImage() != null){
+                Glide.with(context).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageViewHolder.imageView);
             } else {
                 imageViewHolder.imageView.setImageResource(R.drawable.main_image);
             }
             getMenuImageListener(imageViewHolder);
-        } else if (holderView.getItemViewType() == 4){
+        } else if (holderView.getItemViewType() == 5){
             DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
             deleteTypeViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             deleteTypeViewHolder.button.setText("Default settings");
             deleteTypeViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
             getButtonDefaultListener(deleteTypeViewHolder);
-        } else if (holderView.getItemViewType() == 5){
+        } else if (holderView.getItemViewType() == 6){
             DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
             getButtonDeleteListener(deleteTypeViewHolder);
-        } else if (holderView.getItemViewType() == 6){
+        } else if (holderView.getItemViewType() == 7){
             DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
             deleteTypeViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             deleteTypeViewHolder.button.setText("Confirm changes");
@@ -147,9 +160,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
     }
-
-    public void getSwitchListener(ViewHolder holder){
-        if (preferences.getMonetarySystem() == "€"){
+    public void getMeasureListener(ViewHolder holder){
+        if (service.getPreferences().getMeasureUnity() == "m"){
             holder.monetarySwitch.setChecked(true);
         } else {
             holder.monetarySwitch.setChecked(false);
@@ -159,9 +171,28 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    preferences.setMonetarySystem("€");
+                    service.getPreferences().setMeasureUnity("m");
                 }else {
-                    preferences.setMonetarySystem("$");
+                    service.getPreferences().setMeasureUnity("sq");
+                }
+            }
+        });
+    }
+
+    public void getSwitchListener(ViewHolder holder){
+        if (service.getPreferences().getMonetarySystem() == "€"){
+            holder.monetarySwitch.setChecked(true);
+        } else {
+            holder.monetarySwitch.setChecked(false);
+        }
+
+        holder.monetarySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    service.getPreferences().setMonetarySystem("€");
+                }else {
+                    service.getPreferences().setMonetarySystem("$");
                 }
             }
         });
@@ -182,7 +213,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString() != "") {
-                    preferences.setUserName(editable.toString());
+                    service.getPreferences().setUserName(editable.toString());
                 }
             }
         });
@@ -212,10 +243,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                preferences.setUserName(service.getUser().getName());
-                preferences.setMonetarySystem("€");
-                preferences.setMenuImage(null);
-                preferences.setUserPhoto(null);
+                service.getPreferences().setUserName(service.getUser().getName());
+                service.getPreferences().setMonetarySystem("€");
+                service.getPreferences().setMenuImage(null);
+                service.getPreferences().setUserPhoto(null);
                 notifyDataSetChanged();
             }
         });
@@ -234,7 +265,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                service.setPreferences(preferences);
+                firebaseHelper.addPreferrencesToFirebase(service.getPreferences());
                 Intent intent = new Intent(context, SecondActivity.class);
                 context.startActivity(intent);
             }
@@ -246,7 +277,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemCount() {
-        return 7;
+        return 8;
     }
 
     @Override
@@ -274,6 +305,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             case 6:
                 viewPosition = 6;
                 return 6;
+            case 7:
+                viewPosition = 7;
+                return 7;
         }
         return viewPosition;
     }
@@ -281,11 +315,18 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         public SwitchCompat monetarySwitch;
+        public TextView titleText;
+        public TextView choice1Text;
+        public TextView choice2Text;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             monetarySwitch = itemView.findViewById(R.id.switch_system);
+            titleText = itemView.findViewById(R.id.money_text);
+            choice1Text = itemView.findViewById(R.id.dollar);
+            choice2Text = itemView.findViewById(R.id.euro);
 
         }
     }

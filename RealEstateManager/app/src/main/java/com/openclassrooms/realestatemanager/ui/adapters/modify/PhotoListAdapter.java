@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
@@ -30,17 +31,15 @@ import java.util.List;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.ViewHolder>  {
 
-    private List<Photo> photos;
+    private static List<Photo> photos;
     private static Photo addPhoto;
     private Context context;
-    private ViewHolder viewHolder;
     private RealEstateManagerAPIService service;
 
     public PhotoListAdapter(List<Photo> photos ) {
-        this.photos = photos;
         service = DI.getService();
         Uri photoUri = Uri.parse(service.getActivity().getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
-        addPhoto = new Photo(photos.size() + 1 ,photoUri, "Add new photo", String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+        addPhoto = new Photo(75214 ,photoUri, "Add new photo", String.valueOf(AddNewHouseAdapter.getHouse().getId() + 1));
         if (photos.size() > 0) {
             if (!photos.get(photos.size() -1).getPhotoUrl().equals(addPhoto.getPhotoUrl())) {
                 photos.add(addPhoto);
@@ -48,6 +47,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
         } else {
             photos.add(addPhoto);
         }
+        this.photos = photos;
     }
 
     @Override
@@ -57,16 +57,13 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-        viewHolder = holder;
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final int i = position;
-        try {
 
-            String url = service.getRealPathFromUri(photos.get(position).getPhotoUrl());
-            File imageFile = new File(url);
-            holder.houseImg.setImageBitmap(service.decodeSampledBitmapFromResource(null, imageFile, 100, 100));
-        } catch (Exception e){
-
+        if (!photos.get(position).getDescription().equals("Add new photo")) {
+            Glide.with(holder.itemView.getContext()).load(photos.get(position).getPhotoUrl()).into(holder.houseImg);
+        } else {
+            Glide.with(holder.itemView.getContext()).load(R.drawable.ic_add_blue_24dp).into(holder.houseImg);
         }
 
         holder.descriptionText.setText(photos.get(position).getDescription());
@@ -89,13 +86,14 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
             @Override
             public void onClick(View view) {
                 if (service.activityName().equals("AddHouse")) {
-                    photos.remove(addPhoto);
-                    AddNewHouseAdapter.getHouse().getImages().remove(photos.get(i));
-                    AddHouseActivity.getAdapter().notifyDataSetChanged();
-                } else if (service.activityName().equals("Modify")) {
-                    photos.remove(addPhoto);
-                    ModifyAdapter.gethouse().getImages().remove(photos.get(i));
-                    ModifyActivity.getAdapter().notifyDataSetChanged();
+                    AddNewHouseAdapter.getPhotos().remove(photos.get(position));
+                    notifyDataSetChanged();
+                }
+                if (service.activityName().equals("Modify")) {
+                    Photo photo = photos.get(position);
+                    service.getPhotos().remove(photos.get(i));
+                    ModifyAdapter.getPhotos().remove(photo);
+                    notifyDataSetChanged();
                 }
             }
         });
@@ -173,5 +171,9 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
     public static Photo getAddPhoto(){
         return addPhoto;
+    }
+
+    public static List<Photo> getAllPhotos(){
+        return photos;
     }
 }

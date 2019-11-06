@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.settings.SettingsAdapter;
 
@@ -21,7 +22,8 @@ public class Settings extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
     private SettingsAdapter settingsAdapter;
     private RealEstateManagerAPIService service = DI.getService();
-    String image;
+    private String image;
+    private FirebaseHelper firebaseHelper = DI.getFirebaseDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +57,9 @@ public class Settings extends AppCompatActivity {
         if (requestCode == 90) {
             Uri imageUri = data.getData();
             if (image == "User") {
-                service.getPreferences().setUserPhoto(imageUri);
+                service.getPreferences().setUserPhoto(imageUri.toString());
             } else if (image == "Menu"){
-                service.getPreferences().setMenuImage(imageUri);
+               service.getPreferences().setMenuImage(imageUri.toString());
             }
             settingsAdapter.notifyDataSetChanged();
         }

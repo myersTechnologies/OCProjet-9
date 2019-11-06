@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
@@ -23,9 +24,6 @@ public interface RealEstateManagerAPIService {
     void setActivity(Activity activity, String name);
     String activityName();
     Activity getActivity();
-    String getRealPathFromUri(Uri uri);
-    int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight);
-    Bitmap decodeSampledBitmapFromResource(Resources res, File imageFile, int reqWidth, int reqHeight);
     void setUser(User user);
     User getUser();
     void setPreferences(Preferences preferences);
@@ -36,5 +34,9 @@ public interface RealEstateManagerAPIService {
     List<House> getMyHouses();
     List<User> getUsers();
     void setUsers(List<User> users);
+    List<AdressHouse> getAdressesList();
+    void addAdresses (AdressHouse adresses);
+    void addPhotos(Photo photo);
+    List<Photo> getPhotos();
 
 }

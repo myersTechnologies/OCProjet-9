@@ -8,16 +8,18 @@ public class Preferences {
     private String userId;
     private String monetarySystem;
     private String userName;
-    private Uri userPhoto;
-    private Uri menuImage;
+    private String userPhoto;
+    private String menuImage;
+    private String measureUnity;
 
-    public Preferences(String id, String userId, String monetarySystem, String userName, Uri userPhoto, Uri menuImage) {
+    public Preferences(String id, String userId, String monetarySystem, String userName, String userPhoto, String menuImage, String measureUnity) {
         this.id = id;
         this.userId = userId;
         this.monetarySystem = monetarySystem;
         this.userName = userName;
         this.userPhoto = userPhoto;
         this.menuImage = menuImage;
+        this.measureUnity = measureUnity;
     }
 
     public String getId() {
@@ -52,19 +54,27 @@ public class Preferences {
         this.userName = userName;
     }
 
-    public Uri getUserPhoto() {
+    public String getUserPhoto() {
         return userPhoto;
     }
 
-    public void setUserPhoto(Uri userPhoto) {
+    public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
     }
 
-    public Uri getMenuImage() {
+    public String getMenuImage() {
         return menuImage;
     }
 
-    public void setMenuImage(Uri menuImage) {
+    public void setMenuImage(String menuImage) {
         this.menuImage = menuImage;
+    }
+
+    public String getMeasureUnity() {
+        return measureUnity;
+    }
+
+    public void setMeasureUnity(String measureUnity) {
+        this.measureUnity = measureUnity;
     }
 }

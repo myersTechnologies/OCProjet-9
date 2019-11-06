@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
@@ -70,19 +71,7 @@ public class MediaFragmentAdapter extends BaseAdapter {
             viewHolder = (ViewHolderItem) view.getTag();
         }
 
-        try {
-            String url = service.getRealPathFromUri(photos.get(i).getPhotoUrl());
-            final File imageFile = new File(url);
-            if (imageFile.exists()) {
-                android.os.Handler loadingHandler = new Handler();
-                loadingHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewHolder.houseImg.setImageBitmap(service.decodeSampledBitmapFromResource(null, imageFile, 100, 100));
-                    }
-                }, 100);
-            }
-        }catch (Exception e){}
+        Glide.with(viewHolder.imgDescription.getContext()).load(photos.get(i).getPhotoUrl()).into(viewHolder.houseImg);
 
         viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
             @Override

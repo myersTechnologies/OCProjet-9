@@ -63,8 +63,10 @@ public class DetailsActivity extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             case R.id.modify:
-                Intent modifyIntent = new Intent(this, ModifyActivity.class);
-                startActivity(modifyIntent);
+                if (String.valueOf(service.getHouse().getAgentId()).equals(service.getUser().getUserId())) {
+                    Intent modifyIntent = new Intent(this, ModifyActivity.class);
+                    startActivity(modifyIntent);
+                }
                 return true;
             case R.id.search:
                 return true;

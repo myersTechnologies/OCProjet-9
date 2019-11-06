@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 
 import java.util.List;
@@ -31,7 +33,14 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ViewHolder viewHolder = holder;
-        Glide.with(viewHolder.itemView.getContext()).load(myHouses.get(position).getImages().get(0).getPhotoUrl()).into(viewHolder.houseImg);
+        House house = myHouses.get(position);
+        List<Photo> photos = DI.getService().getPhotos();
+        for (int i = 0; i < photos.size(); i++){
+            if (photos.get(i).getHouseId().equals(String.valueOf(house.getId()))){
+                Glide.with(viewHolder.itemView.getContext()).load(photos.get(i).getPhotoUrl()).into(viewHolder.houseImg);
+                break;
+            }
+        }
         viewHolder.descriptionText.setText(myHouses.get(position).getName());
     }
 

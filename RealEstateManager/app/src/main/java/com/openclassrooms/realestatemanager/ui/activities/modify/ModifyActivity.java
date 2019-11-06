@@ -30,6 +30,7 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class ModifyActivity extends AppCompatActivity {
     private RealEstateManagerAPIService service;
     private House house;
     private List<String> textEmpty;
+    private List<Photo> houseImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,14 @@ public class ModifyActivity extends AppCompatActivity {
         modifyHouseList = findViewById(R.id.modify_list);
         layoutManager = new LinearLayoutManager(this);
         modifyHouseList.setLayoutManager(layoutManager);
-        adapter = new ModifyAdapter(service.getHouse());
+        List<Photo> photos = service.getPhotos();
+        houseImages = new ArrayList<>();
+        for (int i = 0; i < photos.size(); i++){
+            if (photos.get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))){
+                houseImages.add(photos.get(i));
+            }
+        }
+        adapter = new ModifyAdapter(service.getHouse(), houseImages);
         modifyHouseList.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(modifyHouseList.getContext(),
                 layoutManager.getOrientation());
@@ -80,10 +89,11 @@ public class ModifyActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 onBackPressed();
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
                 return true;
 
             case R.id.confirm_add:
-                if (checkAllData(AddNewHouseAdapter.getData())) {
+                if (checkAllData(ModifyAdapter.getData())) {
                     getViewsAndAddHouse();
                     Intent intent = new Intent(this, DetailsActivity.class);
                     startActivity(intent);
@@ -97,8 +107,8 @@ public class ModifyActivity extends AppCompatActivity {
     private boolean checkAllData(List<EditText> data){
         int dataSize = 0;
         textEmpty = new ArrayList<>();
-        List<Photo> checkPhotos = ModifyAdapter.gethouse().getImages();
-        checkPhotos.remove(ModifyAdapter.gethouse().getImages().size() - 1);
+        List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
+        checkPhotos.remove(PhotoListAdapter.getAddPhoto());
         if (AddNewHouseAdapter.getHouse().getName() != "Select..."){
             dataSize++;
         } else {
@@ -123,6 +133,7 @@ public class ModifyActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
+            ModifyAdapter.getPhotos().add(PhotoListAdapter.getAddPhoto());
             return false;
         }
     }
@@ -134,6 +145,11 @@ public class ModifyActivity extends AppCompatActivity {
     private void getViewsAndAddHouse() {
 
         house = ModifyAdapter.gethouse();
+        for (int i = 0; i < ModifyAdapter.getPhotos().size(); i++){
+            if (!service.getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
+                service.addPhotos(ModifyAdapter.getPhotos().get(i));
+            }
+        }
         service.setHouse(house);
         sendNotification();
 
@@ -184,9 +200,9 @@ public class ModifyActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
-                    Photo photo = new Photo(AddNewHouseAdapter.getHouse().getImages().size() + 1, imageUri, descriptionText.getText().toString(),
-                            String.valueOf(AddNewHouseAdapter.getHouse().getId()));
-                    AddNewHouseAdapter.getHouse().addImage(photo);
+                    Photo photo = new Photo(service.getPhotos().size() + 1, imageUri, descriptionText.getText().toString(),
+                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+                    ModifyAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -242,6 +258,7 @@ public class ModifyActivity extends AppCompatActivity {
 
         NotificationManager notif = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notif.notify(0, builder.build());
+        PhotoListAdapter.getAllPhotos().clear();
     }
 
 }

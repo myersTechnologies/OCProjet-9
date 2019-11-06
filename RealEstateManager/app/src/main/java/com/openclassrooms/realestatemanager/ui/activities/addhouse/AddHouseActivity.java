@@ -24,6 +24,7 @@ import android.widget.EditText;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -79,6 +80,7 @@ public class AddHouseActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 onBackPressed();
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
                 return true;
             case R.id.confirm_add:
                 if (checkAllData(AddNewHouseAdapter.getData())) {
@@ -94,8 +96,8 @@ public class AddHouseActivity extends AppCompatActivity {
     }
     private boolean checkAllData(List<EditText> data){
         textEmpty = new ArrayList<>();
-        List<Photo> checkPhotos = AddNewHouseAdapter.getHouse().getImages();
-        checkPhotos.remove( AddNewHouseAdapter.getHouse().getImages().size() - 1);
+        List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
+        checkPhotos.remove( PhotoListAdapter.getAddPhoto());
         int dataSize = 0;
         if (AddNewHouseAdapter.getHouse().getName() != "Select..."){
             dataSize++;
@@ -128,7 +130,7 @@ public class AddHouseActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
-            AddNewHouseAdapter.getHouse().addImage(PhotoListAdapter.getAddPhoto());
+            AddNewHouseAdapter.getPhotos().add(PhotoListAdapter.getAddPhoto());
             return false;
         }
     }
@@ -162,8 +164,14 @@ public class AddHouseActivity extends AppCompatActivity {
         if (service.getUser() != null){
             house.setAgentId(service.getUser().getUserId());
         }
-        house.setId(service.getHousesList().size() + 1);
+        AdressHouse adress = AddNewHouseAdapter.getAdressHouse();
+        adress.setId(String.valueOf(house.getId()));
+        adress.setHouseId(String.valueOf(house.getId()));
+        for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
+            service.addPhotos(PhotoListAdapter.getAllPhotos().get(i));
+        }
         service.addHouseToList(house);
+        service.addAdresses(adress);
         service.setHouse(house);
         sendNotification(house);
 
@@ -194,9 +202,15 @@ public class AddHouseActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
-                    Photo photo = new Photo(AddNewHouseAdapter.getHouse().getImages().size() + 1, imageUri, descriptionText.getText().toString(),
-                           String.valueOf(AddNewHouseAdapter.getHouse().getId()));
-                    AddNewHouseAdapter.getHouse().addImage(photo);
+                    Photo photo;
+                    if (service.getPhotos() != null) {
+                        photo = new Photo(service.getPhotos().size() + 1, imageUri, descriptionText.getText().toString(),
+                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+                    } else {
+                        photo = new Photo(1, imageUri, descriptionText.getText().toString(),
+                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+                    }
+                    AddNewHouseAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -245,6 +259,7 @@ public class AddHouseActivity extends AppCompatActivity {
 
         NotificationManager notif = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notif.notify(0, builder.build());
+        PhotoListAdapter.getAllPhotos().clear();
     }
 
 }

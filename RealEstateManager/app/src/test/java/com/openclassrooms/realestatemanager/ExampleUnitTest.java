@@ -46,4 +46,18 @@ public class ExampleUnitTest {
         int valeur = (int) Math.abs(Integer.parseInt(valeurBrute) * 0.90);
         assertTrue(valeur == 108000);
     }
+
+    @Test
+    public void convertSquareToMeters(){
+        int square = 11;
+        int valeur = (int)  Math.abs(square * 0.092);
+        assertEquals(1, valeur);
+    }
+
+    @Test
+    public void convertMetersToSquare(){
+        int meters = 2;
+        int valeur = (int)Math.abs(meters * 10.76);
+        assertEquals(21, valeur);
+    }
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +32,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
@@ -38,6 +40,7 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
+import com.openclassrooms.realestatemanager.ui.fragments.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.ui.activities.main.MainActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -55,6 +58,8 @@ public class SecondActivity extends AppCompatActivity
     private RealEstateManagerAPIService service;
     private List<House> myHouses;
     private List<User> users;
+    private FirebaseHelper firebaseHelper;
+    private Preferences preferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,10 @@ public class SecondActivity extends AppCompatActivity
         setContentView(R.layout.activity_second);
 
         service = DI.getService();
+        firebaseHelper = DI.getFirebaseDatabase();
+        if (firebaseHelper.getPreferences() == null) {
+            firebaseHelper.getPreferencesFromFirebase();
+        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -80,21 +89,17 @@ public class SecondActivity extends AppCompatActivity
 
         changeFragment(new ListFragment(), "ListFragment");
 
+        userEmail.setText(service.getUser().getEmail());
+
         if (service.getPreferences() == null) {
             if (service.getUser() != null) {
                 userName.setText(service.getUser().getName());
-                userEmail.setText(service.getUser().getEmail());
                 if (service.getUser().getPhotoUri().contains("google")) {
                     Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
                 } else {
                     Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
                             .apply(RequestOptions.circleCropTransform()).into(userPhoto);
                 }
-            }
-            if (service.getPreferences() == null) {
-                Preferences preferences = new Preferences(service.getUser().getUserId(), service.getUser().getUserId(),
-                        "€", service.getUser().getName(), null, null);
-                service.setPreferences(preferences);
             }
             Glide.with(this).load(R.drawable.main_image).into(imageHeader);
         } else {
@@ -102,7 +107,7 @@ public class SecondActivity extends AppCompatActivity
             userEmail.setText(service.getUser().getEmail());
 
             if (service.getPreferences().getUserPhoto() != null) {
-                Glide.with(this).load(service.getPreferences().getUserPhoto()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
+                Glide.with(this).load(Uri.parse(service.getPreferences().getUserPhoto())).apply(RequestOptions.circleCropTransform()).into(userPhoto);
             } else {
                 if (service.getUser().getPhotoUri().contains("google")) {
                     Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
@@ -111,9 +116,8 @@ public class SecondActivity extends AppCompatActivity
                             .apply(RequestOptions.circleCropTransform()).into(userPhoto);
                 }
             }
-
             if (service.getPreferences().getMenuImage() != null) {
-                Glide.with(this).load(service.getPreferences().getMenuImage()).into(imageHeader);
+                Glide.with(this).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
@@ -121,7 +125,8 @@ public class SecondActivity extends AppCompatActivity
         }
 
         service.setMyHousesList(getMyHouses());
-        service.setUsers(getUsersList());
+
+
 
     }
 
@@ -171,6 +176,7 @@ public class SecondActivity extends AppCompatActivity
             case R.id.modify:
                 return true;
             case R.id.search:
+                changeFragment(new SearchFragment(), "Search");
                 return true;
         }
 
@@ -184,6 +190,9 @@ public class SecondActivity extends AppCompatActivity
         int id = item.getItemId();
 
         switch (id){
+            case R.id.nav_home:
+                changeFragment(new ListFragment(), "ListFragment");
+                break;
             case R.id.nav_camera:
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                     Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -223,6 +232,7 @@ public class SecondActivity extends AppCompatActivity
                 }
                 FirebaseAuth.getInstance().signOut();
                 service.setUser(null);
+                service.setPreferences(null);
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 break;

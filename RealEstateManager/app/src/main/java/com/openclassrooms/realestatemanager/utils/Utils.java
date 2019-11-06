@@ -58,4 +58,12 @@ public class Utils {
             connected = false;
         return connected;
     }
+
+    public static int convertSquaresToMeters(int square){
+        return (int) Math.abs(square * 0.092);
+    }
+
+    public static int convertMetersToSquare(int meter){
+        return (int) Math.abs(meter * 10.76);
+    }
 }

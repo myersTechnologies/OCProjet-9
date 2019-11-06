@@ -16,12 +16,14 @@ import android.widget.Spinner;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,14 +41,22 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
     private static List<EditText> data;
+    private  static AdressHouse adressHouse;
+    private static PhotoListAdapter adapter;
+    private static List<Photo> photos = new ArrayList<>();
 
 
     private static House house;
 
     public AddNewHouseAdapter(){
-        this.house = new House(0,new ArrayList<Photo>(), null, null,null,null,null,
-                null, "0", null,0, 0, 0, 0, false,
-                Utils.getTodayDate(), service.getPreferences().getMonetarySystem());
+        if (service.getHousesList().size() > 0) {
+            this.house = new House(service.getHousesList().size() + 1, "", "0", "0", 0, 0,
+                    0, 0, false, Utils.getTodayDate(), service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
+        } else {
+            this.house = new House(1, "", "0", "0", 0, 0,
+                    0, 0, false, Utils.getTodayDate(), service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
+        }
+        adressHouse = new AdressHouse("", "", "", "", "", "", "");
         data = new ArrayList<>();
 
     }
@@ -131,8 +141,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageViewViewHolder imageViewViewHolder = (ImageViewViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
-            PhotoListAdapter adapter;
-            adapter = new PhotoListAdapter(house.getImages());
+            adapter = new PhotoListAdapter(photos);
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
@@ -242,13 +251,20 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setPrice(editable.toString());
+                    DecimalFormat formatter = new DecimalFormat("###,###,###");
+                    if (editable.toString().contains(",")) {
+                        house.setPrice(formatter.format(Integer.parseInt(editable.toString().replaceAll(",", ""))).replaceAll("\\s", ","));
+                    } else {
+                        house.setPrice(formatter.format(Integer.parseInt(editable.toString())).replaceAll("\\s", ","));
+                    }
                 }
+
             }
         });
 
@@ -264,7 +280,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setAdress(editable.toString());
+                adressHouse.setAdress(editable.toString());
             }
         });
         locationViewHolder.city.addTextChangedListener(new TextWatcher() {
@@ -276,7 +292,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setCity(editable.toString());
+                adressHouse.setCity(editable.toString());
             }
         });
         locationViewHolder.zipCode.addTextChangedListener(new TextWatcher() {
@@ -289,7 +305,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setZipCode(editable.toString());
+                    adressHouse.setZipCode(editable.toString());
                 }
             }
         });
@@ -304,7 +320,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setState(editable.toString());
+                adressHouse.setState(editable.toString());
             }
         });
         locationViewHolder.country.addTextChangedListener(new TextWatcher() {
@@ -316,7 +332,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setCountry(editable.toString());
+                adressHouse.setCountry(editable.toString());
             }
         });
     }
@@ -454,5 +470,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public static House getHouse(){
         return house;
+    }
+
+    public static AdressHouse getAdressHouse(){return adressHouse;}
+
+    public static List<Photo> getPhotos(){
+        return photos;
     }
 }

@@ -8,6 +8,9 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.openclassrooms.realestatemanager.DI.DI;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
@@ -28,6 +31,9 @@ public class APIService implements RealEstateManagerAPIService {
     private Photo photo;
     private List<House> myHouses;
     private List<User> users;
+    private List<AdressHouse> adresses;
+    private List<Photo> photos;
+    private FirebaseHelper helper = DI.getFirebaseDatabase();
 
     @Override
     public void setHouse(House house) {
@@ -70,30 +76,6 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public Activity getActivity() {
         return activity;
-    }
-
-    @Override
-    public String getRealPathFromUri(Uri uri) {
-            Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
-            cursor.moveToFirst();
-            int id_uri = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            return cursor.getString(id_uri);
-    }
-
-    public Bitmap decodeSampledBitmapFromResource(Resources res, File imageFile,
-                                                         int reqWidth, int reqHeight) {
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
     }
 
     @Override
@@ -146,27 +128,31 @@ public class APIService implements RealEstateManagerAPIService {
         this.users = users;
     }
 
-    public int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
+    @Override
+    public List<AdressHouse> getAdressesList() {
+        return adresses;
+    }
 
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
+    @Override
+    public void addAdresses(AdressHouse adresses) {
+        if (this.adresses == null){
+            this.adresses = new ArrayList<>();
         }
+        this.adresses.add(adresses);
+    }
 
-        return inSampleSize;
+    @Override
+    public void addPhotos(Photo photo) {
+        if (photos == null){
+            photos = new ArrayList<>();
+        }
+        photos.add(photo);
+        //Firebase here
+    }
+
+    @Override
+    public List<Photo> getPhotos() {
+        return photos;
     }
 
 }

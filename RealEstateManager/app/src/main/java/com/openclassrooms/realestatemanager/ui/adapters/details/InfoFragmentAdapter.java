@@ -16,17 +16,21 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 
 public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private House house;
-    private RealEstateManagerAPIService service = DI.getService();
+    private RealEstateManagerAPIService service;
 
     public InfoFragmentAdapter(House house) {
         this.house = house;
+        service = DI.getService();
     }
 
     @Override
@@ -44,10 +48,6 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder = new SecondViewHolder(view);
         }
 
-        if (viewType == 2){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.map_layout, parent,false);
-            viewHolder = new MapViewHolder(view);
-        }
 
         return viewHolder;
     }
@@ -56,12 +56,28 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
         if (holderView.getItemViewType() == 0) {
             ViewHolder holder = (ViewHolder) holderView;
-            holder.surfaceText.setText(String.valueOf(house.getSurface()) + " " + "sq m");
+            if (service.getPreferences().getMeasureUnity() == "sq" && house.getMeasureUnity() == "sq"){
+            holder.surfaceText.setText(house.getSurface() + " " + "sq");
+            }
+            if(service.getPreferences().getMeasureUnity() == "m" && house.getMeasureUnity() == "m"){
+                holder.surfaceText.setText(house.getSurface() + " " + "m");
+            }
+            if (service.getPreferences().getMeasureUnity() == "sq" && house.getMeasureUnity() == "m"){
+                holder.surfaceText.setText(Utils.convertMetersToSquare(house.getSurface()) + " " + "sq");
+            }
+            if (service.getPreferences().getMeasureUnity() == "m" && house.getMeasureUnity() == "sq"){
+                holder.surfaceText.setText(Utils.convertSquaresToMeters(house.getSurface()) + " " + "m");
+            }
             holder.roomsText.setText(String.valueOf(house.getRoomsNumber()));
             holder.bathroomsText.setText(String.valueOf(house.getBathroomsNumber()));
             holder.bedroomsText.setText(String.valueOf(house.getBedroomsNumber()));
-            holder.locationText.setText(house.getAdress() + "\n" + house.getCity() + "\n" + house.getState() +
-                    "\n" + house.getZipCode() + "\n" + house.getCountry());
+            for (int i = 0; i < service.getAdressesList().size(); i++){
+                if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
+                    AdressHouse findedHouse = service.getAdressesList().get(i);
+                    holder.locationText.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
+                            "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
+                }
+            }
             holder.descriptionText.setText(house.getDescription());
         }
 
@@ -85,9 +101,6 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
 
-        if (holderView.getItemViewType() == 2) {
-
-        }
     }
 
     @Override
@@ -100,16 +113,13 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             case 1:
                 i = 1;
                 return 1;
-            case 2 :
-                i = 2;
-                return 2;
         }
         return i;
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 2;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder  {
@@ -150,12 +160,4 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    static class MapViewHolder extends RecyclerView.ViewHolder {
-
-        public MapViewHolder(View itemView) {
-            super(itemView);
-
-        }
-
-    }
 }

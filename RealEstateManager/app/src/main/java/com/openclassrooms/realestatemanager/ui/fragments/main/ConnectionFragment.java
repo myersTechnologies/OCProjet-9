@@ -39,14 +39,21 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
+
+import java.util.List;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -62,6 +69,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private Intent secondActivity;
     private RealEstateManagerAPIService service;
     private SignInButton googleSignIn;
+    private FirebaseHelper onlineDB = DI.getFirebaseDatabase();
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -233,12 +241,21 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     //add new user to firebase real time data base
-    public void addNewUser(final String userId, String name, String email, String photoUri){
+    public void addNewUser(String userId, String name, String email, String photoUri){
         User user = new User(userId, name, email, photoUri);
         service.setUser(user);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseRef = firebaseDatabase.getReference("users");
+        DatabaseReference databaseRef = firebaseDatabase.getReference("users");
+
+        if (onlineDB.getPreferencesFromFirebase() == null){
+            Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
+            Preferences preferences = new Preferences(service.getUser().getUserId(), service.getUser().getUserId(),
+                    "$", service.getUser().getName(), null, null, "sq");
+            service.setPreferences(preferences);
+            onlineDB.addPreferrencesToFirebase(preferences);
+        }
+
         databaseRef.child(userId).setValue(user);
 
 

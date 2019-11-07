@@ -38,7 +38,7 @@ public class APIService implements RealEstateManagerAPIService {
     private List<Photo> photos;
     private List<HouseDetails> houseDetails;
     private SaveToDatabase database;
-    private FirebaseHelper helper = DI.getFirebaseDatabase();
+    private FirebaseHelper helper;
 
     @Override
     public void setHouse(House house) {
@@ -65,7 +65,11 @@ public class APIService implements RealEstateManagerAPIService {
         }
         database = SaveToDatabase.getInstance(context);
         database.houseDao().insertHouse(house);
-        housesList.add(house);
+        helper = DI.getFirebaseDatabase();
+        helper.addHouseToFirebase(house);
+        if (!housesList.contains(house)) {
+            housesList.add(house);
+        }
     }
 
     @Override
@@ -147,6 +151,8 @@ public class APIService implements RealEstateManagerAPIService {
         }
         database = SaveToDatabase.getInstance(context);
         database.adressDao().insertAdress(adresses);
+        helper = DI.getFirebaseDatabase();
+        helper.addAdressToFrirebase(adresses);
         this.adresses.add(adresses);
     }
 
@@ -178,6 +184,8 @@ public class APIService implements RealEstateManagerAPIService {
         }
         database = SaveToDatabase.getInstance(context);
         database.houseDetailsDao().insertDetails(houseDetails);
+        helper = DI.getFirebaseDatabase();
+        helper.addDetailsToFireBase(houseDetails);
         this.houseDetails.add(houseDetails);
     }
 

@@ -56,6 +56,10 @@
             </intent-filter>
         </activity>
 
+        <provider
+            android:authorities="com.openclassrooms.realestatemanager.db.provider"
+            android:name=".db.provider.user.UserContentProvider"
+            android:exported="true"/>
 
     </application>
 

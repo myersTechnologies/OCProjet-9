@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 @Entity
@@ -59,5 +60,14 @@ public class User {
 
     public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
+    }
+
+    public static User fromContentValues(ContentValues values){
+        final User user = new User(null, null, null, null);
+        if (values.containsKey("user_id")) user.setUserId(values.getAsString("user_id"));
+        if (values.containsKey("user_name")) user.setName(values.getAsString("user_name"));
+        if (values.containsKey("user_email")) user.setEmail(values.getAsString("user_email"));
+        if (values.containsKey("user_photo")) user.setPhotoUri(values.getAsString("user_photo"));
+        return user;
     }
 }

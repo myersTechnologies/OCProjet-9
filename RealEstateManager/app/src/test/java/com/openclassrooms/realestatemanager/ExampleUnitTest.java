@@ -1,9 +1,14 @@
 package com.openclassrooms.realestatemanager;
 
+import android.app.Instrumentation;
+import android.arch.persistence.room.Room;
+import android.content.ContentResolver;
 import android.util.Log;
 
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -23,6 +28,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(JUnit4.class)
 public class ExampleUnitTest {
+
     @Test
     public void getDateUtilsClass(){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -60,4 +66,6 @@ public class ExampleUnitTest {
         int valeur = (int)Math.abs(meters * 10.76);
         assertEquals(21, valeur);
     }
+
+
 }

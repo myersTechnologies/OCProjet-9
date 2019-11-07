@@ -273,6 +273,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         service.setPhotos(getActivity());
         service.setAdresses(getActivity());
 
+        FirebaseHelper helper = DI.getFirebaseDatabase();
+        helper.getHouseFromFirebase();
+
         databaseRef.child(userId).setValue(user);
 
 

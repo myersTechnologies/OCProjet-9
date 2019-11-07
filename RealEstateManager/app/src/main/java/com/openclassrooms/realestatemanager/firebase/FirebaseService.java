@@ -12,6 +12,7 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -30,7 +31,8 @@ public class FirebaseService implements FirebaseHelper {
     private static String USERNAME = "userName";
     private static String USER_EMAIL = "userEmail";
     private List<AdressHouse> adressHouses;
-    private List<HouseDetails> details;
+    private List<HouseDetails> detailsList;
+    private List<Photo> photos;
 
     @Override
     public void setUsersList(List<User> users) {
@@ -81,9 +83,7 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public List<House> getHouseFromFirebase() {
 
-        if (houses == null){
-            houses = new ArrayList<>();
-        }
+        houses = new ArrayList<>();
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("house");
@@ -91,6 +91,16 @@ public class FirebaseService implements FirebaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String id = postSnapshot.child("id").getValue().toString();
+                    String name = postSnapshot.child("name").getValue().toString();
+                    String agentId = postSnapshot.child("agentId").getValue().toString();
+                    String available = postSnapshot.child("available").getValue().toString();
+                    String monetarySystem = postSnapshot.child("monetarySystem").getValue().toString();
+                    String price = postSnapshot.child("price").getValue().toString();
+                    String measureUnity = postSnapshot.child("measureUnity").getValue().toString();
+                    House house = new House(id,name, price, Boolean.parseBoolean(available), monetarySystem, measureUnity);
+                    house.setAgentId(agentId);
+                    houses.add(house);
 
                 }
             }
@@ -116,6 +126,9 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addHouseToFirebase(House house) {
+        if (this.houses == null){
+            this.houses = new ArrayList<>();
+        }
         houses.add(house);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("house");
@@ -124,6 +137,9 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addAdressToFrirebase(AdressHouse adressHouse) {
+        if (adressHouses == null){
+            adressHouses = new ArrayList<>();
+        }
         adressHouses.add(adressHouse);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("adresses");
@@ -148,7 +164,15 @@ public class FirebaseService implements FirebaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-
+                    String id = postSnapshot.child("id").getValue().toString();
+                    String adress = postSnapshot.child("adress").getValue().toString();
+                    String city = postSnapshot.child("city").getValue().toString();
+                    String houseId = postSnapshot.child("houseId").getValue().toString();
+                    String state = postSnapshot.child("state").getValue().toString();
+                    String country = postSnapshot.child("country").getValue().toString();
+                    String zipCode = postSnapshot.child("zipCode").getValue().toString();
+                    AdressHouse adressHouse = new AdressHouse(id, houseId, adress, city, state, country, zipCode);
+                    adressHouses.add(adressHouse);
                 }
             }
 
@@ -165,10 +189,10 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addDetailsToFireBase(HouseDetails details) {
-        if (this.details == null){
-            this.details = new ArrayList<>();
+        if (this.detailsList == null){
+            this.detailsList = new ArrayList<>();
         }
-        this.details.add(details);
+        this.detailsList.add(details);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("details");
         databaseRef.child(String.valueOf(details.getId())).setValue(details);
@@ -176,8 +200,8 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void getDetailsFromFireBase() {
-        if (details == null){
-            details = new ArrayList<>();
+        if (detailsList == null){
+            detailsList = new ArrayList<>();
         }
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("details");
@@ -185,7 +209,27 @@ public class FirebaseService implements FirebaseHelper {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-
+                    String id = postSnapshot.child("id").getValue().toString();
+                    String houseId = postSnapshot.child("houseId").getValue().toString();
+                    String surface = postSnapshot.child("surface").getValue().toString();
+                    String roomsNumber = postSnapshot.child("roomsNumber").getValue().toString();
+                    String bathroomsNumber = postSnapshot.child("bathroomsNumber").getValue().toString();
+                    String bedroomsNumber = postSnapshot.child("bedroomsNumber").getValue().toString();
+                    String onLineDate = postSnapshot.child("onLineDate").getValue().toString();
+                    String description = postSnapshot.child("description").getValue().toString();
+                    HouseDetails details = new HouseDetails(id, houseId);
+                    details.setOnLineDate(onLineDate);
+                    details.setDescription(description);
+                    details.setSurface(surface);
+                    details.setRoomsNumber(roomsNumber);
+                    details.setBathroomsNumber(bathroomsNumber);
+                    details.setBedroomsNumber(bedroomsNumber);
+                    String soldDate = null;
+                    if(postSnapshot.child("soldDate").exists()){
+                        soldDate= postSnapshot.child("soldDate").getValue().toString();
+                        details.setSoldDate(soldDate);
+                    }
+                    detailsList.add(details);
                 }
             }
 
@@ -199,7 +243,7 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public List<HouseDetails> getDetails() {
-        return details;
+        return detailsList;
     }
 
 

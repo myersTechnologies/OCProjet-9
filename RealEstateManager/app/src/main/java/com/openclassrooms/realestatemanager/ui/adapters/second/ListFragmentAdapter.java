@@ -57,11 +57,8 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         house = houses.get(position);
         holder.houseName.setText(house.getName());
-        SaveToDatabase database = SaveToDatabase.getInstance(holder.itemView.getContext());
-        if (database.adressDao().getAdresses() != null)
-        for (int j = 0; j < database.adressDao().getAdresses().size(); j++){
-            service.addAdresses(database.adressDao().getAdresses().get(j), holder.itemView.getContext());
-        }
+        if (service.getAdressesList() != null)
+
         for (int i = 0; i < service.getAdressesList().size(); i++){
             if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
                 holder.houseAdress.setText(service.getAdressesList().get(i).getCity());

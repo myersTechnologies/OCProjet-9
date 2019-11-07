@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -66,6 +67,9 @@ public class SecondActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        List<House> houses = firebaseHelper.getHouseFromFirebase();
+        Toast.makeText(this, String.valueOf(houses.size()), Toast.LENGTH_SHORT).show();
 
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

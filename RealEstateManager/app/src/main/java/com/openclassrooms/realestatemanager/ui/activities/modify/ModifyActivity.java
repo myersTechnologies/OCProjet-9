@@ -21,10 +21,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
@@ -44,6 +48,7 @@ public class ModifyActivity extends AppCompatActivity {
     private House house;
     private List<String> textEmpty;
     private List<Photo> houseImages;
+    HouseDetails details;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +70,13 @@ public class ModifyActivity extends AppCompatActivity {
                 houseImages.add(photos.get(i));
             }
         }
-        adapter = new ModifyAdapter(service.getHouse(), houseImages);
+        List<HouseDetails> houseDetailsList = service.getHousesDetails();
+        for (HouseDetails houseDetails : houseDetailsList){
+            if (houseDetails.getId().equals(service.getHouse().getId())){
+                details = houseDetails;
+            }
+        }
+        adapter = new ModifyAdapter(service.getHouse(), houseImages, details);
         modifyHouseList.setAdapter(adapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(modifyHouseList.getContext(),
                 layoutManager.getOrientation());
@@ -109,7 +120,7 @@ public class ModifyActivity extends AppCompatActivity {
         textEmpty = new ArrayList<>();
         List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
         checkPhotos.remove(PhotoListAdapter.getAddPhoto());
-        if (AddNewHouseAdapter.getHouse().getName() != "Select..."){
+        if (ModifyAdapter.gethouse().getName() != "Select..."){
             dataSize++;
         } else {
             textEmpty.add("Name");
@@ -145,11 +156,14 @@ public class ModifyActivity extends AppCompatActivity {
     private void getViewsAndAddHouse() {
 
         house = ModifyAdapter.gethouse();
+        service.addHouseToList(house, this);
         for (int i = 0; i < ModifyAdapter.getPhotos().size(); i++){
             if (!service.getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
-                service.addPhotos(ModifyAdapter.getPhotos().get(i));
+                service.addPhotos(ModifyAdapter.getPhotos().get(i), this);
             }
         }
+        service.addHousesDetails(ModifyAdapter.getDetails(), this);
+        service.addAdresses(ModifyAdapter.getAdressHouse(), this);
         service.setHouse(house);
         sendNotification();
 
@@ -200,8 +214,8 @@ public class ModifyActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
-                    Photo photo = new Photo(service.getPhotos().size() + 1, imageUri, descriptionText.getText().toString(),
-                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+                    Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                                String.valueOf(ModifyAdapter.gethouse().getId()));
                     ModifyAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
@@ -250,7 +264,7 @@ public class ModifyActivity extends AppCompatActivity {
             message = "You modified " + house.getName() + " with success";
         }
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.notif_icon)
                 .setAutoCancel(true)
                 .setContentTitle(title);
         builder.setStyle(new Notification.BigTextStyle()

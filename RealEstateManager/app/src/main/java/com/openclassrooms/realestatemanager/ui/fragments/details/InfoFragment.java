@@ -13,9 +13,13 @@ import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +32,8 @@ public class InfoFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private InfoFragmentAdapter adapter;
     private FirebaseHelper helper = DI.getFirebaseDatabase();
+    private HouseDetails details;
+    List<HouseDetails> houseDetailsList;
 
     public static InfoFragment newInstance(){
         infoFragment = new InfoFragment();
@@ -48,19 +54,23 @@ public class InfoFragment extends Fragment {
         service.setUsers(helper.getUsersFromFireBase());
         infoList = view.findViewById(R.id.info_list);
         layoutManager = new LinearLayoutManager(getContext());
-        adapter = new InfoFragmentAdapter(service.getHouse());
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                infoList.setLayoutManager(layoutManager);
-                infoList.setAdapter(adapter);
+        houseDetailsList = service.getHousesDetails();
+        for (HouseDetails houseDetails : houseDetailsList){
+            if (houseDetails.getId().equals(service.getHouse().getId())){
+                details = houseDetails;
             }
-        }, 1000);
+        }
+
+        adapter = new InfoFragmentAdapter(service.getHouse(), details);
+        infoList.setLayoutManager(layoutManager);
+        infoList.setAdapter(adapter);
+
+
 
 
         return view;
     }
+
 
 }

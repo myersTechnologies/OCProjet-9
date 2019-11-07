@@ -36,10 +36,11 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
     private Context context;
     private RealEstateManagerAPIService service;
 
-    public PhotoListAdapter(List<Photo> photos ) {
+    public PhotoListAdapter(List<Photo> photos, String houseId ) {
         service = DI.getService();
         Uri photoUri = Uri.parse(service.getActivity().getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
-        addPhoto = new Photo(75214 ,photoUri, "Add new photo", String.valueOf(AddNewHouseAdapter.getHouse().getId() + 1));
+        addPhoto = new Photo(photoUri.toString(), "Add new photo", houseId);
+        addPhoto.setId(5525555);
         if (photos.size() > 0) {
             if (!photos.get(photos.size() -1).getPhotoUrl().equals(addPhoto.getPhotoUrl())) {
                 photos.add(addPhoto);
@@ -91,7 +92,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
                 }
                 if (service.activityName().equals("Modify")) {
                     Photo photo = photos.get(position);
-                    service.getPhotos().remove(photos.get(i));
+                    service.removePhoto(photos.get(i), holder.itemView.getContext());
                     ModifyAdapter.getPhotos().remove(photo);
                     notifyDataSetChanged();
                 }
@@ -116,6 +117,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
                     Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     service.getActivity().startActivityForResult(intent, 100);
                 } else {
+                    photos.remove(addPhoto);
                     ActivityCompat.requestPermissions(service.getActivity(), new String[]{Manifest.permission.CAMERA}, 105);
                 }
             }
@@ -131,6 +133,7 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
                     intent.setAction(Intent.ACTION_GET_CONTENT);
                     service.getActivity().startActivityForResult(intent, 90);
                 } else {
+                    photos.remove(addPhoto);
                     ActivityCompat.requestPermissions(service.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 95);
                 }
             }

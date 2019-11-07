@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.service;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.net.Uri;
 
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
@@ -20,7 +22,7 @@ public interface RealEstateManagerAPIService {
     void setHouse(House house);
     House getHouse();
     List<House> getHousesList();
-    void addHouseToList(House house);
+    void addHouseToList(House house, Context context);
     void setActivity(Activity activity, String name);
     String activityName();
     Activity getActivity();
@@ -35,8 +37,15 @@ public interface RealEstateManagerAPIService {
     List<User> getUsers();
     void setUsers(List<User> users);
     List<AdressHouse> getAdressesList();
-    void addAdresses (AdressHouse adresses);
-    void addPhotos(Photo photo);
+    void addAdresses (AdressHouse adresses, Context context);
+    void addPhotos(Photo photo, Context context);
     List<Photo> getPhotos();
+    List<HouseDetails> getHousesDetails();
+    void addHousesDetails(HouseDetails houseDetails, Context context);
+    void setHousesDetails(Context context);
+    void setPhotos(Context context);
+    void setAdresses(Context context);
+    void setHousesList(Context context);
+    void removePhoto(Photo photo, Context context);
 
 }

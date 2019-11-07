@@ -19,6 +19,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -27,10 +28,12 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private House house;
     private RealEstateManagerAPIService service;
+    private HouseDetails details;
 
-    public InfoFragmentAdapter(House house) {
+    public InfoFragmentAdapter(House house, HouseDetails details) {
         this.house = house;
         service = DI.getService();
+        this.details = details;
     }
 
     @Override
@@ -56,21 +59,20 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
         if (holderView.getItemViewType() == 0) {
             ViewHolder holder = (ViewHolder) holderView;
-            if (service.getPreferences().getMeasureUnity() == "sq" && house.getMeasureUnity() == "sq"){
-            holder.surfaceText.setText(house.getSurface() + " " + "sq");
-            }
-            if(service.getPreferences().getMeasureUnity() == "m" && house.getMeasureUnity() == "m"){
-                holder.surfaceText.setText(house.getSurface() + " " + "m");
-            }
-            if (service.getPreferences().getMeasureUnity() == "sq" && house.getMeasureUnity() == "m"){
-                holder.surfaceText.setText(Utils.convertMetersToSquare(house.getSurface()) + " " + "sq");
-            }
-            if (service.getPreferences().getMeasureUnity() == "m" && house.getMeasureUnity() == "sq"){
-                holder.surfaceText.setText(Utils.convertSquaresToMeters(house.getSurface()) + " " + "m");
-            }
-            holder.roomsText.setText(String.valueOf(house.getRoomsNumber()));
-            holder.bathroomsText.setText(String.valueOf(house.getBathroomsNumber()));
-            holder.bedroomsText.setText(String.valueOf(house.getBedroomsNumber()));
+            if (details != null) {
+                if (service.getPreferences().getMeasureUnity().equals(house.getMeasureUnity())) {
+                    holder.surfaceText.setText(details.getSurface() + " " + house.getMeasureUnity());
+                }
+                if (service.getPreferences().getMeasureUnity().equals("sq") && house.getMeasureUnity().equals("m")) {
+                    holder.surfaceText.setText(Utils.convertMetersToSquare(Integer.parseInt(details.getSurface())) + " " + "sq");
+                }
+                if (service.getPreferences().getMeasureUnity().equals("m") && house.getMeasureUnity().equals("sq")) {
+                    holder.surfaceText.setText(Utils.convertSquaresToMeters(Integer.parseInt(details.getSurface())) + " " + "m");
+                }
+
+            holder.roomsText.setText(String.valueOf(details.getRoomsNumber()));
+            holder.bathroomsText.setText(String.valueOf(details.getBathroomsNumber()));
+            holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
             for (int i = 0; i < service.getAdressesList().size(); i++){
                 if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
                     AdressHouse findedHouse = service.getAdressesList().get(i);
@@ -78,7 +80,8 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
                 }
             }
-            holder.descriptionText.setText(house.getDescription());
+            holder.descriptionText.setText(details.getDescription());
+        }
         }
 
         if (holderView.getItemViewType() == 1) {

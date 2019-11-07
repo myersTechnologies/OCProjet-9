@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -43,16 +45,18 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
 
-    private AdressHouse adressHouse;
+    private static AdressHouse adressHouse;
 
     private static List<EditText> data;
 
     private static List<Photo> photos;
+    private static HouseDetails details;
 
-    public ModifyAdapter(House house, List<Photo> photos){
+    public ModifyAdapter(House house, List<Photo> photos, HouseDetails details){
         this.house = house;
         data = new ArrayList<>();
         this.photos = photos;
+        this.details = details;
     }
 
     @Override
@@ -142,7 +146,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
              imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
              PhotoListAdapter adapter;
-             adapter = new PhotoListAdapter(photos);
+             adapter = new PhotoListAdapter(photos, house.getId());
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
@@ -176,8 +180,8 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if (statusViewHolder.sold.isChecked()){
                         statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
                         statusViewHolder.sold.setChecked(false);
-                        if (house.getSoldDate() != null){
-                            house.setSoldDate(null);
+                        if (details.getSoldDate() != null){
+                            details.setSoldDate(null);
                         }
                     } else {
                         statusViewHolder.sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
@@ -187,7 +191,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
                         }
                         house.setAvailable(false);
-                        house.setSoldDate(Utils.getTodayDate());
+                        details.setSoldDate(Utils.getTodayDate());
                     }
                 }
             });
@@ -199,10 +203,10 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.nameText.setAdapter(adapter);
         holder.nameText.setSelection(Arrays.asList(houseTypes).indexOf(house.getName()));
-        holder.surfaceText.setText(String.valueOf(house.getSurface()));
-        holder.roomsText.setText(String.valueOf(house.getRoomsNumber()));
-        holder.bathroomsText.setText(String.valueOf(house.getBathroomsNumber()));
-        holder.bedroomsText.setText(String.valueOf(house.getBedroomsNumber()));
+        holder.surfaceText.setText(String.valueOf(details.getSurface()));
+        holder.roomsText.setText(String.valueOf(details.getRoomsNumber()));
+        holder.bathroomsText.setText(String.valueOf(details.getBathroomsNumber()));
+        holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
         holder.price.setText(house.getPrice());
     }
 
@@ -221,7 +225,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setDescriptionTextToViewHolder(DescriptionViewHolder descriptionHolder){
-        descriptionHolder.descriptionContent.setText(house.getDescription());
+        descriptionHolder.descriptionContent.setText(details.getDescription());
     }
 
     private void setTextWatchersViewHolder(final ViewHolder holder){
@@ -252,7 +256,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setSurface(Integer.parseInt(editable.toString()));
+                    details.setSurface(editable.toString());
                 }
             }
         });
@@ -268,7 +272,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setBathroomsNumber(Integer.parseInt(editable.toString()));
+                    details.setBathroomsNumber(editable.toString());
                 }
             }
         });
@@ -283,7 +287,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setRoomsNumber(Integer.parseInt(editable.toString()));
+                    details.setRoomsNumber(editable.toString());
                 }
             }
         });
@@ -296,7 +300,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setBedroomsNumber(Integer.parseInt(editable.toString()));
+                    details.setBedroomsNumber(editable.toString());
                 }
             }
         });
@@ -401,7 +405,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             @Override
             public void afterTextChanged(Editable editable) {
-               house.setDescription(editable.toString());
+               details.setDescription(editable.toString());
             }
         });
     }
@@ -534,5 +538,9 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public static List<Photo> getPhotos(){
         return photos;
     }
+
+    public static HouseDetails getDetails(){return details;}
+
+    public static AdressHouse getAdressHouse(){return adressHouse;}
 
 }

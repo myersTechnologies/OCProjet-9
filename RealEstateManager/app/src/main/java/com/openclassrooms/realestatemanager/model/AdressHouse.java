@@ -1,12 +1,29 @@
 package com.openclassrooms.realestatemanager.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity(foreignKeys = @ForeignKey(entity = House.class, parentColumns = "id", childColumns = "house_id" ))
 public class AdressHouse {
+
+    @PrimaryKey(autoGenerate = false)
+    @NonNull
+    @ColumnInfo(name = "adress_id")
     private String id;
+    @ColumnInfo (name = "house_id", index = true)
     private String houseId;
+    @ColumnInfo(name = "adress")
     private String adress;
+    @ColumnInfo(name = "city")
     private String city;
+    @ColumnInfo(name = "state")
     private String state;
+    @ColumnInfo(name = "country")
     private String country;
+    @ColumnInfo(name = "zipcode")
     private String zipCode;
 
     public AdressHouse(String id, String houseId, String adress, String city, String state, String country, String zipCode) {

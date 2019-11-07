@@ -9,10 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.db.dao.preferences.PreferencesDao;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.settings.SettingsAdapter;
 
@@ -24,6 +28,7 @@ public class Settings extends AppCompatActivity {
     private RealEstateManagerAPIService service = DI.getService();
     private String image;
     private FirebaseHelper firebaseHelper = DI.getFirebaseDatabase();
+    private SaveToDatabase database = SaveToDatabase.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

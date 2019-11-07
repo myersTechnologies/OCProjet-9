@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -20,11 +19,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.util.Util;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -40,14 +37,11 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
-import com.openclassrooms.realestatemanager.ui.fragments.SearchFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.ui.activities.main.MainActivity;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SecondActivity extends AppCompatActivity
@@ -68,9 +62,6 @@ public class SecondActivity extends AppCompatActivity
 
         service = DI.getService();
         firebaseHelper = DI.getFirebaseDatabase();
-        if (firebaseHelper.getPreferences() == null) {
-            firebaseHelper.getPreferencesFromFirebase();
-        }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

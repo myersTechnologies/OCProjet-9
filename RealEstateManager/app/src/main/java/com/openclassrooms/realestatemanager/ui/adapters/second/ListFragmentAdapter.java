@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.util.Util;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
@@ -56,6 +57,11 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         house = houses.get(position);
         holder.houseName.setText(house.getName());
+        SaveToDatabase database = SaveToDatabase.getInstance(holder.itemView.getContext());
+        if (database.adressDao().getAdresses() != null)
+        for (int j = 0; j < database.adressDao().getAdresses().size(); j++){
+            service.addAdresses(database.adressDao().getAdresses().get(j), holder.itemView.getContext());
+        }
         for (int i = 0; i < service.getAdressesList().size(); i++){
             if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
                 holder.houseAdress.setText(service.getAdressesList().get(i).getCity());
@@ -64,33 +70,36 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         String valeurString = house.getPrice();
         String valeurBrute = valeurString.replaceAll(",", "");
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "$") {
+        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
             String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
             String decimalReplacement = resultString.replaceAll("\\s", ",");
             holder.housePrice.setText("€" + " " + decimalReplacement);
         }
-        if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "€"){
+        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
             String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
             String decimalReplacement = resultString.replaceAll("\\s", ",");
             holder.housePrice.setText("$ " + decimalReplacement);
         }
-        if (service.getPreferences().getMonetarySystem() == "€" && house.getMonetarySystem() == "€"){
+        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("€")){
             holder.housePrice.setText("€" + " " + house.getPrice());
         }
-        if (service.getPreferences().getMonetarySystem() == "$" && house.getMonetarySystem() == "$"){
+        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("$")){
             holder.housePrice.setText("$" + " " + house.getPrice());
         }
 
         List<Photo> photoList = new ArrayList<>();
-
-        for (int i = 0; i < service.getPhotos().size(); i++){
-            Photo photo = service.getPhotos().get(i);
-            if (photo.getHouseId().equals(String.valueOf(house.getId()))){
-                photoList.add(photo);
+        if (service.getPhotos() != null) {
+            for (int i = 0; i < service.getPhotos().size(); i++) {
+                Photo photo = service.getPhotos().get(i);
+                if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
+                    photoList.add(photo);
+                }
             }
         }
 
-        Glide.with(holder.itemView.getContext()).load(photoList.get(0).getPhotoUrl()).into(holder.houseImage);
+        if (photoList.size() > 0) {
+            Glide.with(holder.itemView.getContext()).load(photoList.get(0).getPhotoUrl()).into(holder.houseImage);
+        }
 
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

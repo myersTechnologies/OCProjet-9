@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.service;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,9 +10,11 @@ import android.net.Uri;
 import android.provider.MediaStore;
 
 import com.openclassrooms.realestatemanager.DI.DI;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
@@ -33,6 +36,8 @@ public class APIService implements RealEstateManagerAPIService {
     private List<User> users;
     private List<AdressHouse> adresses;
     private List<Photo> photos;
+    private List<HouseDetails> houseDetails;
+    private SaveToDatabase database;
     private FirebaseHelper helper = DI.getFirebaseDatabase();
 
     @Override
@@ -54,10 +59,12 @@ public class APIService implements RealEstateManagerAPIService {
     }
 
     @Override
-    public void addHouseToList(House house) {
+    public void addHouseToList(House house, Context context) {
         if (housesList == null){
             housesList = new ArrayList<>();
         }
+        database = SaveToDatabase.getInstance(context);
+        database.houseDao().insertHouse(house);
         housesList.add(house);
     }
 
@@ -134,18 +141,22 @@ public class APIService implements RealEstateManagerAPIService {
     }
 
     @Override
-    public void addAdresses(AdressHouse adresses) {
+    public void addAdresses(AdressHouse adresses, Context context) {
         if (this.adresses == null){
             this.adresses = new ArrayList<>();
         }
+        database = SaveToDatabase.getInstance(context);
+        database.adressDao().insertAdress(adresses);
         this.adresses.add(adresses);
     }
 
     @Override
-    public void addPhotos(Photo photo) {
+    public void addPhotos(Photo photo, Context context) {
         if (photos == null){
             photos = new ArrayList<>();
         }
+        database = SaveToDatabase.getInstance(context);
+        database.photoDao().insertPhoto(photo);
         photos.add(photo);
         //Firebase here
     }
@@ -153,6 +164,68 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public List<Photo> getPhotos() {
         return photos;
+    }
+
+    @Override
+    public List<HouseDetails> getHousesDetails() {
+        return houseDetails;
+    }
+
+    @Override
+    public void addHousesDetails(HouseDetails houseDetails, Context context) {
+        if (this.houseDetails == null){
+            this.houseDetails = new ArrayList<>();
+        }
+        database = SaveToDatabase.getInstance(context);
+        database.houseDetailsDao().insertDetails(houseDetails);
+        this.houseDetails.add(houseDetails);
+    }
+
+    @Override
+    public void setHousesDetails(Context context) {
+        database = SaveToDatabase.getInstance(context);
+        if (database.houseDetailsDao().getDetails() != null) {
+            houseDetails = database.houseDetailsDao().getDetails();
+        } else {
+            houseDetails = new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void setPhotos(Context context) {
+        database = SaveToDatabase.getInstance(context);
+        if (database.photoDao().getPhotos() != null) {
+            photos = database.photoDao().getPhotos();
+        } else {
+            photos = new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void setAdresses(Context context) {
+        database = SaveToDatabase.getInstance(context);
+        if (database.adressDao().getAdresses() != null) {
+            adresses = database.adressDao().getAdresses();
+        } else {
+            adresses = new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void setHousesList(Context context) {
+        database = SaveToDatabase.getInstance(context);
+        if (database.houseDao().getHouses() != null) {
+            housesList = database.houseDao().getHouses();
+        } else {
+            housesList = new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void removePhoto(Photo photo, Context context) {
+        database = SaveToDatabase.getInstance(context);
+        photos.remove(photo);
+        database.photoDao().deletePhoto(photo);
     }
 
 }

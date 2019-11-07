@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -59,8 +60,9 @@ public class ListFragment extends Fragment {
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
         service = DI.getService();
-        houses = new ArrayList<>();
-        if (service.getHousesList() != null) {
+
+        houses = service.getHousesList();
+        if (houses != null) {
             initList();
         }
 
@@ -73,7 +75,7 @@ public class ListFragment extends Fragment {
 
 
     private void initList() {
-        adapter = new ListFragmentAdapter(service.getHousesList(), getActivity());
+        adapter = new ListFragmentAdapter(houses, getActivity());
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
     }

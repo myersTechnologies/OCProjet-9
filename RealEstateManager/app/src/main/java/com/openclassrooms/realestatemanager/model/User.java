@@ -1,9 +1,24 @@
 package com.openclassrooms.realestatemanager.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+@Entity
 public class User {
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "user_id")
     private String userId;
+    @NonNull
+    @ColumnInfo(name = "user_name")
     private String name;
+    @NonNull
+    @ColumnInfo(name = "user_email")
     private String email;
+    @NonNull
+    @ColumnInfo(name = "user_photo")
     private String photoUri;
 
 

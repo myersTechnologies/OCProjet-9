@@ -1,15 +1,31 @@
 package com.openclassrooms.realestatemanager.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
+
+@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "user_id", childColumns = "preferences_id" ))
 public class Preferences {
 
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "preferences_id")
     private String id;
+    @ColumnInfo(name = "user_id", index = true)
     private String userId;
+    @ColumnInfo(name = "monetary_system")
     private String monetarySystem;
+    @ColumnInfo(name = "user_name")
     private String userName;
+    @ColumnInfo(name = "user_photo")
     private String userPhoto;
+    @ColumnInfo(name = "menu_image")
     private String menuImage;
+    @ColumnInfo(name = "measure_unit")
     private String measureUnity;
 
     public Preferences(String id, String userId, String monetarySystem, String userName, String userPhoto, String menuImage, String measureUnity) {

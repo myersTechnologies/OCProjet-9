@@ -29,6 +29,7 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
@@ -161,18 +162,20 @@ public class AddHouseActivity extends AppCompatActivity {
     private void getViewsAndAddHouse() {
 
         House house = AddNewHouseAdapter.getHouse();
+
         if (service.getUser() != null){
             house.setAgentId(service.getUser().getUserId());
         }
+        service.addHouseToList(house, this);
+        service.setHouse(house);
         AdressHouse adress = AddNewHouseAdapter.getAdressHouse();
         adress.setId(String.valueOf(house.getId()));
         adress.setHouseId(String.valueOf(house.getId()));
+        service.addHousesDetails(AddNewHouseAdapter.getHouseDetails(), this);
         for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
-            service.addPhotos(PhotoListAdapter.getAllPhotos().get(i));
+            service.addPhotos(PhotoListAdapter.getAllPhotos().get(i), this);
         }
-        service.addHouseToList(house);
-        service.addAdresses(adress);
-        service.setHouse(house);
+        service.addAdresses(adress, this);
         sendNotification(house);
 
     }
@@ -203,13 +206,10 @@ public class AddHouseActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
                     Photo photo;
-                    if (service.getPhotos() != null) {
-                        photo = new Photo(service.getPhotos().size() + 1, imageUri, descriptionText.getText().toString(),
-                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
-                    } else {
-                        photo = new Photo(1, imageUri, descriptionText.getText().toString(),
-                                String.valueOf(AddNewHouseAdapter.getHouse().getId()));
-                    }
+
+                    photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                            String.valueOf(AddNewHouseAdapter.getHouse().getId()));
+
                     AddNewHouseAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
@@ -251,7 +251,7 @@ public class AddHouseActivity extends AppCompatActivity {
     private void sendNotification(House house){
         String message = "You added " + house.getName() + " with success";
         Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.logo)
+                .setSmallIcon(R.drawable.notif_icon)
                 .setAutoCancel(true)
                 .setContentTitle("Success ! ");
         builder.setStyle(new Notification.BigTextStyle()

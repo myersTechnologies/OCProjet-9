@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -160,27 +161,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
     }
-    public void getMeasureListener(ViewHolder holder){
-        if (service.getPreferences().getMeasureUnity() == "m"){
-            holder.monetarySwitch.setChecked(true);
-        } else {
-            holder.monetarySwitch.setChecked(false);
-        }
-
-        holder.monetarySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
-                    service.getPreferences().setMeasureUnity("m");
-                }else {
-                    service.getPreferences().setMeasureUnity("sq");
-                }
-            }
-        });
-    }
 
     public void getSwitchListener(ViewHolder holder){
-        if (service.getPreferences().getMonetarySystem() == "€"){
+        if (service.getPreferences().getMonetarySystem().equals("€")){
             holder.monetarySwitch.setChecked(true);
         } else {
             holder.monetarySwitch.setChecked(false);
@@ -193,6 +176,25 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     service.getPreferences().setMonetarySystem("€");
                 }else {
                     service.getPreferences().setMonetarySystem("$");
+                }
+            }
+        });
+    }
+
+    public void getMeasureListener(ViewHolder holder){
+        if (service.getPreferences().getMeasureUnity().equals("m")){
+            holder.monetarySwitch.setChecked(true);
+        } else {
+            holder.monetarySwitch.setChecked(false);
+        }
+
+        holder.monetarySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    service.getPreferences().setMeasureUnity("m");
+                }else {
+                    service.getPreferences().setMeasureUnity("sq");
                 }
             }
         });
@@ -261,11 +263,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-    private void getConfirmChanges(DeleteTypeViewHolder holder){
+    private void getConfirmChanges(final DeleteTypeViewHolder holder){
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseHelper.addPreferrencesToFirebase(service.getPreferences());
+                SaveToDatabase database = SaveToDatabase.getInstance(holder.itemView.getContext());
+                database.preferencesDao().insertPreferences(service.getPreferences());
                 Intent intent = new Intent(context, SecondActivity.class);
                 context.startActivity(intent);
             }

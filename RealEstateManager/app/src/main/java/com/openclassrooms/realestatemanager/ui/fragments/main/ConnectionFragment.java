@@ -46,6 +46,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
@@ -69,7 +70,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private Intent secondActivity;
     private RealEstateManagerAPIService service;
     private SignInButton googleSignIn;
-    private FirebaseHelper onlineDB = DI.getFirebaseDatabase();
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -83,6 +83,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         setViews(view);
 
         service = DI.getService();
+        service.setActivity(getActivity(), "Connection");
 
         FacebookSdk.sdkInitialize(getContext());
         AppEventsLogger.activateApp(getActivity());
@@ -128,6 +129,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 signInWithFacebook();
                 signInWithGoogle();
             }
+
         }
 
         return view;
@@ -248,17 +250,38 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference("users");
 
-        if (onlineDB.getPreferencesFromFirebase() == null){
-            Toast.makeText(getActivity(), "Null", Toast.LENGTH_SHORT).show();
-            Preferences preferences = new Preferences(service.getUser().getUserId(), service.getUser().getUserId(),
-                    "$", service.getUser().getName(), null, null, "sq");
-            service.setPreferences(preferences);
-            onlineDB.addPreferrencesToFirebase(preferences);
+        SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
+        if (database.userDao().getUser() == null) {
+            database.userDao().createUserTable(user);
         }
+
+        service.setHousesList(getActivity());
+
+        Preferences preferences = database.preferencesDao().getPreferences();
+        if (preferences != null){
+            if (preferences.getUserId().equals(userId)) {
+                service.setPreferences(preferences);
+            } else {
+                service.setPreferences(setPreferences());
+            }
+        } else {
+            service.setPreferences(setPreferences());
+            database.preferencesDao().insertPreferences(setPreferences());
+        }
+
+        service.setHousesDetails(getActivity());
+        service.setPhotos(getActivity());
+        service.setAdresses(getActivity());
 
         databaseRef.child(userId).setValue(user);
 
 
+    }
+
+    private Preferences setPreferences(){
+        Preferences preferences = new  Preferences(service.getUser().getUserId(), service.getUser().getUserId(),
+                "$", service.getUser().getName(), null, null, "sq");
+        return preferences;
     }
 
 
@@ -274,6 +297,13 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         int id = view.getId();
         switch (id){
             case R.id.offline_login:
+                User user = SaveToDatabase.getInstance(getActivity()).userDao().getUser();
+                if (user != null) {
+                    addNewUser(user.getUserId(), user.getName(), user.getEmail(), user.getPhotoUri());
+                } else {
+                    addNewUser("12221", "Offline user", "N/A", String.valueOf(R.drawable.main_image));
+                }
+
                 startActivity(secondActivity);
                 return;
         }

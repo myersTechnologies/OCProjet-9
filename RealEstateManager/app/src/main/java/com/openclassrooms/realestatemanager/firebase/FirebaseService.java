@@ -11,6 +11,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -22,19 +23,14 @@ public class FirebaseService implements FirebaseHelper {
 
     private List<User> users;
     private List<House> houses;
-    private Preferences preferences;
-    private RealEstateManagerAPIService service = DI.getService();
     private static String USERS = "users";
     private static String ID = "id";
     private static String USER_ID = "userId";
     private static String USER_PHOTO = "userPhoto";
     private static String USERNAME = "userName";
     private static String USER_EMAIL = "userEmail";
-    private static String IMAGE_URL = "imageUrl";
-    private static String PREFERENCES = "preferences";
-    private static String MENU_IMAGE = "menuImage";
-    private static String MONETARY_SYSTEM = "monetarySystem";
     private List<AdressHouse> adressHouses;
+    private List<HouseDetails> details;
 
     @Override
     public void setUsersList(List<User> users) {
@@ -54,16 +50,6 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public List<House> getHouses() {
         return houses;
-    }
-
-    @Override
-    public void setPreferences(Preferences preferences) {
-        this.preferences = preferences;
-    }
-
-    @Override
-    public Preferences getPreferences() {
-        return preferences;
     }
 
     @Override
@@ -119,46 +105,6 @@ public class FirebaseService implements FirebaseHelper {
         return houses;
     }
 
-    @Override
-    public Preferences getPreferencesFromFirebase() {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(PREFERENCES);
-        databaseReference.orderByChild(ID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    if (postSnapshot.child(USER_ID).getValue().toString().equals(service.getUser().getUserId())) {
-                        String id = postSnapshot.child(ID).getValue().toString();
-                        String userId = postSnapshot.child(USER_ID).getValue().toString();
-                        String name = postSnapshot.child(USERNAME).getValue().toString();
-                        String image = null;
-                        if (postSnapshot.child("userPhoto").exists()) {
-                            image = postSnapshot.child("userPhoto").getValue().toString();
-                        }
-                        String menuImage = null;
-                        if (postSnapshot.child(MENU_IMAGE).exists()) {
-                            menuImage = postSnapshot.child(MENU_IMAGE).getValue().toString();
-                        }
-                        String monetarySystem = postSnapshot.child(MONETARY_SYSTEM).getValue().toString();
-                        String measureUnity = null;
-                        if (postSnapshot.child("measureUnity").exists()) {
-                            measureUnity = postSnapshot.child("measureUnity").getValue().toString();
-                        }
-                        preferences = new Preferences(id, userId, monetarySystem, name, image, menuImage, measureUnity);
-                        service.setPreferences(preferences);
-                    }
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-
-        });
-        return preferences;
-    }
 
     @Override
     public void addUserToFireBase(User user) {
@@ -174,14 +120,6 @@ public class FirebaseService implements FirebaseHelper {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("house");
         databaseRef.child(String.valueOf(house.getId())).setValue(house);
-    }
-
-    @Override
-    public void addPreferrencesToFirebase(Preferences preferences) {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference databaseRef = firebaseDatabase.getReference(PREFERENCES);
-        databaseRef.child(preferences.getId()).setValue(preferences);
-        this.preferences = preferences;
     }
 
     @Override
@@ -223,6 +161,45 @@ public class FirebaseService implements FirebaseHelper {
 
 
         return adressHouses;
+    }
+
+    @Override
+    public void addDetailsToFireBase(HouseDetails details) {
+        if (this.details == null){
+            this.details = new ArrayList<>();
+        }
+        this.details.add(details);
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference databaseRef = firebaseDatabase.getReference("details");
+        databaseRef.child(String.valueOf(details.getId())).setValue(details);
+    }
+
+    @Override
+    public void getDetailsFromFireBase() {
+        if (details == null){
+            details = new ArrayList<>();
+        }
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference("details");
+        databaseReference.orderByChild(ID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+
+    @Override
+    public List<HouseDetails> getDetails() {
+        return details;
     }
 
 

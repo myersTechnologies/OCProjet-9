@@ -51,9 +51,11 @@ public class MediaFragment extends Fragment {
        photosList = view.findViewById(R.id.photos_list);
         RealEstateManagerAPIService service = DI.getService();
         List<Photo> mediaPhotos = new ArrayList<>();
-        for (int i = 0; i < service.getPhotos().size(); i++){
-            if (service.getPhotos().get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))){
-                mediaPhotos.add(service.getPhotos().get(i));
+        if (service.getPhotos() != null) {
+            for (int i = 0; i < service.getPhotos().size(); i++) {
+                if (service.getPhotos().get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))) {
+                    mediaPhotos.add(service.getPhotos().get(i));
+                }
             }
         }
         adapter = new MediaFragmentAdapter(mediaPhotos, getActivity());

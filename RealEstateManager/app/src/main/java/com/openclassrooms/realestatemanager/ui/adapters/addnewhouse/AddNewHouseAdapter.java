@@ -13,11 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
@@ -44,19 +46,22 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private  static AdressHouse adressHouse;
     private static PhotoListAdapter adapter;
     private static List<Photo> photos = new ArrayList<>();
+    private static HouseDetails houseDetails;
 
 
     private static House house;
 
     public AddNewHouseAdapter(){
         if (service.getHousesList().size() > 0) {
-            this.house = new House(service.getHousesList().size() + 1, "", "0", "0", 0, 0,
-                    0, 0, false, Utils.getTodayDate(), service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
+            this.house = new House(String.valueOf(service.getHousesList().size() + 1), "",
+                     "0", false, service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
         } else {
-            this.house = new House(1, "", "0", "0", 0, 0,
-                    0, 0, false, Utils.getTodayDate(), service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
+            this.house = new House(String.valueOf(1), "", "0", false,
+                    service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
         }
         adressHouse = new AdressHouse("", "", "", "", "", "", "");
+        houseDetails = new HouseDetails(house.getId(), house.getId());
+        houseDetails.setOnLineDate(Utils.getTodayDate());
         data = new ArrayList<>();
 
     }
@@ -128,6 +133,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
+        Toast.makeText(holderView.itemView.getContext(), house.getId(), Toast.LENGTH_SHORT ).show();
         if (holderView.getItemViewType() == LAYOUT_ONE) {
             ViewHolder holder = (ViewHolder) holderView;
             setTextWatchersViewHolder(holder);
@@ -141,7 +147,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageViewViewHolder imageViewViewHolder = (ImageViewViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
-            adapter = new PhotoListAdapter(photos);
+            adapter = new PhotoListAdapter(photos, house.getId());
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
@@ -197,7 +203,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setSurface(Integer.parseInt(editable.toString()));
+                    houseDetails.setSurface(editable.toString());
                 }
             }
         });
@@ -213,7 +219,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setBathroomsNumber(Integer.parseInt(editable.toString()));
+                    houseDetails.setBathroomsNumber(editable.toString());
                 }
             }
         });
@@ -228,7 +234,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setRoomsNumber(Integer.parseInt(editable.toString()));
+                    houseDetails.setRoomsNumber(editable.toString());
                 }
             }
         });
@@ -241,7 +247,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void afterTextChanged(Editable editable) {
                 if (!TextUtils.isEmpty(editable)) {
-                    house.setBedroomsNumber(Integer.parseInt(editable.toString()));
+                    houseDetails.setBedroomsNumber(editable.toString());
                 }
             }
         });
@@ -347,7 +353,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void afterTextChanged(Editable editable) {
-                house.setDescription(editable.toString());
+                houseDetails.setDescription(editable.toString());
             }
         });
     }
@@ -477,4 +483,6 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public static List<Photo> getPhotos(){
         return photos;
     }
+
+    public static HouseDetails getHouseDetails(){return houseDetails;}
 }

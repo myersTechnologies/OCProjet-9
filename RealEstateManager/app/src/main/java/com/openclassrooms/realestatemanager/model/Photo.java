@@ -1,16 +1,28 @@
 package com.openclassrooms.realestatemanager.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
+@Entity(foreignKeys = @ForeignKey(entity = House.class, parentColumns = "id", childColumns = "house_id" ))
 public class Photo {
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    @ColumnInfo(name = "photo_id")
     private int id;
-    private Uri photoUrl;
+    @ColumnInfo (name = "photo_url")
+    private String photoUrl;
+    @ColumnInfo(name = "description")
     private String description;
+
+    @ColumnInfo(name = "house_id", index = true)
     private String houseId;
 
-    public Photo(int id, Uri photoUrl, String description, String houseId) {
-        this.id = id;
+    public Photo(String photoUrl, String description, String houseId) {
         this.photoUrl = photoUrl;
         this.description = description;
         this.houseId = houseId;
@@ -32,11 +44,11 @@ public class Photo {
         this.id = id;
     }
 
-    public Uri getPhotoUrl() {
+    public String getPhotoUrl() {
         return photoUrl;
     }
 
-    public void setPhotoUrl(Uri photoUrl) {
+    public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
     }
 

@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -98,5 +99,16 @@ public class House {
 
     public void setMeasureUnity(String measureUnity) {
         this.measureUnity = measureUnity;
+    }
+
+    public static House fromContentValues(ContentValues values){
+        final House house = new House(null, null, null, false, null, null);
+        if (values.containsKey("house_id")) house.setId(values.getAsString("house_id"));
+        if (values.containsKey("name")) house.setName(values.getAsString("name"));
+        if (values.containsKey("price")) house.setPrice(values.getAsString("price"));
+        if (values.containsKey("available")) house.setAvailable(values.getAsBoolean("available"));
+        if (values.containsKey("monetary")) house.setMonetarySystem(values.getAsString("monetary"));
+        if (values.containsKey("measure")) house.setMeasureUnity(values.getAsString("measure"));
+        return house;
     }
 }

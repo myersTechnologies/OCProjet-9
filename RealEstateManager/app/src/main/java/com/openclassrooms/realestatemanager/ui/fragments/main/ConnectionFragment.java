@@ -5,7 +5,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -39,15 +42,13 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -84,6 +85,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         service = DI.getService();
         service.setActivity(getActivity(), "Connection");
+
 
         FacebookSdk.sdkInitialize(getContext());
         AppEventsLogger.activateApp(getActivity());
@@ -122,9 +124,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             loginButton.setEnabled(true);
             googleSignIn.setEnabled(true);
             if (FirebaseAuth.getInstance().getCurrentUser() != null){
+                loginButton.setEnabled(false);
+                googleSignIn.setEnabled(false);
+                offlineLogin.setEnabled(false);
                 onAuthSuccess(FirebaseAuth.getInstance().getCurrentUser());
-                Intent intent = new Intent(getContext(), SecondActivity.class);
-                startActivity(intent);
             } else {
                 signInWithFacebook();
                 signInWithGoogle();
@@ -141,8 +144,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         if (service.getUser() != null){
-            Intent intent = new Intent(getContext(), SecondActivity.class);
-            startActivity(intent);
+
         } else {
             signInWithFacebook();
             signInWithGoogle();
@@ -255,7 +257,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             database.userDao().createUserTable(user);
         }
 
-        service.setHousesList(getActivity());
 
         Preferences preferences = database.preferencesDao().getPreferences();
         if (preferences != null){
@@ -269,14 +270,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             database.preferencesDao().insertPreferences(setPreferences());
         }
 
-        service.setHousesDetails(getActivity());
-        service.setPhotos(getActivity());
-        service.setAdresses(getActivity());
-
-        FirebaseHelper helper = DI.getFirebaseDatabase();
-        helper.getHouseFromFirebase();
 
         databaseRef.child(userId).setValue(user);
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(getContext(), SecondActivity.class);
+                startActivity(intent);
+            }
+        }, 3000);
 
 
     }

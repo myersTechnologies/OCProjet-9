@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.imageview.FullScreenImage"
-    android:background="@android:color/black"
-    android:alpha="0.8">
+    tools:context=".ui.activities.imageview.FullScreenImage">
 
-    <ImageView
-        android:id="@+id/full_screen_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
+<ImageView
+    android:id="@+id/full_image_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>

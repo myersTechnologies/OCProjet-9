@@ -29,12 +29,11 @@ public class MediaFragmentAdapter extends BaseAdapter {
 
     private List<Photo> photos;
     private Context context;
-    private RealEstateManagerAPIService service;
+    private Photo photo;
 
     public MediaFragmentAdapter(List<Photo> photos, Context context) {
         this.photos = photos;
         this.context = context;
-        service = DI.getService();
     }
 
     @Override
@@ -54,7 +53,8 @@ public class MediaFragmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int i, View view, ViewGroup viewGroup) {
-        final ViewHolderItem viewHolder;
+        ViewHolderItem viewHolder;
+        photo = photos.get(i);
 
         if (view == null) {
 
@@ -71,15 +71,14 @@ public class MediaFragmentAdapter extends BaseAdapter {
             viewHolder = (ViewHolderItem) view.getTag();
         }
 
-        Glide.with(viewHolder.imgDescription.getContext()).load(photos.get(i).getPhotoUrl()).into(viewHolder.houseImg);
+        Glide.with(viewHolder.houseImg.getContext()).load(photo.getPhotoUrl()).into(viewHolder.houseImg);
 
         viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EventBus.getDefault().post(new ImageEvent(photos.get(i)));
+                DI.getService().setPhoto(photos.get(i));
                 Intent intent = new Intent(context, FullScreenImage.class);
                 context.startActivity(intent);
-
             }
         });
 

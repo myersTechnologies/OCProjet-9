@@ -5,9 +5,12 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+import android.database.Cursor;
 
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.model.User;
 
 import java.util.List;
 
@@ -21,4 +24,21 @@ public interface HouseDetailsDao {
 
     @Delete
     void deleteDetails(HouseDetails houseDetails);
+
+    @Update
+    void updateDetails(HouseDetails details);
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertHouseDetailsProvider(HouseDetails houseDetails);
+
+    @Query("SELECT * FROM HouseDetails WHERE id = :detailsId")
+    Cursor getHouseDetailsWithCursor(String detailsId);
+
+
+    @Update
+    int updateHouseDetailsProvider(HouseDetails houseDetails);
+
+    @Query("DELETE FROM HouseDetails WHERE id = :detailsId")
+    int deleteHouseDetailsFromProvider(String detailsId);
 }

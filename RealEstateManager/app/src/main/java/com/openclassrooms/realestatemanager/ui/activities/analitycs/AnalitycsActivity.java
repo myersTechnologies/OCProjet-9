@@ -10,10 +10,14 @@ import android.view.MenuItem;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.analitycs.AnalitycsAdapter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 public class AnalitycsActivity extends AppCompatActivity {
 
@@ -31,6 +35,7 @@ public class AnalitycsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Analitycs");
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        service.setActivity(this, "Analytics");
 
         recyclerView = findViewById(R.id.analytics_rv);
         layoutManager = new LinearLayoutManager(this);
@@ -51,4 +56,5 @@ public class AnalitycsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

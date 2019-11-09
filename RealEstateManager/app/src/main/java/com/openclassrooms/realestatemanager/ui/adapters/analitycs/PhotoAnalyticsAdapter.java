@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.analitycs;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -33,7 +37,7 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ViewHolder viewHolder = holder;
-        House house = myHouses.get(position);
+        final House house = myHouses.get(position);
         List<Photo> photos = DI.getService().getPhotos();
         for (int i = 0; i < photos.size(); i++){
             if (photos.get(i).getHouseId().equals(String.valueOf(house.getId()))){
@@ -41,6 +45,14 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
                 break;
             }
         }
+        viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DI.getService().setHouse(house);
+                Intent intent = new Intent(DI.getService().getActivity(), DetailsActivity.class);
+                DI.getService().getActivity().startActivity(intent);
+            }
+        });
         viewHolder.descriptionText.setText(myHouses.get(position).getName());
     }
 

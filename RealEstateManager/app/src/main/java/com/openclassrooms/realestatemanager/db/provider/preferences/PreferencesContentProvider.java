@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.db.provider.user;
+package com.openclassrooms.realestatemanager.db.provider.preferences;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -9,12 +9,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 
-public class UserContentProvider extends ContentProvider {
-    // FOR DATA
+public class PreferencesContentProvider extends ContentProvider {
     public static final String AUTHORITY = "com.openclassrooms.realestatemanager.db.provider";
-    public static final String TABLE_NAME = User.class.getSimpleName();
+    public static final String TABLE_NAME = Preferences.class.getSimpleName();
     public static final Uri URI_ITEM = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
     @Override
     public boolean onCreate() {
@@ -26,8 +26,8 @@ public class UserContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection,
                         @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         if (getContext() != null){
-            String userId = String.valueOf(ContentUris.parseId(uri));
-            final Cursor cursor = SaveToDatabase.getInstance(getContext()).userDao().getUserWithCursor(userId);
+            String prefsId = String.valueOf(ContentUris.parseId(uri));
+            final Cursor cursor = SaveToDatabase.getInstance(getContext()).preferencesDao().getPreferencesWithCursor(prefsId);
             cursor.setNotificationUri(getContext().getContentResolver(), uri);
             return cursor;
         }
@@ -45,7 +45,7 @@ public class UserContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
         if (getContext() != null){
-            final long id = SaveToDatabase.getInstance(getContext()).userDao().insertUserProvider(User.fromContentValues(contentValues));
+            final long id = SaveToDatabase.getInstance(getContext()).preferencesDao().insertPreferencesProvider(Preferences.fromContentValues(contentValues));
             if (id != 0){
                 getContext().getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
@@ -58,7 +58,7 @@ public class UserContentProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, @Nullable String where, @Nullable String[] whereStrings) {
         if (getContext() != null){
-            final int count = SaveToDatabase.getInstance(getContext()).userDao().deleteUser(where);
+            final int count = SaveToDatabase.getInstance(getContext()).preferencesDao().deletePreferencesFromProvider(where);
             getContext().getContentResolver().delete(URI_ITEM, where, whereStrings);
             return count;
         }
@@ -69,7 +69,7 @@ public class UserContentProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
         if (getContext() != null){
-            final int count = SaveToDatabase.getInstance(getContext()).userDao().updateUserProvider(User.fromContentValues(contentValues));
+            final int count = SaveToDatabase.getInstance(getContext()).preferencesDao().updatePreferencesProvider(Preferences.fromContentValues(contentValues));
             getContext().getContentResolver().notifyChange(uri, null);
             return count;
         }

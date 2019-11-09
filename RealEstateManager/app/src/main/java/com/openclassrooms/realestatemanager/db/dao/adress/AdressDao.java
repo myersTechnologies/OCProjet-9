@@ -5,6 +5,8 @@ import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+import android.database.Cursor;
 
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 
@@ -21,4 +23,19 @@ public interface AdressDao {
 
    @Delete
     void deleteAdress(AdressHouse adressHouse);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long insertAdressProvider(AdressHouse adressHouse);
+
+    @Query("SELECT * FROM AdressHouse WHERE adress_id = :adressId")
+    Cursor getAdressWithCursor(String adressId);
+
+
+    @Update
+    int updateAdressProvider(AdressHouse adressHouse);
+
+    @Query("DELETE FROM AdressHouse WHERE adress_id = :adressId")
+    int deletAdressFromProvider(String adressId);
+
+
 }

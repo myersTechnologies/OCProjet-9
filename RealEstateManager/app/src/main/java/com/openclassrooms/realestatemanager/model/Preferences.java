@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -93,4 +94,19 @@ public class Preferences {
     public void setMeasureUnity(String measureUnity) {
         this.measureUnity = measureUnity;
     }
+
+    public static Preferences fromContentValues(ContentValues values){
+        final Preferences preferences = new Preferences(null, null, null, null, null, null, null);
+        if (values.containsKey("id")) preferences.setId(values.getAsString("id"));
+        if (values.containsKey("user_id")) preferences.setUserId(values.getAsString("user_id"));
+        if (values.containsKey("monetary")) preferences.setMonetarySystem(values.getAsString("monetary"));
+        if (values.containsKey("user_name")) preferences.setUserName(values.getAsString("user_name"));
+        if (values.containsKey("photo")) preferences.setUserPhoto(values.getAsString("photo"));
+        if (values.containsKey("menu_image")) preferences.setMenuImage(values.getAsString("menu_image"));
+        if (values.containsKey("measure")) preferences.setMeasureUnity(values.getAsString("measure"));
+
+        return preferences;
+    }
+
+
 }

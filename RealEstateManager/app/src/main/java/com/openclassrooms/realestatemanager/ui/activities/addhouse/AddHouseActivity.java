@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -24,6 +27,7 @@ import android.widget.EditText;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
@@ -33,8 +37,10 @@ import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class AddHouseActivity extends AppCompatActivity {
@@ -86,8 +92,6 @@ public class AddHouseActivity extends AppCompatActivity {
             case R.id.confirm_add:
                 if (checkAllData(AddNewHouseAdapter.getData())) {
                     getViewsAndAddHouse();
-                    Intent intent = new Intent(this, DetailsActivity.class);
-                    startActivity(intent);
                 } else {
                     setDialogErrorEmptyCases();
                 }
@@ -161,7 +165,7 @@ public class AddHouseActivity extends AppCompatActivity {
 
     private void getViewsAndAddHouse() {
 
-        House house = AddNewHouseAdapter.getHouse();
+        final House house = AddNewHouseAdapter.getHouse();
 
         if (service.getUser() != null){
             house.setAgentId(service.getUser().getUserId());
@@ -172,12 +176,46 @@ public class AddHouseActivity extends AppCompatActivity {
         adress.setId(String.valueOf(house.getId()));
         adress.setHouseId(String.valueOf(house.getId()));
         service.addHousesDetails(AddNewHouseAdapter.getHouseDetails(), this);
-        for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
-            service.addPhotos(PhotoListAdapter.getAllPhotos().get(i), this);
-        }
         service.addAdresses(adress, this);
-        sendNotification(house);
+        for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
+            final Photo photo = PhotoListAdapter.getAllPhotos().get(i);
+            Handler postHandler = new Handler();
+            postHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    service.addPhotos(photo, getApplicationContext());
+                    final  FirebaseHelper helper = DI.getFirebaseDatabase();
+                    helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                    helper.addPhotoToFireStore(photo);
+                }
+                }, 1000);
+        }
 
+        Handler postHandler = new Handler();
+        postHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                sendNotification(house);
+                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                startActivity(intent);
+            }
+        }, PhotoListAdapter.getAllPhotos().size() * 1000);
+
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String filePath;
+        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            filePath = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            filePath = cursor.getString(idx);
+            cursor.close();
+        }
+        return filePath;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
@@ -206,10 +244,9 @@ public class AddHouseActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
                     Photo photo;
-
                     photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
-                            String.valueOf(AddNewHouseAdapter.getHouse().getId()));
-
+                            AddNewHouseAdapter.getHouse().getId());
+                    photo.setId(UUID.randomUUID().toString());
                     AddNewHouseAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }

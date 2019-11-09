@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -26,6 +28,7 @@ import android.widget.Toast;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
@@ -36,8 +39,10 @@ import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ModifyActivity extends AppCompatActivity {
 
@@ -159,7 +164,11 @@ public class ModifyActivity extends AppCompatActivity {
         service.addHouseToList(house, this);
         for (int i = 0; i < ModifyAdapter.getPhotos().size(); i++){
             if (!service.getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
+                Photo photo = ModifyAdapter.getPhotos().get(i);
                 service.addPhotos(ModifyAdapter.getPhotos().get(i), this);
+                FirebaseHelper helper = DI.getFirebaseDatabase();
+                helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                helper.addPhotoToFireStore(photo);
             }
         }
         service.addHousesDetails(ModifyAdapter.getDetails(), this);
@@ -167,6 +176,20 @@ public class ModifyActivity extends AppCompatActivity {
         service.setHouse(house);
         sendNotification();
 
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String filePath;
+        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            filePath = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            filePath = cursor.getString(idx);
+            cursor.close();
+        }
+        return filePath;
     }
 
     private void setDialogErrorEmptyCases(){
@@ -216,6 +239,7 @@ public class ModifyActivity extends AppCompatActivity {
                     Uri imageUri = data.getData();
                     Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
                                 String.valueOf(ModifyAdapter.gethouse().getId()));
+                    photo.setId(UUID.randomUUID().toString());
                     ModifyAdapter.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }

@@ -10,8 +10,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -110,46 +112,68 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ProgressViewHolder progressViewHolder = (ProgressViewHolder) holderView;
             int countTotal = 0;
             int countAllListSize = 0;
+            House house = null;
             for (int j =0; j < houses.size(); j++){
+                house = houses.get(j);
                 countAllListSize = countAllListSize + Integer.parseInt(houses.get(j).getPrice().replaceAll(",", ""));
             }
+            House myHouse = null;
             for (int i = 0; i < myHouses.size(); i++){
+                myHouse = myHouses.get(i);
                 if (!myHouses.get(i).isAvailable()){
                     countTotal = countTotal + Integer.parseInt(myHouses.get(i).getPrice().replaceAll(",", ""));
                 }
             }
+
+            String totalHouses =  getTotalAndMonetarySystem(house, formatter, formatter.format(countAllListSize).replaceAll("\\s", ""));
+            String  totalOwn = getTotalAndMonetarySystem(myHouse, formatter, formatter.format(countTotal).replaceAll("\\s", ""));
+
             progressViewHolder.progressBar.setMax(countAllListSize);
-            progressViewHolder.textView.setText("For a total of " + formatter.format(countTotal) + "/" + formatter.format(countAllListSize));
+            progressViewHolder.textView.setText("For a total of " + totalOwn + "/" + totalHouses);
             progressViewHolder.progressBar.setProgress(countTotal);
         }
 
 
     }
 
+    private String getTotalAndMonetarySystem(House house, DecimalFormat formatter, String valeurBrute){
+        RealEstateManagerAPIService service = DI.getService();
+        String price = null;
+        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
+            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            price = "€" + " " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
+            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            price = "$ " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
+            String resultString = formatter.format(Integer.parseInt(valeurBrute));
+            String result = resultString.replaceAll("\\s ", ",");
+            price = service.getPreferences().getMonetarySystem() + " " + result;
+        }
+        return price;
+    }
+
     @Override
     public int getItemViewType(int position) {
-        int view = 0;
         switch (position){
             case 0:
-                view = 0;
                 return 0;
             case 1:
-                view = 1;
                 return 1;
             case 2:
-                view = 2;
                 return 2;
             case 3:
-                view = 3;
                 return 3;
             case 4:
-                view = 4;
                 return 4;
             case 5:
-                view = 5;
                 return 5;
         }
-        return view;
+        return position;
     }
 
     @Override

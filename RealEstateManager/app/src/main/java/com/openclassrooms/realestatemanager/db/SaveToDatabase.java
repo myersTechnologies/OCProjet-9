@@ -30,7 +30,7 @@ public abstract class SaveToDatabase extends RoomDatabase {
     public abstract HouseDetailsDao houseDetailsDao();
 
     public static SaveToDatabase getInstance(Context context){
-        if (INSTANCE ==null){
+        if (INSTANCE == null){
             synchronized (SaveToDatabase.class){
                 if (INSTANCE == null){
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),

@@ -51,7 +51,6 @@ public class InfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         service = DI.getService();
-        service.setUsers(helper.getUsersFromFireBase());
         infoList = view.findViewById(R.id.info_list);
         layoutManager = new LinearLayoutManager(getContext());
 

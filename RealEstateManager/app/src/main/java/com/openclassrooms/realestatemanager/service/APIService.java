@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
+import com.bumptech.glide.util.Util;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
@@ -18,6 +20,7 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,9 +55,6 @@ public class APIService implements RealEstateManagerAPIService {
 
     @Override
     public List<House> getHousesList() {
-        if (housesList == null){
-            housesList = new ArrayList<>();
-        }
         return housesList;
     }
 
@@ -167,6 +167,7 @@ public class APIService implements RealEstateManagerAPIService {
         //Firebase here
     }
 
+
     @Override
     public List<Photo> getPhotos() {
         return photos;
@@ -192,41 +193,32 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public void setHousesDetails(Context context) {
         database = SaveToDatabase.getInstance(context);
-        if (database.houseDetailsDao().getDetails() != null) {
-            houseDetails = database.houseDetailsDao().getDetails();
-        } else {
-            houseDetails = new ArrayList<>();
-        }
+        helper = DI.getFirebaseDatabase();
+        houseDetails = Utils.compareDetailsLists(helper.getDetails(), database.houseDetailsDao().getDetails());
+
     }
 
     @Override
     public void setPhotos(Context context) {
+        helper = DI.getFirebaseDatabase();
         database = SaveToDatabase.getInstance(context);
-        if (database.photoDao().getPhotos() != null) {
-            photos = database.photoDao().getPhotos();
-        } else {
-            photos = new ArrayList<>();
-        }
+        photos = Utils.comparePhotosLists(helper.getPhotos(), database.photoDao().getPhotos());
+
     }
 
     @Override
     public void setAdresses(Context context) {
         database = SaveToDatabase.getInstance(context);
-        if (database.adressDao().getAdresses() != null) {
-            adresses = database.adressDao().getAdresses();
-        } else {
-            adresses = new ArrayList<>();
-        }
+        helper = DI.getFirebaseDatabase();
+        adresses = Utils.compareAdressLists(helper.getHousesAdresses(),database.adressDao().getAdresses());
+
     }
 
     @Override
     public void setHousesList(Context context) {
         database = SaveToDatabase.getInstance(context);
-        if (database.houseDao().getHouses() != null) {
-            housesList = database.houseDao().getHouses();
-        } else {
-            housesList = new ArrayList<>();
-        }
+        helper = DI.getFirebaseDatabase();
+        housesList = Utils.compareHousesLists(helper.getHouses(), database.houseDao().getHouses());
     }
 
     @Override
@@ -234,6 +226,13 @@ public class APIService implements RealEstateManagerAPIService {
         database = SaveToDatabase.getInstance(context);
         photos.remove(photo);
         database.photoDao().deletePhoto(photo);
+        FirebaseHelper helper = DI.getFirebaseDatabase();
+        helper.removePhoto(photo);
+    }
+
+    @Override
+    public void setHouses(List<House> houses) {
+        this.housesList = houses;
     }
 
 }

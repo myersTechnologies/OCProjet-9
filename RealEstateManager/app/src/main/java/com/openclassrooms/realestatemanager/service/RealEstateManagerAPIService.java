@@ -47,5 +47,6 @@ public interface RealEstateManagerAPIService {
     void setAdresses(Context context);
     void setHousesList(Context context);
     void removePhoto(Photo photo, Context context);
+    void setHouses(List<House> houses);
 
 }

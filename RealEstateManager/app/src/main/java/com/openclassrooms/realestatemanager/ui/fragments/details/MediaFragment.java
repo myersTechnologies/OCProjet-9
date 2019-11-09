@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.events.ImageEvent;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
 import com.openclassrooms.realestatemanager.ui.adapters.details.MediaFragmentAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,21 +65,5 @@ public class MediaFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe
-    public void getFullSizeImage(ImageEvent event) {
-        service.setPhoto(event.photo);
-    }
 }
 

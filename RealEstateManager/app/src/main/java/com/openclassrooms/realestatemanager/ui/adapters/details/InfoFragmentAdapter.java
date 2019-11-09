@@ -23,6 +23,8 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+import java.text.DecimalFormat;
+
 
 public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -86,8 +88,23 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if (holderView.getItemViewType() == 1) {
             SecondViewHolder holder = (SecondViewHolder) holderView;
-            holder.priceTitle.setText(house.getPrice());
 
+            String valeurString = house.getPrice();
+            String valeurBrute = valeurString.replaceAll(",", "");
+            DecimalFormat formatter = new DecimalFormat("###,###,###");
+            if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
+                String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
+                String decimalReplacement = resultString.replaceAll("\\s", ",");
+                holder.priceTitle.setText("€" + " " + decimalReplacement);
+            }
+            if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
+                String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
+                String decimalReplacement = resultString.replaceAll("\\s", ",");
+                holder.priceTitle.setText("$ " + decimalReplacement);
+            }
+            if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
+                holder.priceTitle.setText(house.getMonetarySystem() + " " + house.getPrice());
+            }
             for (int i = 0; i < service.getUsers().size(); i++){
                 if (service.getUsers().get(i).getUserId().equals(house.getAgentId())){
                     Glide.with(holder.itemView.getContext()).load(service.getUsers().get(i).getPhotoUri())

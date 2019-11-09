@@ -4,7 +4,9 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -61,16 +63,32 @@ public class SecondActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
+
+
         service = DI.getService();
+        service.setActivity(this, "second");
         firebaseHelper = DI.getFirebaseDatabase();
+
+        if (service.getHousesList() == null) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    service.setHousesList(getApplicationContext());
+                    service.setHousesDetails(getApplicationContext());
+                    service.setAdresses(getApplicationContext());
+                    service.setPhotos(getApplicationContext());
+                    service.setMyHousesList(getMyHouses());
+                }
+            }, 1000);
+        }
+
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-
-        List<House> houses = firebaseHelper.getHouseFromFirebase();
-        Toast.makeText(this, String.valueOf(houses.size()), Toast.LENGTH_SHORT).show();
-
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -118,8 +136,6 @@ public class SecondActivity extends AppCompatActivity
             }
 
         }
-
-        service.setMyHousesList(getMyHouses());
 
 
 
@@ -256,5 +272,6 @@ public class SecondActivity extends AppCompatActivity
             startActivityForResult(intent, 90);
         }
     }
+
 
 }

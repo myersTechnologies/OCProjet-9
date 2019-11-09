@@ -29,6 +29,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -53,10 +54,10 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public AddNewHouseAdapter(){
         if (service.getHousesList().size() > 0) {
-            this.house = new House(String.valueOf(service.getHousesList().size() + 1), "",
+            this.house = new House(UUID.randomUUID().toString(), "",
                      "0", false, service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
         } else {
-            this.house = new House(String.valueOf(1), "", "0", false,
+            this.house = new House(UUID.randomUUID().toString(), "", "0", false,
                     service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
         }
         adressHouse = new AdressHouse("", "", "", "", "", "", "");
@@ -254,10 +255,12 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         holder.price.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
             @Override
@@ -267,7 +270,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     if (editable.toString().contains(",")) {
                         house.setPrice(formatter.format(Integer.parseInt(editable.toString().replaceAll(",", ""))).replaceAll("\\s", ","));
                     } else {
-                        house.setPrice(formatter.format(Integer.parseInt(editable.toString())).replaceAll("\\s", ","));
+                        try {
+                            house.setPrice(formatter.format(Integer.parseInt(editable.toString())).replaceAll("\\s", ","));
+                        } catch (NumberFormatException e){
+                            editable.clear();
+                        }
                     }
                 }
 

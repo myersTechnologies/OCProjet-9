@@ -1,8 +1,11 @@
 package com.openclassrooms.realestatemanager.firebase;
 
+import android.net.Uri;
+
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 
@@ -23,5 +26,10 @@ public interface FirebaseHelper {
     void addDetailsToFireBase(HouseDetails details);
     void getDetailsFromFireBase();
     List<HouseDetails> getDetails();
+    void addPhotoToFirebase(Photo photo, Uri uploadImage);
+    void getPhotosFromFirebase();
+    List<Photo> getPhotos();
+    void addPhotoToFireStore(Photo photo);
+    void removePhoto(Photo photo);
 
 }

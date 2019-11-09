@@ -1,13 +1,28 @@
 package com.openclassrooms.realestatemanager.firebase;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
@@ -17,6 +32,12 @@ import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +54,7 @@ public class FirebaseService implements FirebaseHelper {
     private List<AdressHouse> adressHouses;
     private List<HouseDetails> detailsList;
     private List<Photo> photos;
+    private List<String> photosArray;
 
     @Override
     public void setUsersList(List<User> users) {
@@ -56,10 +78,12 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public List<User> getUsersFromFireBase() {
-        users = new ArrayList<>();
+        if(users == null) {
+            users = new ArrayList<>();
+        }
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseRef = firebaseDatabase.getReference(USERS);
-        databaseRef.orderByChild("userId").addValueEventListener(new ValueEventListener() {
+        DatabaseReference databaseRef = firebaseDatabase.getReference();
+        databaseRef.child(USERS).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -68,7 +92,9 @@ public class FirebaseService implements FirebaseHelper {
                     String email = postSnapshot.child("email").getValue().toString();
                     String image = postSnapshot.child("photoUri").getValue().toString();
                     User user = new User(id, name, email, image);
-                    users.add(user);
+                    if (!users.contains(user)) {
+                        users.add(user);
+                    }
                 }
             }
 
@@ -83,7 +109,9 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public List<House> getHouseFromFirebase() {
 
-        houses = new ArrayList<>();
+        if (houses == null) {
+            houses = new ArrayList<>();
+        }
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("house");
@@ -100,8 +128,9 @@ public class FirebaseService implements FirebaseHelper {
                     String measureUnity = postSnapshot.child("measureUnity").getValue().toString();
                     House house = new House(id,name, price, Boolean.parseBoolean(available), monetarySystem, measureUnity);
                     house.setAgentId(agentId);
-                    houses.add(house);
-
+                    if (!houses.contains(house)) {
+                        houses.add(house);
+                    }
                 }
             }
 
@@ -172,7 +201,9 @@ public class FirebaseService implements FirebaseHelper {
                     String country = postSnapshot.child("country").getValue().toString();
                     String zipCode = postSnapshot.child("zipCode").getValue().toString();
                     AdressHouse adressHouse = new AdressHouse(id, houseId, adress, city, state, country, zipCode);
-                    adressHouses.add(adressHouse);
+                    if (!adressHouses.contains(adressHouse)) {
+                        adressHouses.add(adressHouse);
+                    }
                 }
             }
 
@@ -229,7 +260,9 @@ public class FirebaseService implements FirebaseHelper {
                         soldDate= postSnapshot.child("soldDate").getValue().toString();
                         details.setSoldDate(soldDate);
                     }
-                    detailsList.add(details);
+                    if (!detailsList.contains(details)) {
+                        detailsList.add(details);
+                    }
                 }
             }
 
@@ -244,6 +277,157 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public List<HouseDetails> getDetails() {
         return detailsList;
+    }
+
+    @Override
+    public void addPhotoToFirebase(Photo photo, Uri uploadImage) {
+        Photo newPhoto = new Photo(photo.getPhotoUrl(), photo.getDescription(), photo.getHouseId());
+        newPhoto.setId(photo.getId());
+        newPhoto.setPhotoUrl(uploadImage.getLastPathSegment().replaceAll("\\.", ","));
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseRef = firebaseDatabase.getReference("photos");
+        databaseRef.child(String.valueOf(newPhoto.getId())).setValue(newPhoto);
+        photos.add(photo);
+    }
+
+    @Override
+    public void addPhotoToFireStore(Photo photo) {
+        Uri uploadImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference photoRef = storageRef.child(uploadImage.getLastPathSegment());
+        photoRef.putFile(uploadImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(DI.getService().getActivity(), "success", Toast.LENGTH_SHORT).show(); }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(DI.getService().getActivity(), "failed", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    Toast.makeText(DI.getService().getActivity(), taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    @Override
+    public void removePhoto(final Photo photo) {
+        Uri deleteImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        StorageReference photoRef = storageRef.child(deleteImage.getLastPathSegment());
+        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(DI.getService().getActivity(), "Success deleted", Toast.LENGTH_SHORT).show();
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference reference = database.getReference("photos");
+                reference.child(photo.getId()).removeValue();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(DI.getService().getActivity(), "Failed delete", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+
+    }
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String filePath;
+        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            filePath = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            filePath = cursor.getString(idx);
+            cursor.close();
+        }
+        return filePath;
+    }
+
+    @Override
+    public void getPhotosFromFirebase() {
+        if (photosArray == null){
+            photosArray = new ArrayList<>();
+        }
+        if (photos == null){
+            photos = new ArrayList<>();
+        }
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseRef = firebaseDatabase.getReference("photos");
+        databaseRef.orderByChild("id").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    String id = postSnapshot.child("id").getValue().toString();
+                    String houseId = postSnapshot.child("houseId").getValue().toString();
+                    String description = postSnapshot.child("description").getValue().toString();
+                    final String photoUrl = postSnapshot.child("photoUrl").getValue().toString().replaceAll(",", ".");
+                    final Photo photo = new Photo(photoUrl, description, houseId);
+                    photo.setId(id);
+                    if (!photos.contains(photo)) {
+
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+                        storageReference.child(photoUrl).getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(DI.getService().getActivity(), "urifailed", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                StorageReference urlRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri.toString());
+                                final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", photo.getPhotoUrl());
+                                if (!localFile.exists()) {
+                                    urlRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            photo.setPhotoUrl(localFile.toString());
+                                            Toast.makeText(DI.getService().getActivity(), "Download at " + photo.getPhotoUrl(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(DI.getService().getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                            Toast.makeText(DI.getService().getActivity(), "progress " + localFile.toString() +
+                                                    "\n" + taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    photo.setPhotoUrl(localFile.toString());
+                                }
+
+                                photos.add(photo);
+                            }
+                        });
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+    @Override
+    public List<Photo> getPhotos() {
+        return photos;
     }
 
 

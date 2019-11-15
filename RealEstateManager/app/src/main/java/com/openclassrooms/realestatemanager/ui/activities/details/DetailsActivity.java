@@ -69,6 +69,7 @@ public class DetailsActivity extends AppCompatActivity {
                 }
                 return true;
             case R.id.search:
+
                 return true;
             case android.R.id.home:
                 Intent listIntent = new Intent(this, SecondActivity.class);

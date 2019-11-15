@@ -55,14 +55,10 @@ public class DetailsContentProvider extends ContentProvider {
         throw new IllegalArgumentException("Failed to insert row into " + uri);
     }
 
+    //Not used
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String where, @Nullable String[] whereStrings) {
-        if (getContext() != null){
-            final int count = SaveToDatabase.getInstance(getContext()).houseDetailsDao().deleteHouseDetailsFromProvider(where);
-            getContext().getContentResolver().delete(URI_ITEM, where, whereStrings);
-            return count;
-        }
-        throw new IllegalArgumentException("Failed to delete row into " + uri);
+    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+        return 0;
     }
 
 

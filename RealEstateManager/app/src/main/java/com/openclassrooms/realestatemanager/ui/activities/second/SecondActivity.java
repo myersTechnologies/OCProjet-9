@@ -104,38 +104,26 @@ public class SecondActivity extends AppCompatActivity
 
         userEmail.setText(service.getUser().getEmail());
 
-        if (service.getPreferences() == null) {
-            if (service.getUser() != null) {
-                userName.setText(service.getUser().getName());
-                if (service.getUser().getPhotoUri().contains("google")) {
-                    Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
-                } else {
-                    Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
-                            .apply(RequestOptions.circleCropTransform()).into(userPhoto);
-                }
-            }
-            Glide.with(this).load(R.drawable.main_image).into(imageHeader);
-        } else {
-            userName.setText(service.getPreferences().getUserName());
-            userEmail.setText(service.getUser().getEmail());
 
-            if (service.getPreferences().getUserPhoto() != null) {
+        userName.setText(service.getPreferences().getUserName());
+        userEmail.setText(service.getUser().getEmail());
+
+        if (service.getPreferences().getUserPhoto() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getUserPhoto())).apply(RequestOptions.circleCropTransform()).into(userPhoto);
+        } else {
+            if (service.getUser().getPhotoUri().contains("google")) {
+                Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
             } else {
-                if (service.getUser().getPhotoUri().contains("google")) {
-                    Glide.with(this).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(userPhoto);
-                } else {
-                    Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
+                Glide.with(this).load(service.getUser().getPhotoUri() + "?" + "type=large")
                             .apply(RequestOptions.circleCropTransform()).into(userPhoto);
                 }
             }
+
             if (service.getPreferences().getMenuImage() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
-
-        }
 
 
 
@@ -229,23 +217,6 @@ public class SecondActivity extends AppCompatActivity
             case R.id.nav_tools:
                 Intent settings = new Intent(this, Settings.class);
                 startActivity(settings);
-                break;
-            case R.id.nav_logout:
-                if (service.getUser().getPhotoUri().contains("google")) {
-                    GoogleSignInOptions gso = new GoogleSignInOptions.
-                            Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                            build();
-
-                    GoogleSignInClient googleSignInClient= GoogleSignIn.getClient(this,gso);
-                    googleSignInClient.signOut();
-                } else {
-                    LoginManager.getInstance().logOut();
-                }
-                FirebaseAuth.getInstance().signOut();
-                service.setUser(null);
-                service.setPreferences(null);
-                Intent intent = new Intent(this, MainActivity.class);
-                startActivity(intent);
                 break;
         }
 

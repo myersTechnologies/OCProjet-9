@@ -22,19 +22,11 @@ public interface HouseDetailsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDetails(HouseDetails houseDetails);
 
-    @Delete
-    void deleteDetails(HouseDetails houseDetails);
-
-    @Update
-    void updateDetails(HouseDetails details);
-
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHouseDetailsProvider(HouseDetails houseDetails);
 
     @Query("SELECT * FROM HouseDetails WHERE id = :detailsId")
     Cursor getHouseDetailsWithCursor(String detailsId);
-
 
     @Update
     int updateHouseDetailsProvider(HouseDetails houseDetails);

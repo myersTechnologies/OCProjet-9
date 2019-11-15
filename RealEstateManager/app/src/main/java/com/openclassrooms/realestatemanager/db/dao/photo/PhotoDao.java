@@ -25,10 +25,6 @@ public interface PhotoDao {
     @Delete
     void deletePhoto(Photo photo);
 
-    @Update
-    void updatePhoto(Photo photo);
-
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPhotoProvider(Photo photo);
 

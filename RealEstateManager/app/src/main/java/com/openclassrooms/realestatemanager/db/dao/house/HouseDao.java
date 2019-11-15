@@ -24,9 +24,6 @@ public interface HouseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertHouse(House house);
 
-    @Delete
-    void deleteHouse(House house);
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHouseProvider(House photo);

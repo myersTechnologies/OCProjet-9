@@ -25,6 +25,7 @@ import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
+import com.openclassrooms.realestatemanager.utils.SearchHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -70,16 +71,23 @@ public class ListFragment extends Fragment {
         layoutManager = new LinearLayoutManager(view.getContext());
         service = DI.getService();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                houses = service.getHousesList();
-                if (houses != null) {
-                    initList();
+        if (SearchHelper.getHousesList() == null) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    houses = service.getHousesList();
+                    if (houses != null) {
+                        adapter = new ListFragmentAdapter(houses, getActivity());
+                        initList();
+                    }
                 }
-            }
-        }, 2000);
+            }, 2000);
+        } else {
+            adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
+            Toast.makeText(getActivity(), String.valueOf(SearchHelper.getHouses().size()), Toast.LENGTH_SHORT).show();
+            initList();
+        }
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(housesList.getContext(),
                 layoutManager.getOrientation());
@@ -90,7 +98,6 @@ public class ListFragment extends Fragment {
 
 
     private void initList() {
-        adapter = new ListFragmentAdapter(houses, getActivity());
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
     }

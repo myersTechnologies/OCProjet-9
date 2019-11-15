@@ -21,9 +21,6 @@ public interface AdressDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAdress(AdressHouse adressHouse);
 
-   @Delete
-    void deleteAdress(AdressHouse adressHouse);
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertAdressProvider(AdressHouse adressHouse);
 

@@ -23,13 +23,6 @@ public interface PreferencesDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPreferences(Preferences preferences);
 
-   @Delete
-    void deletePrefences(Preferences preferences);
-
-    @Update
-    void updatePreferences(Preferences preferences);
-
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPreferencesProvider(Preferences preferences);
 

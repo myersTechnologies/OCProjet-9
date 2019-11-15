@@ -20,13 +20,11 @@ public interface UserDao {
     User getUser();
 
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertUserProvider(User user);
 
     @Query("SELECT * FROM user WHERE user_id = :userId")
     Cursor getUserWithCursor(String userId);
-
 
     @Update
     int updateUserProvider(User user);

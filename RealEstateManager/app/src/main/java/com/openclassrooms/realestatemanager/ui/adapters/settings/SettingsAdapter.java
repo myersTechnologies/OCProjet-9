@@ -285,34 +285,25 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        int viewPosition = 0;
         switch (position){
             case 0:
-                viewPosition = 0;
                 return 0;
             case 1:
-                viewPosition = 1;
                 return 1;
             case 2:
-                viewPosition = 2;
                 return 2;
             case 3:
-                viewPosition = 3;
                 return 3;
             case 4:
-                viewPosition = 4;
                 return 4;
             case 5:
-                viewPosition = 5;
                 return 5;
             case 6:
-                viewPosition = 6;
                 return 6;
             case 7:
-                viewPosition = 7;
                 return 7;
         }
-        return viewPosition;
+        return position;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{

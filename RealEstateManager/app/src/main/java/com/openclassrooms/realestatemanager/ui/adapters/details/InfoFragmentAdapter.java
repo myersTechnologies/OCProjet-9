@@ -62,19 +62,12 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (holderView.getItemViewType() == 0) {
             ViewHolder holder = (ViewHolder) holderView;
             if (details != null) {
-                if (service.getPreferences().getMeasureUnity().equals(house.getMeasureUnity())) {
-                    holder.surfaceText.setText(details.getSurface() + " " + house.getMeasureUnity());
-                }
-                if (service.getPreferences().getMeasureUnity().equals("sq") && house.getMeasureUnity().equals("m")) {
-                    holder.surfaceText.setText(Utils.convertMetersToSquare(Integer.parseInt(details.getSurface())) + " " + "sq");
-                }
-                if (service.getPreferences().getMeasureUnity().equals("m") && house.getMeasureUnity().equals("sq")) {
-                    holder.surfaceText.setText(Utils.convertSquaresToMeters(Integer.parseInt(details.getSurface())) + " " + "m");
-                }
 
-            holder.roomsText.setText(String.valueOf(details.getRoomsNumber()));
-            holder.bathroomsText.setText(String.valueOf(details.getBathroomsNumber()));
-            holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
+                holder.surfaceText.setText(Utils.getMeasureWithMeasureSystem(house, details));
+
+                holder.roomsText.setText(String.valueOf(details.getRoomsNumber()));
+                holder.bathroomsText.setText(String.valueOf(details.getBathroomsNumber()));
+                holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
             for (int i = 0; i < database.adressDao().getAdresses().size(); i++){
                 AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
                 if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))){
@@ -93,19 +86,8 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             String valeurString = house.getPrice();
             String valeurBrute = valeurString.replaceAll(",", "");
             DecimalFormat formatter = new DecimalFormat("###,###,###");
-            if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
-                String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
-                String decimalReplacement = resultString.replaceAll("\\s", ",");
-                holder.priceTitle.setText("€" + " " + decimalReplacement);
-            }
-            if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
-                String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
-                String decimalReplacement = resultString.replaceAll("\\s", ",");
-                holder.priceTitle.setText("$ " + decimalReplacement);
-            }
-            if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
-                holder.priceTitle.setText(house.getMonetarySystem() + " " + house.getPrice());
-            }
+            holder.priceTitle.setText(Utils.getPriceWithMonetarySystem(valeurBrute, house, formatter));
+
             for (int i = 0; i < service.getUsers().size(); i++){
                 if (service.getUsers().get(i).getUserId().equals(house.getAgentId())){
                     Glide.with(holder.itemView.getContext()).load(service.getUsers().get(i).getPhotoUri())

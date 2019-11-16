@@ -1,16 +1,22 @@
 package com.openclassrooms.realestatemanager.utils;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.MediaStore;
+
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -110,5 +116,54 @@ public class Utils {
         }
 
         return SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().getPhotos();
+    }
+
+    public static String getRealPathFromURI(Uri contentURI) {
+        String filePath;
+        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            filePath = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            filePath = cursor.getString(idx);
+            cursor.close();
+        }
+        return filePath;
+    }
+
+    public static String getPriceWithMonetarySystem(String valeurBrute, House house, DecimalFormat formatter){
+        RealEstateManagerAPIService service = DI.getService();
+        String result = null;
+        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
+            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            result = "€" + " " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
+            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            result = "$ " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
+            result = house.getMonetarySystem() + " " + house.getPrice();
+        }
+        return result;
+    }
+
+    public static String getMeasureWithMeasureSystem(House house, HouseDetails details){
+        RealEstateManagerAPIService service = DI.getService();
+        String result = null;
+        if (service.getPreferences().getMeasureUnity().equals(house.getMeasureUnity())) {
+            result = details.getSurface() + " " + house.getMeasureUnity();
+        }
+        if (service.getPreferences().getMeasureUnity().equals("sq") && house.getMeasureUnity().equals("m")) {
+            result = Utils.convertMetersToSquare(Integer.parseInt(details.getSurface())) + " " + "sq";
+        }
+        if (service.getPreferences().getMeasureUnity().equals("m") && house.getMeasureUnity().equals("sq")) {
+            result = Utils.convertSquaresToMeters(Integer.parseInt(details.getSurface())) + " " + "m";
+        }
+
+        return result;
     }
 }

@@ -46,18 +46,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
 
-        if(viewType== 0)
+        if(viewType== 0 || viewType == 1)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.money_type_layout,parent,false);
             viewHolder = new ViewHolder(view);
         }
-
-        if(viewType== 1)
-        {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.money_type_layout,parent,false);
-            viewHolder = new ViewHolder(view);
-        }
-
 
         if (viewType == 2)
         {
@@ -65,33 +58,18 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewHolder= new UserNameViewHolder(view);
         }
 
-        if (viewType == 3)
-        {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_image_layout,parent,false);
-            viewHolder= new ImageViewHolder(view);
-        }
-
-        if (viewType == 4)
+        if (viewType == 3 || viewType == 4)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_image_layout,parent,false);
             viewHolder= new ImageViewHolder(view);
         }
 
 
-        if (viewType == 5){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
-            viewHolder= new DeleteTypeViewHolder(view);
+        if (viewType == 5 || viewType == 6){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.button_layout,parent,false);
+            viewHolder= new ButtonViewHolder(view);
         }
 
-        if (viewType == 6){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
-            viewHolder= new DeleteTypeViewHolder(view);
-        }
-
-        if (viewType == 7){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
-            viewHolder= new DeleteTypeViewHolder(view);
-        }
 
         return viewHolder;
     }
@@ -130,20 +108,17 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             getMenuImageListener(imageViewHolder);
         } else if (holderView.getItemViewType() == 5){
-            DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
-            deleteTypeViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-            deleteTypeViewHolder.button.setText("Default settings");
-            deleteTypeViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
-            getButtonDefaultListener(deleteTypeViewHolder);
+            ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
+            buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+            buttonViewHolder.button.setText("Default settings");
+            buttonViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
+            getButtonDefaultListener(buttonViewHolder);
         } else if (holderView.getItemViewType() == 6){
-            DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
-            getButtonDeleteListener(deleteTypeViewHolder);
-        } else if (holderView.getItemViewType() == 7){
-            DeleteTypeViewHolder deleteTypeViewHolder = (DeleteTypeViewHolder) holderView;
-            deleteTypeViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-            deleteTypeViewHolder.button.setText("Confirm changes");
-            deleteTypeViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
-            getConfirmChanges(deleteTypeViewHolder);
+            ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
+            buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+            buttonViewHolder.button.setText("Confirm changes");
+            buttonViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
+            getConfirmChanges(buttonViewHolder);
         }
 
     }
@@ -227,7 +202,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-    private void getButtonDefaultListener(DeleteTypeViewHolder holder){
+    private void getButtonDefaultListener(ButtonViewHolder holder){
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,7 +215,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-    private void getButtonDeleteListener(DeleteTypeViewHolder holder){
+    private void getButtonDeleteListener(ButtonViewHolder holder){
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -249,7 +224,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-    private void getConfirmChanges(final DeleteTypeViewHolder holder){
+    private void getConfirmChanges(final ButtonViewHolder holder){
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,12 +236,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-
-
-
     @Override
     public int getItemCount() {
-        return 8;
+        return 7;
     }
 
     @Override
@@ -286,8 +258,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 return 5;
             case 6:
                 return 6;
-            case 7:
-                return 7;
         }
         return position;
     }
@@ -323,11 +293,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    static class DeleteTypeViewHolder extends RecyclerView.ViewHolder{
+    static class ButtonViewHolder extends RecyclerView.ViewHolder{
 
         private Button button;
 
-        public DeleteTypeViewHolder(View itemView) {
+        public ButtonViewHolder(View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.delete_account_btn);
         }

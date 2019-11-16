@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.text.DecimalFormat;
@@ -119,8 +117,10 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
             }
 
-            String totalHouses =  getTotalAndMonetarySystem(house, formatter, formatter.format(countAllListSize).replaceAll("\\s", ""));
-            String  totalOwn = getTotalAndMonetarySystem(myHouse, formatter, formatter.format(countTotal).replaceAll("\\s", ""));
+            String valeurBruteTotal =  formatter.format(countAllListSize).replaceAll("\\s", "");
+            String totalHouses =  Utils.getPriceWithMonetarySystem(valeurBruteTotal, house, formatter);
+            String myValeurBrute = formatter.format(countTotal).replaceAll("\\s", "");
+            String  totalOwn = Utils.getPriceWithMonetarySystem(myValeurBrute, myHouse, formatter);
 
             progressViewHolder.progressBar.setMax(countAllListSize);
             progressViewHolder.textView.setText("For a total of " + totalOwn + "/" + totalHouses);
@@ -128,27 +128,6 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
 
-    }
-
-    private String getTotalAndMonetarySystem(House house, DecimalFormat formatter, String valeurBrute){
-        RealEstateManagerAPIService service = DI.getService();
-        String price = null;
-        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
-            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
-            String decimalReplacement = resultString.replaceAll("\\s", ",");
-            price = "€" + " " + decimalReplacement;
-        }
-        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
-            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
-            String decimalReplacement = resultString.replaceAll("\\s", ",");
-            price = "$ " + decimalReplacement;
-        }
-        if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
-            String resultString = formatter.format(Integer.parseInt(valeurBrute));
-            String result = resultString.replaceAll("\\s ", ",");
-            price = service.getPreferences().getMonetarySystem() + " " + result;
-        }
-        return price;
     }
 
     @Override

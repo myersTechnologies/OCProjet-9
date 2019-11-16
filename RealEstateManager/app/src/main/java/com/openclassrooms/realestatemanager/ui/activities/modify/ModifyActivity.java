@@ -35,6 +35,7 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class ModifyActivity extends AppCompatActivity {
             }
         }
 
-        adapter = new ModifyAdapter(service.getHouse(), houseImages, details);
+        adapter = new ModifyAdapter(service.getHouse(), houseImages, details, this);
         modifyHouseList.setAdapter(adapter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(modifyHouseList.getContext(),
@@ -113,7 +114,7 @@ public class ModifyActivity extends AppCompatActivity {
                 return true;
 
             case R.id.confirm_add:
-                if (checkAllData(ModifyAdapter.getData())) {
+                if (checkAllData(AddModifyHouseHelper.getData())) {
                     getViewsAndAddHouse();
                     Intent intent = new Intent(this, DetailsActivity.class);
                     startActivity(intent);
@@ -129,7 +130,7 @@ public class ModifyActivity extends AppCompatActivity {
         textEmpty = new ArrayList<>();
         List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
         checkPhotos.remove(PhotoListAdapter.getAddPhoto());
-        if (ModifyAdapter.gethouse().getName() != "Select..."){
+        if (AddModifyHouseHelper.getHouse().getName() != "Select..."){
             dataSize++;
         } else {
             textEmpty.add("Name");
@@ -153,7 +154,7 @@ public class ModifyActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
-            ModifyAdapter.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
             return false;
         }
     }
@@ -164,19 +165,19 @@ public class ModifyActivity extends AppCompatActivity {
 
     private void getViewsAndAddHouse() {
 
-        house = ModifyAdapter.gethouse();
+        house = AddModifyHouseHelper.getHouse();
         service.addHouseToList(house, this);
-        for (int i = 0; i < ModifyAdapter.getPhotos().size(); i++){
-            if (!database.photoDao().getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
-                Photo photo = ModifyAdapter.getPhotos().get(i);
-                service.addPhotos(ModifyAdapter.getPhotos().get(i), this);
+        for (int i = 0; i < AddModifyHouseHelper.getPhotos().size(); i++){
+            if (!database.photoDao().getPhotos().contains(AddModifyHouseHelper.getPhotos().get(i))){
+                Photo photo = AddModifyHouseHelper.getPhotos().get(i);
+                service.addPhotos(AddModifyHouseHelper.getPhotos().get(i), this);
                 FirebaseHelper helper = DI.getFirebaseDatabase();
                 helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
                 helper.addPhotoToFireStore(photo);
             }
         }
-        service.addHousesDetails(ModifyAdapter.getDetails(), this);
-        service.addAdresses(ModifyAdapter.getAdressHouse(), this);
+        service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), this);
+        service.addAdresses(AddModifyHouseHelper.getAdressHouse(), this);
         service.setHouse(house);
         sendNotification();
 
@@ -242,9 +243,9 @@ public class ModifyActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     Uri imageUri = data.getData();
                     Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
-                                String.valueOf(ModifyAdapter.gethouse().getId()));
+                                String.valueOf(AddModifyHouseHelper.getHouse().getId()));
                     photo.setId(UUID.randomUUID().toString());
-                    ModifyAdapter.getPhotos().add(photo);
+                    AddModifyHouseHelper.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
             });

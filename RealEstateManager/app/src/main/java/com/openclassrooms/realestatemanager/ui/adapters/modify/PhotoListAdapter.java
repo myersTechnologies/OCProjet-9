@@ -22,7 +22,7 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 
 import java.util.List;
 
@@ -85,13 +85,13 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
             @Override
             public void onClick(View view) {
                 if (service.activityName().equals("AddHouse")) {
-                    AddNewHouseAdapter.getPhotos().remove(photos.get(position));
+                    AddModifyHouseHelper.getPhotos().remove(photos.get(position));
                     notifyDataSetChanged();
                 }
                 if (service.activityName().equals("Modify")) {
                     Photo photo = photos.get(position);
                     service.removePhoto(photos.get(i), holder.itemView.getContext());
-                    ModifyAdapter.getPhotos().remove(photo);
+                    AddModifyHouseHelper.getPhotos().remove(photo);
                     notifyDataSetChanged();
                 }
             }

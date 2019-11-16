@@ -60,22 +60,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         String valeurString = house.getPrice();
         String valeurBrute = valeurString.replaceAll(",", "");
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
-            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
-            String decimalReplacement = resultString.replaceAll("\\s", ",");
-            holder.housePrice.setText("€" + " " + decimalReplacement);
-        }
-        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
-            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
-            String decimalReplacement = resultString.replaceAll("\\s", ",");
-            holder.housePrice.setText("$ " + decimalReplacement);
-        }
-        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("€")){
-            holder.housePrice.setText("€" + " " + house.getPrice());
-        }
-        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("$")){
-            holder.housePrice.setText("$" + " " + house.getPrice());
-        }
+        holder.housePrice.setText(Utils.getPriceWithMonetarySystem(valeurBrute, house, formatter));
 
         List<Photo> photoList = new ArrayList<>();
         if (database.photoDao().getPhotos() != null) {

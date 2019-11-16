@@ -70,7 +70,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         if (viewType == 8){
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_account_layout,parent,false);
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.button_layout,parent,false);
             viewHolder = new ButtonViewHolder(view);
         }
         return viewHolder;

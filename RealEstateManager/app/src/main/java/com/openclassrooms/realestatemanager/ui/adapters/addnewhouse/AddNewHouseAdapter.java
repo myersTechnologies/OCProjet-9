@@ -3,41 +3,20 @@ package com.openclassrooms.realestatemanager.ui.adapters.addnewhouse;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.model.AdressHouse;
-import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.model.HouseDetails;
-import com.openclassrooms.realestatemanager.model.Photo;
-import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
-import com.openclassrooms.realestatemanager.utils.Utils;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 
 public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private RealEstateManagerAPIService service = DI.getService();
-    private String[] houseTypes = new String[]{"Select...", "Maison", "Appartement", "Terrain", "Propriété", "Commerce", "Bureau",
-            "Immeuble", "Parking/Garage", "Château", "Manoir"};
 
     private int LAYOUT_ONE = 0;
     private int LAYOUT_TWO = 1;
@@ -45,30 +24,12 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
-    private static List<EditText> data;
-    private  static AdressHouse adressHouse;
     private static PhotoListAdapter adapter;
-    private static List<Photo> photos = new ArrayList<>();
-    private static HouseDetails houseDetails;
     private SaveToDatabase database ;
-
-    private static House house;
 
     public AddNewHouseAdapter(Context context){
         database = SaveToDatabase.getInstance(context);
-
-        if (database.houseDao().getHouses().size() > 0) {
-            this.house = new House(UUID.randomUUID().toString(), "",
-                     "0", false, service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
-        } else {
-            this.house = new House(UUID.randomUUID().toString(), "", "0", false,
-                    service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
-        }
-        adressHouse = new AdressHouse("", "", "", "", "", "", "");
-        houseDetails = new HouseDetails(house.getId(), house.getId());
-        houseDetails.setOnLineDate(Utils.getTodayDate());
-        data = new ArrayList<>();
-
+        AddModifyHouseHelper.setNewAdd(database);
     }
 
     @Override
@@ -111,34 +72,25 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        int layout = 0;
-
         switch (position){
             case 0:
-                layout = LAYOUT_ONE;
-                return layout;
+                return LAYOUT_ONE;
             case 1:
-                layout = LAYOUT_TWO;
-                return layout;
+                return LAYOUT_TWO;
             case 2:
-                layout = LAYOUT_TREE;
-                return layout;
+                return LAYOUT_TREE;
             case 3:
-                layout = LAYOUT_FOUR;
-                return layout;
+                return LAYOUT_FOUR;
             case 4:
-                layout = LAYOUT_FIVE;
-                return layout;
+                return LAYOUT_FIVE;
             case 5:
-                layout = LAYOUT_SIX;
-                return layout;
+                return LAYOUT_SIX;
         }
-        return layout;
+        return position;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
-        Toast.makeText(holderView.itemView.getContext(), house.getId(), Toast.LENGTH_SHORT ).show();
         if (holderView.getItemViewType() == LAYOUT_ONE) {
             ViewHolder holder = (ViewHolder) holderView;
             setTextWatchersViewHolder(holder);
@@ -152,221 +104,39 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageViewViewHolder imageViewViewHolder = (ImageViewViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
-            adapter = new PhotoListAdapter(photos, house.getId(), imageViewViewHolder.itemView.getContext());
+            adapter = new PhotoListAdapter(AddModifyHouseHelper.getPhotos(), AddModifyHouseHelper.getHouse().getId(), imageViewViewHolder.itemView.getContext());
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
-            final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
-            statusViewHolder.available.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (statusViewHolder.available.isChecked()){
-                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
-                        statusViewHolder.available.setChecked(false);
-                    } else {
-                        statusViewHolder.available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
-                        statusViewHolder.available.setChecked(true);
-                        house.setAvailable(true);
-                    }
-                }
-            });
-            statusViewHolder.sold.setEnabled(false);
+            StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
+            setAvailibilityListener(statusViewHolder);
         }
     }
 
-    private void setTextWatchersViewHolder(final ViewHolder holder){
+    private void setTextWatchersViewHolder(ViewHolder holder) {
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        holder.nameText.setAdapter(adapter);
-        if (house.getName() != null){
-            holder.nameText.setSelection(Arrays.asList(houseTypes).indexOf(house.getName()));
-        }
-
-        holder.nameText.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                house.setName(adapterView.getItemAtPosition(i).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        holder.surfaceText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    houseDetails.setSurface(editable.toString());
-                }
-            }
-        });
-
-        holder.bathroomsText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    houseDetails.setBathroomsNumber(editable.toString());
-                }
-            }
-        });
-
-        holder.roomsText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    houseDetails.setRoomsNumber(editable.toString());
-                }
-            }
-        });
-        holder.bedroomsText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    houseDetails.setBedroomsNumber(editable.toString());
-                }
-            }
-        });
-
-        holder.price.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    DecimalFormat formatter = new DecimalFormat("###,###,###");
-                    if (editable.toString().contains(",")) {
-                        house.setPrice(formatter.format(Integer.parseInt(editable.toString().replaceAll(",", ""))).replaceAll("\\s", ","));
-                    } else {
-                        try {
-                            house.setPrice(formatter.format(Integer.parseInt(editable.toString())).replaceAll("\\s", ","));
-                        } catch (NumberFormatException e){
-                            editable.clear();
-                        }
-                    }
-                }
-
-            }
-        });
+        AddModifyHouseHelper.spinnerListener(holder.nameText, holder.nameText.getContext());
+        AddModifyHouseHelper.getEditTextTextWatcher(holder.surfaceText);
+        AddModifyHouseHelper.getEditTextTextWatcher(holder.roomsText);
+        AddModifyHouseHelper.getEditTextTextWatcher(holder.bedroomsText);
+        AddModifyHouseHelper.getEditTextTextWatcher(holder.bathroomsText);
+        AddModifyHouseHelper.getEditTextTextWatcher(holder.price);
 
     }
 
     private void setLocationTextWatcher(LocationViewHolder locationViewHolder){
-        locationViewHolder.locationText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                adressHouse.setAdress(editable.toString());
-            }
-        });
-        locationViewHolder.city.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                adressHouse.setCity(editable.toString());
-            }
-        });
-        locationViewHolder.zipCode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!TextUtils.isEmpty(editable)) {
-                    adressHouse.setZipCode(editable.toString());
-                }
-            }
-        });
-        locationViewHolder.state.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                adressHouse.setState(editable.toString());
-            }
-        });
-        locationViewHolder.country.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                adressHouse.setCountry(editable.toString());
-            }
-        });
+        AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.locationText);
+        AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.city);
+        AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.state);
+        AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.zipCode);
+        AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.country);
     }
 
     private void setTextWatcherToDescriptionViewHolder(DescriptionViewHolder descriptionHolder){
-        descriptionHolder.descriptionContent.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+        AddModifyHouseHelper.getEditTextTextWatcher(descriptionHolder.descriptionContent);
+    }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                houseDetails.setDescription(editable.toString());
-            }
-        });
+    private void setAvailibilityListener(StatusViewHolder statusViewHolder){
+        AddModifyHouseHelper.setCheckTextListener(statusViewHolder.available, statusViewHolder.sold);
     }
 
 
@@ -397,13 +167,13 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             roomsText.setTag("Rooms");
             bathroomsText.setTag("Bathrooms");
             bedroomsText.setTag("Bedrooms");
+            price.setTag("Price");
 
-
-            data.add(surfaceText);
-            data.add(roomsText);
-            data.add(bathroomsText);
-            data.add(bedroomsText);
-            data.add(price);
+            AddModifyHouseHelper.addToData(surfaceText);
+            AddModifyHouseHelper.addToData(roomsText);
+            AddModifyHouseHelper.addToData(bathroomsText);
+            AddModifyHouseHelper.addToData(bedroomsText);
+            AddModifyHouseHelper.addToData(price);
         }
     }
 
@@ -416,7 +186,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             descriptionContent = itemView.findViewById(R.id.description_edit_text_edit);
             descriptionContent.setTag("Description");
-            data.add(descriptionContent);
+            AddModifyHouseHelper.addToData(descriptionContent);
         }
     }
 
@@ -443,11 +213,11 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             state.setTag("State");
             country.setTag("Country");
 
-            data.add(locationText);
-            data.add(city);
-            data.add(zipCode);
-            data.add(state);
-            data.add(country);
+            AddModifyHouseHelper.addToData(locationText);
+            AddModifyHouseHelper.addToData(city);
+            AddModifyHouseHelper.addToData(zipCode);
+            AddModifyHouseHelper.addToData(state);
+            AddModifyHouseHelper.addToData(country);
         }
     }
     static class ImageViewViewHolder extends RecyclerView.ViewHolder{
@@ -455,9 +225,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public ImageViewViewHolder(View itemView) {
             super(itemView);
-
             imageRecyclerView = itemView.findViewById(R.id.photos_items_list);
-
         }
     }
 
@@ -481,19 +249,4 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    public static List<EditText> getData(){
-        return data;
-    }
-
-    public static House getHouse(){
-        return house;
-    }
-
-    public static AdressHouse getAdressHouse(){return adressHouse;}
-
-    public static List<Photo> getPhotos(){
-        return photos;
-    }
-
-    public static HouseDetails getHouseDetails(){return houseDetails;}
 }

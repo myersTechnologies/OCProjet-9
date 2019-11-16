@@ -35,6 +35,8 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -93,7 +95,7 @@ public class AddHouseActivity extends AppCompatActivity {
                 PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
                 return true;
             case R.id.confirm_add:
-                if (checkAllData(AddNewHouseAdapter.getData())) {
+                if (checkAllData(AddModifyHouseHelper.getData())) {
                     getViewsAndAddHouse();
                 } else {
                     setDialogErrorEmptyCases();
@@ -109,7 +111,7 @@ public class AddHouseActivity extends AppCompatActivity {
         List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
         checkPhotos.remove( PhotoListAdapter.getAddPhoto());
         int dataSize = 0;
-        if (AddNewHouseAdapter.getHouse().getName() != "Select..."){
+        if (AddModifyHouseHelper.getHouse().getName() != "Select..."){
             dataSize++;
         } else {
             textEmpty.add("Name");
@@ -122,7 +124,7 @@ public class AddHouseActivity extends AppCompatActivity {
             }
         }
 
-        if (AddNewHouseAdapter.getHouse().isAvailable()){
+        if (AddModifyHouseHelper.getHouse().isAvailable()){
             dataSize++;
         } else {
             textEmpty.add("Availability");
@@ -140,7 +142,7 @@ public class AddHouseActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
-            AddNewHouseAdapter.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
             return false;
         }
     }
@@ -171,17 +173,17 @@ public class AddHouseActivity extends AppCompatActivity {
 
     private void getViewsAndAddHouse() {
 
-        final House house = AddNewHouseAdapter.getHouse();
+        final House house = AddModifyHouseHelper.getHouse();
 
         if (service.getUser() != null){
             house.setAgentId(service.getUser().getUserId());
         }
         service.addHouseToList(house, this);
         service.setHouse(house);
-        AdressHouse adress = AddNewHouseAdapter.getAdressHouse();
+        AdressHouse adress = AddModifyHouseHelper.getAdressHouse();
         adress.setId(String.valueOf(house.getId()));
         adress.setHouseId(String.valueOf(house.getId()));
-        service.addHousesDetails(AddNewHouseAdapter.getHouseDetails(), this);
+        service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), this);
         service.addAdresses(adress, this);
         for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
             final Photo photo = PhotoListAdapter.getAllPhotos().get(i);
@@ -191,7 +193,7 @@ public class AddHouseActivity extends AppCompatActivity {
                 public void run() {
                     service.addPhotos(photo, getApplicationContext());
                     final  FirebaseHelper helper = DI.getFirebaseDatabase();
-                    helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                    helper.addPhotoToFirebase(photo, Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
                     helper.addPhotoToFireStore(photo);
                 }
                 }, 1000);
@@ -210,20 +212,6 @@ public class AddHouseActivity extends AppCompatActivity {
 
     }
 
-    //full path to image to string
-    private String getRealPathFromURI(Uri contentURI) {
-        String filePath;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
-        if (cursor == null) {
-            filePath = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            filePath = cursor.getString(idx);
-            cursor.close();
-        }
-        return filePath;
-    }
 
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == 100) {
@@ -252,9 +240,9 @@ public class AddHouseActivity extends AppCompatActivity {
                     Uri imageUri = data.getData();
                     Photo photo;
                     photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
-                            AddNewHouseAdapter.getHouse().getId());
+                            AddModifyHouseHelper.getHouse().getId());
                     photo.setId(UUID.randomUUID().toString());
-                    AddNewHouseAdapter.getPhotos().add(photo);
+                    AddModifyHouseHelper.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
                 }
             });

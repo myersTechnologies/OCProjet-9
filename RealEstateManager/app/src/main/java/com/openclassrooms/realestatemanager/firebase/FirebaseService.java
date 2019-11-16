@@ -25,6 +25,7 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.User;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -279,13 +280,14 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addPhotoToFireStore(Photo photo) {
-        Uri uploadImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference photoRef = storageRef.child(uploadImage.getLastPathSegment());
-        photoRef.putFile(uploadImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference photoRef = storageRef.child(uploadImage.getLastPathSegment());
+            photoRef.putFile(uploadImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(DI.getService().getActivity(), "success", Toast.LENGTH_SHORT).show(); }
+                    Toast.makeText(DI.getService().getActivity(), "success", Toast.LENGTH_SHORT).show();
+                }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -301,23 +303,25 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void removePhoto(final Photo photo) {
-        Uri deleteImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
-        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-        StorageReference photoRef = storageRef.child(deleteImage.getLastPathSegment());
-        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(DI.getService().getActivity(), "Success deleted", Toast.LENGTH_SHORT).show();
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference reference = database.getReference("photos");
-                reference.child(photo.getId()).removeValue();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(DI.getService().getActivity(), "Failed delete", Toast.LENGTH_LONG).show();
-            }
-        });
+        if (photos.contains(photo)) {
+            Uri deleteImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+            StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+            StorageReference photoRef = storageRef.child(deleteImage.getLastPathSegment());
+            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(DI.getService().getActivity(), "Success deleted", Toast.LENGTH_SHORT).show();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference reference = database.getReference("photos");
+                    reference.child(photo.getId()).removeValue();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(DI.getService().getActivity(), "Failed delete", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
 
     }
 
@@ -361,7 +365,6 @@ public class FirebaseService implements FirebaseHelper {
                         storageReference.child(photoUrl).getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(DI.getService().getActivity(), "urifailed", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override

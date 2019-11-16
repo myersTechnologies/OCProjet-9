@@ -21,7 +21,6 @@ import java.util.List;
 public interface RealEstateManagerAPIService {
     void setHouse(House house);
     House getHouse();
-    List<House> getHousesList();
     void addHouseToList(House house, Context context);
     void setActivity(Activity activity, String name);
     String activityName();
@@ -36,17 +35,13 @@ public interface RealEstateManagerAPIService {
     List<House> getMyHouses();
     List<User> getUsers();
     void setUsers(List<User> users);
-    List<AdressHouse> getAdressesList();
     void addAdresses (AdressHouse adresses, Context context);
     void addPhotos(Photo photo, Context context);
-    List<Photo> getPhotos();
-    List<HouseDetails> getHousesDetails();
     void addHousesDetails(HouseDetails houseDetails, Context context);
     void setHousesDetails(Context context);
     void setPhotos(Context context);
     void setAdresses(Context context);
     void setHousesList(Context context);
     void removePhoto(Photo photo, Context context);
-    void setHouses(List<House> houses);
 
 }

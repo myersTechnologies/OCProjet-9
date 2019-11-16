@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
@@ -21,20 +20,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
@@ -42,7 +35,6 @@ import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsAct
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
-import com.openclassrooms.realestatemanager.ui.activities.main.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,22 +48,20 @@ public class SecondActivity extends AppCompatActivity
     private List<House> myHouses;
     private List<User> users;
     private FirebaseHelper firebaseHelper;
-    private Preferences preferences;
+    private SaveToDatabase database = SaveToDatabase.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-
-
         service = DI.getService();
         service.setActivity(this, "second");
         firebaseHelper = DI.getFirebaseDatabase();
 
-        if (service.getHousesList() == null) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+        //Loads all list from firebase to sql database
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     service.setHousesList(getApplicationContext());
@@ -80,10 +70,7 @@ public class SecondActivity extends AppCompatActivity
                     service.setPhotos(getApplicationContext());
                     service.setMyHousesList(getMyHouses());
                 }
-            }, 1000);
-        }
-
-
+            }, 500);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -108,6 +95,7 @@ public class SecondActivity extends AppCompatActivity
         userName.setText(service.getPreferences().getUserName());
         userEmail.setText(service.getUser().getEmail());
 
+        //check kind of photo
         if (service.getPreferences().getUserPhoto() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getUserPhoto())).apply(RequestOptions.circleCropTransform()).into(userPhoto);
         } else {
@@ -119,21 +107,21 @@ public class SecondActivity extends AppCompatActivity
                 }
             }
 
+        //check if user set a custom image
             if (service.getPreferences().getMenuImage() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
 
-
-
     }
 
     public List<House> getMyHouses(){
         myHouses = new ArrayList<>();
-        for (int i = 0; i < service.getHousesList().size(); i++){
-            if (service.getHousesList().get(i).getAgentId().equals(service.getUser().getUserId())){
-                myHouses.add(service.getHousesList().get(i));
+        for (int i = 0; i < database.houseDao().getHouses().size(); i++){
+            House house = database.houseDao().getHouses().get(i);
+            if (house.getAgentId().equals(service.getUser().getUserId())){
+                myHouses.add(house);
             }
         }
         return myHouses;

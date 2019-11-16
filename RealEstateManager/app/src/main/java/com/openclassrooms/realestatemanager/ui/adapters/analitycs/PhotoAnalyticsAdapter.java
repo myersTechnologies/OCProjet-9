@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.analitycs;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,21 +12,23 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsAdapter.ViewHolder> {
 
     private List<House> myHouses;
+    private SaveToDatabase database;
+    private Context context;
 
-    public PhotoAnalyticsAdapter(List<House> myHouses) {
+    public PhotoAnalyticsAdapter(List<House> myHouses, Context context) {
         this.myHouses = myHouses;
+        this.context = context;
+        database = SaveToDatabase.getInstance(context);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
     public void onBindViewHolder(ViewHolder holder, int position) {
         ViewHolder viewHolder = holder;
         final House house = myHouses.get(position);
-        List<Photo> photos = DI.getService().getPhotos();
+        List<Photo> photos = database.photoDao().getPhotos();
         for (int i = 0; i < photos.size(); i++){
             if (photos.get(i).getHouseId().equals(String.valueOf(house.getId()))){
                 Glide.with(viewHolder.itemView.getContext()).load(photos.get(i).getPhotoUrl()).into(viewHolder.houseImg);
@@ -49,8 +52,8 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
             @Override
             public void onClick(View view) {
                 DI.getService().setHouse(house);
-                Intent intent = new Intent(DI.getService().getActivity(), DetailsActivity.class);
-                DI.getService().getActivity().startActivity(intent);
+                Intent intent = new Intent(context, DetailsActivity.class);
+                context.startActivity(intent);
             }
         });
         viewHolder.descriptionText.setText(myHouses.get(position).getName());

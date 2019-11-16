@@ -1,9 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
-import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -19,19 +17,15 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment {
@@ -42,14 +36,7 @@ public class ListFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private List<House> houses;
     private RealEstateManagerAPIService service;
-    private static ListFragment listFragment;
-
-    public static ListFragment newInstance(){
-        if (listFragment == null) {
-            listFragment = new ListFragment();
-        }
-        return listFragment;
-    }
+    private SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
 
     public ListFragment() {
         // Required empty public constructor
@@ -71,12 +58,13 @@ public class ListFragment extends Fragment {
         layoutManager = new LinearLayoutManager(view.getContext());
         service = DI.getService();
 
+        //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    houses = service.getHousesList();
+                    houses = database.houseDao().getHouses();
                     if (houses != null) {
                         adapter = new ListFragmentAdapter(houses, getActivity());
                         initList();

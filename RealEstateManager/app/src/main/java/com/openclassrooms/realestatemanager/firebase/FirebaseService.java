@@ -1,13 +1,10 @@
 package com.openclassrooms.realestatemanager.firebase;
 
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +17,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.openclassrooms.realestatemanager.DI.DI;
@@ -28,16 +24,9 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
-import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
-import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -213,8 +202,6 @@ public class FirebaseService implements FirebaseHelper {
             }
 
         });
-
-
         return adressHouses;
     }
 
@@ -332,8 +319,6 @@ public class FirebaseService implements FirebaseHelper {
             }
         });
 
-
-
     }
 
     private String getRealPathFromURI(Uri contentURI) {
@@ -409,10 +394,8 @@ public class FirebaseService implements FirebaseHelper {
                                 photos.add(photo);
                             }
                         });
-
                     }
                 }
-
             }
 
             @Override
@@ -420,15 +403,11 @@ public class FirebaseService implements FirebaseHelper {
 
             }
         });
-
-
-
     }
 
     @Override
     public List<Photo> getPhotos() {
         return photos;
     }
-
 
 }

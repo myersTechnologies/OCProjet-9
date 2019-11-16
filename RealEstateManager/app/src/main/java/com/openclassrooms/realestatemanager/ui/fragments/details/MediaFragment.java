@@ -1,26 +1,19 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.events.DetailsEvent;
-import com.openclassrooms.realestatemanager.events.ImageEvent;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
 import com.openclassrooms.realestatemanager.ui.adapters.details.MediaFragmentAdapter;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +26,7 @@ public class MediaFragment extends Fragment {
     private GridView photosList;
     private MediaFragmentAdapter adapter;
     private static MediaFragment mediaFragment;
-    private RealEstateManagerAPIService service = DI.getService();
+    private SaveToDatabase database = SaveToDatabase.getInstance(getContext());
 
     public static MediaFragment newInstance(){
         mediaFragment = new MediaFragment();
@@ -53,10 +46,11 @@ public class MediaFragment extends Fragment {
        photosList = view.findViewById(R.id.photos_list);
         RealEstateManagerAPIService service = DI.getService();
         List<Photo> mediaPhotos = new ArrayList<>();
-        if (service.getPhotos() != null) {
-            for (int i = 0; i < service.getPhotos().size(); i++) {
-                if (service.getPhotos().get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))) {
-                    mediaPhotos.add(service.getPhotos().get(i));
+        if (database.photoDao().getPhotos() != null) {
+            for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
+                Photo photo = database.photoDao().getPhotos().get(i);
+                if (photo.getHouseId().equals(String.valueOf(service.getHouse().getId()))) {
+                    mediaPhotos.add(photo);
                 }
             }
         }

@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.details;
 
-import android.app.Activity;
-import android.app.FragmentManager;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
@@ -31,11 +27,15 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private House house;
     private RealEstateManagerAPIService service;
     private HouseDetails details;
+    private SaveToDatabase database;
+    private Context context;
 
-    public InfoFragmentAdapter(House house, HouseDetails details) {
+    public InfoFragmentAdapter(House house, HouseDetails details, Context context) {
         this.house = house;
         service = DI.getService();
         this.details = details;
+        this.context = context;
+        database = SaveToDatabase.getInstance(context);
     }
 
     @Override
@@ -75,9 +75,10 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.roomsText.setText(String.valueOf(details.getRoomsNumber()));
             holder.bathroomsText.setText(String.valueOf(details.getBathroomsNumber()));
             holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
-            for (int i = 0; i < service.getAdressesList().size(); i++){
-                if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
-                    AdressHouse findedHouse = service.getAdressesList().get(i);
+            for (int i = 0; i < database.adressDao().getAdresses().size(); i++){
+                AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
+                if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))){
+                    AdressHouse findedHouse = adressHouse;
                     holder.locationText.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
                             "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
                 }
@@ -125,16 +126,13 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        int i = 0;
         switch (position){
             case 0:
-                i = 0;
                 return 0;
             case 1:
-                i = 1;
                 return 1;
         }
-        return i;
+        return position;
     }
 
     @Override

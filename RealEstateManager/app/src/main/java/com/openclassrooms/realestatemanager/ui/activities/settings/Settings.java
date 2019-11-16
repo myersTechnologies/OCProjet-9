@@ -27,8 +27,6 @@ public class Settings extends AppCompatActivity {
     private SettingsAdapter settingsAdapter;
     private RealEstateManagerAPIService service = DI.getService();
     private String image;
-    private FirebaseHelper firebaseHelper = DI.getFirebaseDatabase();
-    private SaveToDatabase database = SaveToDatabase.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

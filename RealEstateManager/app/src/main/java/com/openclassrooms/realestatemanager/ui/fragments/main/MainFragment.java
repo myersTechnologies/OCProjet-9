@@ -10,9 +10,6 @@ import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.R;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class MainFragment extends Fragment {
 
 

@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.ui.adapters.details;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.events.DetailsEvent;
-import com.openclassrooms.realestatemanager.events.ImageEvent;
 import com.openclassrooms.realestatemanager.model.Photo;
-import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
 
-import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.util.List;
 
 public class MediaFragmentAdapter extends BaseAdapter {

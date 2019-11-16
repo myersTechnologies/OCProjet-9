@@ -35,8 +35,10 @@ public class DetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(service.getHouse().getName());
+
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.container);
+
         pagerAdapter = new DetailsActivityPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));

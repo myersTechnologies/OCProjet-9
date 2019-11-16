@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.addnewhouse;
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
@@ -48,12 +50,14 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private static PhotoListAdapter adapter;
     private static List<Photo> photos = new ArrayList<>();
     private static HouseDetails houseDetails;
-
+    private SaveToDatabase database ;
 
     private static House house;
 
-    public AddNewHouseAdapter(){
-        if (service.getHousesList().size() > 0) {
+    public AddNewHouseAdapter(Context context){
+        database = SaveToDatabase.getInstance(context);
+
+        if (database.houseDao().getHouses().size() > 0) {
             this.house = new House(UUID.randomUUID().toString(), "",
                      "0", false, service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
         } else {
@@ -148,7 +152,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageViewViewHolder imageViewViewHolder = (ImageViewViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
-            adapter = new PhotoListAdapter(photos, house.getId());
+            adapter = new PhotoListAdapter(photos, house.getId(), imageViewViewHolder.itemView.getContext());
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;

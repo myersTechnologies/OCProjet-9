@@ -101,29 +101,22 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        int layout = 0;
 
         switch (position){
             case 0:
-                layout = LAYOUT_ONE;
-                return layout;
+                return LAYOUT_ONE;
             case 1:
-                layout = LAYOUT_TWO;
-                return layout;
+                return LAYOUT_TWO;
             case 2:
-                layout = LAYOUT_TREE;
-                return layout;
+                return LAYOUT_TREE;
             case 3:
-                layout = LAYOUT_FOUR;
-                return layout;
+                return LAYOUT_FOUR;
             case 4:
-                layout = LAYOUT_FIVE;
-                return layout;
+                return LAYOUT_FIVE;
             case 5:
-                layout = LAYOUT_SIX;
-                return layout;
+                return LAYOUT_SIX;
         }
-        return layout;
+        return position;
     }
 
     @Override
@@ -146,7 +139,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
              imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
              PhotoListAdapter adapter;
-             adapter = new PhotoListAdapter(photos, house.getId());
+             adapter = new PhotoListAdapter(photos, house.getId(), imageViewViewHolder.itemView.getContext());
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } if (holderView.getItemViewType() == LAYOUT_SIX){
             final StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
@@ -211,7 +204,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setLocationTextToViewHolder(LocationViewHolder locationViewHolder){
-        List<AdressHouse> adresses = DI.getService().getAdressesList();
+        List<AdressHouse> adresses = SaveToDatabase.getInstance(locationViewHolder.itemView.getContext()).adressDao().getAdresses();
         for (int i = 0; i < adresses.size(); i++){
             if (adresses.get(i).getHouseId().equals(String.valueOf(house.getId()))){
                 adressHouse = adresses.get(i);

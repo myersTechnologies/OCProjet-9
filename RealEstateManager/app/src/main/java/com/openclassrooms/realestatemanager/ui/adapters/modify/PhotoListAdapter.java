@@ -23,10 +23,7 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
-import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
-import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 
-import java.io.File;
 import java.util.List;
 
 public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.ViewHolder>  {
@@ -36,9 +33,10 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
     private Context context;
     private RealEstateManagerAPIService service;
 
-    public PhotoListAdapter(List<Photo> photos, String houseId ) {
+    public PhotoListAdapter(List<Photo> photos, String houseId, Context context ) {
         service = DI.getService();
-        Uri photoUri = Uri.parse(service.getActivity().getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
+        this.context = context;
+        Uri photoUri = Uri.parse(context.getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
         addPhoto = new Photo(photoUri.toString(), "Add new photo", houseId);
         addPhoto.setId("jjjj");
         if (photos.size() > 0) {

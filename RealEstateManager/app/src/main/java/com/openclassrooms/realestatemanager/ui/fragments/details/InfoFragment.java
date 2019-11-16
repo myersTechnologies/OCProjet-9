@@ -2,28 +2,23 @@ package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class InfoFragment extends Fragment {
 
     private static InfoFragment infoFragment;
@@ -31,9 +26,9 @@ public class InfoFragment extends Fragment {
     private RecyclerView infoList;
     private LinearLayoutManager layoutManager;
     private InfoFragmentAdapter adapter;
-    private FirebaseHelper helper = DI.getFirebaseDatabase();
     private HouseDetails details;
-    List<HouseDetails> houseDetailsList;
+    private List<HouseDetails> houseDetailsList;
+    private SaveToDatabase database = SaveToDatabase.getInstance(getContext());
 
     public static InfoFragment newInstance(){
         infoFragment = new InfoFragment();
@@ -54,19 +49,16 @@ public class InfoFragment extends Fragment {
         infoList = view.findViewById(R.id.info_list);
         layoutManager = new LinearLayoutManager(getContext());
 
-        houseDetailsList = service.getHousesDetails();
+        houseDetailsList = database.houseDetailsDao().getDetails();
         for (HouseDetails houseDetails : houseDetailsList){
             if (houseDetails.getId().equals(service.getHouse().getId())){
                 details = houseDetails;
             }
         }
 
-        adapter = new InfoFragmentAdapter(service.getHouse(), details);
+        adapter = new InfoFragmentAdapter(service.getHouse(), details, getContext());
         infoList.setLayoutManager(layoutManager);
         infoList.setAdapter(adapter);
-
-
-
 
         return view;
     }

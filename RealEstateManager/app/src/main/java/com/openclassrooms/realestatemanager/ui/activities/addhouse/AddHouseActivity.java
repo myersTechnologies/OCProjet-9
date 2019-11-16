@@ -33,7 +33,6 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 
@@ -47,7 +46,7 @@ public class AddHouseActivity extends AppCompatActivity {
 
     private RecyclerView addNewHouseToDoList;
     private LinearLayoutManager layoutManager;
-    private static AddNewHouseAdapter adapter;
+    private AddNewHouseAdapter adapter;
     private RealEstateManagerAPIService service;
     private List<String> textEmpty;
 
@@ -56,17 +55,22 @@ public class AddHouseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_house);
+        //Initialize service
         service = DI.getService();
+
+        //initialize toolbar
         Toolbar toolbar = findViewById(R.id.toolbar_new_house);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //initialize recycler view
         addNewHouseToDoList = findViewById(R.id.new_house_list);
         layoutManager = new LinearLayoutManager(this);
         addNewHouseToDoList.setLayoutManager(layoutManager);
-        adapter = new AddNewHouseAdapter();
+        adapter = new AddNewHouseAdapter(this);
         addNewHouseToDoList.setAdapter(adapter);
+        //divider
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
                 layoutManager.getOrientation());
         addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
@@ -76,7 +80,6 @@ public class AddHouseActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.add_house_menu, menu);
         return true;
     }
@@ -99,6 +102,8 @@ public class AddHouseActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //Check if all data is filled else return false to show AlertDialog
     private boolean checkAllData(List<EditText> data){
         textEmpty = new ArrayList<>();
         List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
@@ -140,6 +145,7 @@ public class AddHouseActivity extends AppCompatActivity {
         }
     }
 
+     // check if edit text is empty
     private boolean isEmpty(EditText editText){
         return editText.length() == 0|| editText.equals("");
     }
@@ -204,9 +210,10 @@ public class AddHouseActivity extends AppCompatActivity {
 
     }
 
+    //full path to image to string
     private String getRealPathFromURI(Uri contentURI) {
         String filePath;
-        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) {
             filePath = contentURI.getPath();
         } else {
@@ -262,8 +269,6 @@ public class AddHouseActivity extends AppCompatActivity {
             AlertDialog alert = notifyNewPhoto.create();
             alert.getWindow().setGravity(Gravity.BOTTOM);
             alert.show();
-
-
         }
     }
 
@@ -279,10 +284,6 @@ public class AddHouseActivity extends AppCompatActivity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, 90);
         }
-    }
-
-    public static AddNewHouseAdapter getAdapter(){
-        return adapter;
     }
 
     private void sendNotification(House house){

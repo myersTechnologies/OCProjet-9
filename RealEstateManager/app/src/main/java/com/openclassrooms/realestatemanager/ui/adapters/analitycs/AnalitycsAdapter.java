@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.adapters.analitycs;
 
-import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,17 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.Utils;
-
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -75,7 +69,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     saleHouses.add(myHouses.get(i));
                 }
             }
-            PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(saleHouses);
+            PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(saleHouses, holder.itemView.getContext());
             holder.recyclerView.setAdapter(adapter);
         }
         if (holderView.getItemViewType() == 2){
@@ -92,7 +86,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     soldHouses.add(myHouses.get(i));
                 }
             }
-            PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(soldHouses);
+            PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(soldHouses, holder.itemView.getContext());
             holder.recyclerView.setAdapter(adapter);
         }
         if (holderView.getItemViewType() == 4){

@@ -23,18 +23,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
-import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
@@ -44,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//Almost the same as Add nEW New House Activity
 public class ModifyActivity extends AppCompatActivity {
 
     private RecyclerView modifyHouseList;
@@ -53,13 +51,16 @@ public class ModifyActivity extends AppCompatActivity {
     private House house;
     private List<String> textEmpty;
     private List<Photo> houseImages;
-    HouseDetails details;
+    private HouseDetails details;
+    private SaveToDatabase database = SaveToDatabase.getInstance(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify);
+
         service = DI.getService();
+
         Toolbar toolbar = findViewById(R.id.toolbar_modify_house);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -68,23 +69,26 @@ public class ModifyActivity extends AppCompatActivity {
         modifyHouseList = findViewById(R.id.modify_list);
         layoutManager = new LinearLayoutManager(this);
         modifyHouseList.setLayoutManager(layoutManager);
-        List<Photo> photos = service.getPhotos();
+        List<Photo> photos = database.photoDao().getPhotos();
         houseImages = new ArrayList<>();
         for (int i = 0; i < photos.size(); i++){
             if (photos.get(i).getHouseId().equals(String.valueOf(service.getHouse().getId()))){
                 houseImages.add(photos.get(i));
             }
         }
-        List<HouseDetails> houseDetailsList = service.getHousesDetails();
+        List<HouseDetails> houseDetailsList = database.houseDetailsDao().getDetails();
         for (HouseDetails houseDetails : houseDetailsList){
             if (houseDetails.getId().equals(service.getHouse().getId())){
                 details = houseDetails;
             }
         }
+
         adapter = new ModifyAdapter(service.getHouse(), houseImages, details);
         modifyHouseList.setAdapter(adapter);
+
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(modifyHouseList.getContext(),
                 layoutManager.getOrientation());
+
         modifyHouseList.addItemDecoration(dividerItemDecoration);
 
         service.setActivity(this, "Modify");
@@ -163,7 +167,7 @@ public class ModifyActivity extends AppCompatActivity {
         house = ModifyAdapter.gethouse();
         service.addHouseToList(house, this);
         for (int i = 0; i < ModifyAdapter.getPhotos().size(); i++){
-            if (!service.getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
+            if (!database.photoDao().getPhotos().contains(ModifyAdapter.getPhotos().get(i))){
                 Photo photo = ModifyAdapter.getPhotos().get(i);
                 service.addPhotos(ModifyAdapter.getPhotos().get(i), this);
                 FirebaseHelper helper = DI.getFirebaseDatabase();
@@ -180,7 +184,7 @@ public class ModifyActivity extends AppCompatActivity {
 
     private String getRealPathFromURI(Uri contentURI) {
         String filePath;
-        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) {
             filePath = contentURI.getPath();
         } else {

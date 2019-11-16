@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.utils;
 
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
@@ -61,15 +60,17 @@ public class SearchHelper {
     }
 
     private static void checkBedrooms(HouseDetails details) {
+        if (search.getBedroomsMin() != null && search.getBedroomsMax() != null) {
             if (Integer.parseInt(details.getBedroomsNumber()) >= Integer.parseInt(search.getBedroomsMin())
                     && Integer.parseInt(details.getBedroomsNumber()) <= Integer.parseInt(search.getBedroomsMax())) {
-                for (int i = 0; i < database.houseDao().getHouses().size(); i++){
-                    if (database.houseDao().getHouses().get(i).getId().equals(details.getHouseId())){
+                for (int i = 0; i < database.houseDao().getHouses().size(); i++) {
+                    if (database.houseDao().getHouses().get(i).getId().equals(details.getHouseId())) {
                         checkPrice(database.houseDao().getHouses().get(i), details);
                     }
                 }
 
             }
+        }
     }
 
     private static void checkPrice(House house, HouseDetails details){
@@ -127,18 +128,22 @@ public class SearchHelper {
     }
 
     private static void checkSurface(HouseDetails details){
+        if (search.getSurfaceMin() != null && search.getSurfaceMax() != null) {
             if (Integer.parseInt(details.getSurface()) >= Integer.parseInt(search.getSurfaceMin())
                     && Integer.parseInt(details.getSurface()) <= Integer.parseInt(search.getSurfaceMax())) {
                 checkRooms(details);
             }
+        }
 
     }
 
     private static void checkRooms(HouseDetails details){
+        if (search.getRoomsMin() != null && search.getRoomsMax() != null) {
             if (Integer.parseInt(details.getRoomsNumber()) >= Integer.parseInt(search.getRoomsMin())
-                    && Integer.parseInt(details.getRoomsNumber()) <= Integer.parseInt(search.getRoomsMax())){
-                    checkBathrooms(details);
+                    && Integer.parseInt(details.getRoomsNumber()) <= Integer.parseInt(search.getRoomsMax())) {
+                checkBathrooms(details);
             }
+        }
 
     }
 
@@ -156,6 +161,11 @@ public class SearchHelper {
     public static void setNewSearch(){
         search = new Search();
         houses = new ArrayList<>();
+    }
+
+    public static void setNull(){
+        search = null;
+        houses = null;
     }
 
 }

@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.adapters.search;
 
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,20 +19,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
-import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,8 +36,10 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
     private Context context;
     private String[] houseTypes = new String[]{"Select Type...", "Maison", "Appartement", "Terrain", "Propriété", "Commerce", "Bureau",
             "Immeuble", "Parking/Garage", "Château", "Manoir"};
+    private SaveToDatabase database;
     public SearchAdapter(Context context) {
         this.context = context;
+        database = SaveToDatabase.getInstance(context);
         SearchHelper.setNewSearch();
     }
 
@@ -125,7 +121,6 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if (position == 6){
-            SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
             SpinnerViewHolder holder = (SpinnerViewHolder) holderView;
             List<String> cities = new ArrayList<>();
             cities.add("Choose a city...");
@@ -241,7 +236,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     private String getBedroomsMax(){
-        List<HouseDetails> detailsList = SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().getDetails();
+        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
         String bedroomsMax = null;
         int max = 0;
         for (int i = 0; i < detailsList.size(); i++) {
@@ -259,7 +254,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private String getRoomsMax(){
-        List<HouseDetails> detailsList = SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().getDetails();
+        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
         String roomsMax = null;
         int max = 0;
         for (int i = 0; i < detailsList.size(); i++) {
@@ -277,7 +272,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private String getSurfaceMax(){
-        List<HouseDetails> detailsList = SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().getDetails();
+        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
         String surfaceText = null;
         int max = 0;
         for (int i = 0; i < detailsList.size(); i++) {

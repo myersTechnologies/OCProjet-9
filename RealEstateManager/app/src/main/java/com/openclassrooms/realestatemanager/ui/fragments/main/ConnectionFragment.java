@@ -5,10 +5,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -47,26 +45,19 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
-import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.util.List;
-
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ConnectionFragment extends Fragment implements View.OnClickListener {
 
-    Button offlineLogin;
-    CallbackManager callbackManager;
-    LoginButton loginButton;
+    private Button offlineLogin;
+    private CallbackManager callbackManager;
+    private LoginButton loginButton;
     private FirebaseAuth mAuth;
     private Intent secondActivity;
     private RealEstateManagerAPIService service;
@@ -252,12 +243,14 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference("users");
 
+        //save user to database
         SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
         if (database.userDao().getUser() == null) {
             database.userDao().createUserTable(user);
         }
 
 
+        //check preferences
         Preferences preferences = database.preferencesDao().getPreferences();
         if (preferences != null){
             if (preferences.getUserId().equals(userId)) {

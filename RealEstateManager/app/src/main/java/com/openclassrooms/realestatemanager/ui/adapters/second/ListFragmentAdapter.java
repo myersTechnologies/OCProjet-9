@@ -1,17 +1,14 @@
 package com.openclassrooms.realestatemanager.ui.adapters.second;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.util.Util;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
@@ -19,30 +16,26 @@ import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
-import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapter.ViewHolder>  {
 
     private List<House> houses;
-    private Context context;
     private RealEstateManagerAPIService service;
     private House house;
+    private SaveToDatabase database;
 
     public ListFragmentAdapter(List<House> houses, Context context){
         this.houses = houses;
-        this.context = context;
         service = DI.getService();
+        database = SaveToDatabase.getInstance(context);
     }
 
 
@@ -58,9 +51,10 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         house = houses.get(position);
         holder.houseName.setText(house.getName());
 
-        for (int i = 0; i < service.getAdressesList().size(); i++){
-            if (service.getAdressesList().get(i).getHouseId().equals(String.valueOf(house.getId()))){
-                holder.houseAdress.setText(service.getAdressesList().get(i).getCity());
+        for (int i = 0; i < database.adressDao().getAdresses().size(); i++){
+            AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
+            if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))){
+                holder.houseAdress.setText(adressHouse.getCity());
             }
         }
         String valeurString = house.getPrice();
@@ -84,9 +78,9 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         }
 
         List<Photo> photoList = new ArrayList<>();
-        if (service.getPhotos() != null) {
-            for (int i = 0; i < service.getPhotos().size(); i++) {
-                Photo photo = service.getPhotos().get(i);
+        if (database.photoDao().getPhotos() != null) {
+            for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
+                Photo photo = database.photoDao().getPhotos().get(i);
                 if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
                     photoList.add(photo);
                 }
@@ -106,8 +100,6 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         });
 
     }
-
-
 
     @Override
     public int getItemCount() {

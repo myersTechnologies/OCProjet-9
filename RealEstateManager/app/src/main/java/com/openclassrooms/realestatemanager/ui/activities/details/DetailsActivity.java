@@ -16,6 +16,7 @@ import com.openclassrooms.realestatemanager.ui.adapters.details.DetailsActivityP
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
+import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -24,6 +25,7 @@ public class DetailsActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DetailsActivityPagerAdapter pagerAdapter;
     private RealEstateManagerAPIService service = DI.getService();
+    private InfoFragment infoFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class DetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(service.getHouse().getName());
+        this.configureAndShowDetailsFragment();
 
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.container);
@@ -53,6 +56,11 @@ public class DetailsActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.second, menu);
         MenuItem item = menu.findItem(R.id.modify);
         item.setVisible(true);
+        if (infoFragment != null && infoFragment.isVisible()){
+            menu.findItem(R.id.search).setVisible(true);
+        } else {
+            menu.findItem(R.id.search).setVisible(false);
+        }
         return true;
     }
 
@@ -82,4 +90,11 @@ public class DetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    protected void configureAndShowDetailsFragment() {
+        infoFragment = (InfoFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_info);
+        if (infoFragment == null && findViewById(R.id.fragment_container_details) != null){
+            infoFragment = new InfoFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
+        }
+    }
 }

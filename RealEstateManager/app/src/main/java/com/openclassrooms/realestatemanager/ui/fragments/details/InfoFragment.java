@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
@@ -48,19 +49,33 @@ public class InfoFragment extends Fragment {
         service = DI.getService();
         infoList = view.findViewById(R.id.info_list);
         layoutManager = new LinearLayoutManager(getContext());
+        if (service.getHouse() != null) {
+            houseDetailsList = database.houseDetailsDao().getDetails();
+            for (HouseDetails houseDetails : houseDetailsList) {
+                if (houseDetails.getId().equals(service.getHouse().getId())) {
+                    details = houseDetails;
+                }
+            }
+
+            adapter = new InfoFragmentAdapter(service.getHouse(), details, getContext());
+            infoList.setLayoutManager(layoutManager);
+            infoList.setAdapter(adapter);
+        }
+
+        return view;
+    }
+
+    public void updateAdapter(House house){
 
         houseDetailsList = database.houseDetailsDao().getDetails();
-        for (HouseDetails houseDetails : houseDetailsList){
-            if (houseDetails.getId().equals(service.getHouse().getId())){
+        for (HouseDetails houseDetails : houseDetailsList) {
+            if (houseDetails.getId().equals(house.getId())) {
                 details = houseDetails;
             }
         }
-
-        adapter = new InfoFragmentAdapter(service.getHouse(), details, getContext());
+        adapter = new InfoFragmentAdapter(house, details, getContext());
         infoList.setLayoutManager(layoutManager);
         infoList.setAdapter(adapter);
-
-        return view;
     }
 
 

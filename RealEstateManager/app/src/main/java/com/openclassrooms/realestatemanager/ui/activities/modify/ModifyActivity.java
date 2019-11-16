@@ -94,7 +94,6 @@ public class ModifyActivity extends AppCompatActivity {
 
         service.setActivity(this, "Modify");
 
-
     }
 
     @Override
@@ -179,6 +178,7 @@ public class ModifyActivity extends AppCompatActivity {
         service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), this);
         service.addAdresses(AddModifyHouseHelper.getAdressHouse(), this);
         service.setHouse(house);
+
         sendNotification();
 
     }

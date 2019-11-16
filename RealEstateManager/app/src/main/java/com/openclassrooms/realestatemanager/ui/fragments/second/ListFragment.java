@@ -18,14 +18,18 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
+import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment {
@@ -37,6 +41,8 @@ public class ListFragment extends Fragment {
     private List<House> houses;
     private RealEstateManagerAPIService service;
     private SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
+    private MediaFragment mediaFragment;
+    private InfoFragment infoFragment;
 
     public ListFragment() {
         // Required empty public constructor
@@ -54,9 +60,13 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
+
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
         service = DI.getService();
+
+        this.configureAndShowMediaFragment();
+        this.configureAndShowDetailsFragment();
 
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
@@ -105,9 +115,33 @@ public class ListFragment extends Fragment {
     @Subscribe
     public void changeFragmentOnClick(DetailsEvent event) {
         service.setHouse(event.house);
-        Intent intent = new Intent(getContext(), DetailsActivity.class);
-        startActivity(intent);
+        if (mediaFragment!= null && mediaFragment.isVisible()){
+            mediaFragment.updateAdapter(event.house);
+            infoFragment.updateAdapter(event.house);
+        }else {
+            Intent intent = new Intent(getContext(), DetailsActivity.class);
+            startActivity(intent);
+        }
     }
+
+
+    protected void configureAndShowMediaFragment() {
+        mediaFragment = (MediaFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_media);
+        if (getActivity().findViewById(R.id.fragment_container_media) != null){
+            mediaFragment = new MediaFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_media, mediaFragment).commit();
+        }
+    }
+
+
+    protected void configureAndShowDetailsFragment() {
+        infoFragment = (InfoFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_info);
+        if (getActivity().findViewById(R.id.fragment_container_details) != null){
+            infoFragment = new InfoFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
+        }
+    }
+
 }
 
 

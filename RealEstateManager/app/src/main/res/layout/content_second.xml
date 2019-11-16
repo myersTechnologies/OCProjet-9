@@ -9,7 +9,7 @@
     tools:showIn="@layout/app_bar_second">
 
     <FrameLayout
-        android:id="@+id/fragment_container_second"
+        android:id="@+id/fragment_container_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

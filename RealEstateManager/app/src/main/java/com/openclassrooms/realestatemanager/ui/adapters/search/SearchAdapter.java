@@ -26,6 +26,7 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 import java.util.ArrayList;
@@ -34,9 +35,8 @@ import java.util.List;
 public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
-    private String[] houseTypes = new String[]{"Select Type...", "Maison", "Appartement", "Terrain", "Propriété", "Commerce", "Bureau",
-            "Immeuble", "Parking/Garage", "Château", "Manoir"};
     private SaveToDatabase database;
+    
     public SearchAdapter(Context context) {
         this.context = context;
         database = SaveToDatabase.getInstance(context);
@@ -80,7 +80,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
         if (position == 0){
             SpinnerViewHolder holder = (SpinnerViewHolder) holderView;
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, houseTypes);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(holder.itemView.getContext(), android.R.layout.simple_spinner_item, AddModifyHouseHelper.getHousesTypes());
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             holder.spinner.setTag("Name");
             holder.spinner.setAdapter(adapter);

@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.adapters.details;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,12 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
+import com.openclassrooms.realestatemanager.ui.adapters.analitycs.AnalitycsAdapter;
 
 
 import java.util.List;
 
-public class MediaFragmentAdapter extends BaseAdapter {
+public class MediaFragmentAdapter extends RecyclerView.Adapter<MediaFragmentAdapter.ViewHolderItem> {
 
     private List<Photo> photos;
     private Context context;
@@ -31,13 +33,31 @@ public class MediaFragmentAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return photos.size();
+    public MediaFragmentAdapter.ViewHolderItem onCreateViewHolder(ViewGroup parent, int viewType) {
+
+       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.media_frag_layout,parent,false);
+       ViewHolderItem   viewHolder = new ViewHolderItem(view);
+
+        return viewHolder;
     }
 
     @Override
-    public Object getItem(int i) {
-        return photos.get(i);
+    public void onBindViewHolder(MediaFragmentAdapter.ViewHolderItem holder, final int position) {
+
+        photo = photos.get(position);
+
+        Glide.with(holder.houseImg.getContext()).load(photo.getPhotoUrl()).into(holder.houseImg);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DI.getService().setPhoto(photos.get(position));
+                Intent intent = new Intent(context, FullScreenImage.class);
+                context.startActivity(intent);
+            }
+        });
+
+        holder.imgDescription.setText(photo.getDescription());
     }
 
     @Override
@@ -46,44 +66,23 @@ public class MediaFragmentAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int i, View view, ViewGroup viewGroup) {
-        ViewHolderItem viewHolder;
-        photo = photos.get(i);
-
-        if (view == null) {
-
-            LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-            view = inflater.inflate(R.layout.media_frag_layout, viewGroup, false);
-
-            viewHolder = new ViewHolderItem();
-            viewHolder.imgDescription = view.findViewById(R.id.media_image_description);
-
-            viewHolder.houseImg = view.findViewById(R.id.media_frag_img_view);
-            view.setTag(viewHolder);
-
-        } else {
-            viewHolder = (ViewHolderItem) view.getTag();
-        }
-
-        Glide.with(viewHolder.houseImg.getContext()).load(photo.getPhotoUrl()).into(viewHolder.houseImg);
-
-        viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DI.getService().setPhoto(photos.get(i));
-                Intent intent = new Intent(context, FullScreenImage.class);
-                context.startActivity(intent);
-            }
-        });
-
-        viewHolder.imgDescription.setText(photos.get(i).getDescription());
-        return view;
+    public int getItemCount() {
+        return photos.size();
     }
 
 
 
-    static class ViewHolderItem {
+
+    static class ViewHolderItem extends RecyclerView.ViewHolder {
         TextView imgDescription;
         ImageView houseImg;
+
+        public ViewHolderItem(View itemView) {
+            super(itemView);
+
+           imgDescription = itemView.findViewById(R.id.media_image_description);
+
+            houseImg = itemView.findViewById(R.id.media_frag_img_view);
+        }
     }
 }

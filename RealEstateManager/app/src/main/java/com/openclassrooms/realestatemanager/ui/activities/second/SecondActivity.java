@@ -30,16 +30,20 @@ import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.BaseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
+import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
+import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecondActivity extends AppCompatActivity
+public class SecondActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView userName, userEmail;
@@ -47,8 +51,11 @@ public class SecondActivity extends AppCompatActivity
     private RealEstateManagerAPIService service;
     private List<House> myHouses;
     private List<User> users;
-    private FirebaseHelper firebaseHelper;
     private SaveToDatabase database = SaveToDatabase.getInstance(this);
+    private ListFragment listFragment;
+    private MediaFragment mediaFragment;
+    private InfoFragment infoFragment;
+    private  Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +64,6 @@ public class SecondActivity extends AppCompatActivity
 
         service = DI.getService();
         service.setActivity(this, "second");
-        firebaseHelper = DI.getFirebaseDatabase();
 
         //Loads all list from firebase to sql database
         Handler handler = new Handler();
@@ -72,7 +78,7 @@ public class SecondActivity extends AppCompatActivity
                 }
             }, 500);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -87,10 +93,12 @@ public class SecondActivity extends AppCompatActivity
         userPhoto = navigationView.getHeaderView(0).findViewById(R.id.imageView);
         imageHeader = navigationView.getHeaderView(0).findViewById(R.id.header_image_view);
 
-        changeFragment(new ListFragment(), "ListFragment");
+       // changeFragment(new ListFragment(), "ListFragment");
+        this.configureAndShowListFragment();
+        this.configureAndShowMediaFragment();
+        this.configureAndShowDetailsFragment();
 
         userEmail.setText(service.getUser().getEmail());
-
 
         userName.setText(service.getPreferences().getUserName());
         userEmail.setText(service.getUser().getEmail());
@@ -107,13 +115,45 @@ public class SecondActivity extends AppCompatActivity
                 }
             }
 
-        //check if user set a custom image
+        //check if user set a custom menu image
             if (service.getPreferences().getMenuImage() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void configureAndShowMediaFragment() {
+        mediaFragment = (MediaFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_media);
+        if (mediaFragment == null && findViewById(R.id.fragment_container_media) != null){
+            mediaFragment = new MediaFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_media, mediaFragment).commit();
+        }
+    }
+
+    @Override
+    protected void configureAndShowDetailsFragment() {
+        infoFragment = (InfoFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_info);
+        if (infoFragment == null && findViewById(R.id.fragment_container_details) != null){
+            infoFragment = new InfoFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
+        }
+    }
+
+    @Override
+    protected void configureAndShowListFragment() {
+        listFragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_list);
+        if (listFragment == null){
+            listFragment = new ListFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_list, listFragment).commit();
+        }
     }
 
     public List<House> getMyHouses(){
@@ -141,7 +181,7 @@ public class SecondActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+             configureAndShowListFragment();
         }
     }
 
@@ -149,6 +189,9 @@ public class SecondActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.second, menu);
+        if(findViewById(R.id.fragment_container_media) != null){
+            menu.findItem(R.id.modify).setVisible(true);
+        }
         return true;
     }
 
@@ -161,6 +204,12 @@ public class SecondActivity extends AppCompatActivity
                 startActivity(intent);
                 return true;
             case R.id.modify:
+                if (service.getHouse() != null) {
+                    if (String.valueOf(service.getHouse().getAgentId()).equals(service.getUser().getUserId())) {
+                        Intent modifyIntent = new Intent(this, ModifyActivity.class);
+                        startActivity(modifyIntent);
+                    }
+                }
                 return true;
             case R.id.search:
                 changeFragment(new SearchFragment(), "Search");
@@ -214,7 +263,7 @@ public class SecondActivity extends AppCompatActivity
     }
 
     private void changeFragment(Fragment fragment, String value) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_second, fragment, value).addToBackStack(value).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_list, fragment, value).addToBackStack(value).commit();
 
     }
 
@@ -231,6 +280,5 @@ public class SecondActivity extends AppCompatActivity
             startActivityForResult(intent, 90);
         }
     }
-
 
 }

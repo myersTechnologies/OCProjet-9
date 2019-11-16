@@ -360,7 +360,6 @@ public class FirebaseService implements FirebaseHelper {
                     final Photo photo = new Photo(photoUrl, description, houseId);
                     photo.setId(id);
                     if (!photos.contains(photo)) {
-
                         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                         storageReference.child(photoUrl).getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                             @Override

@@ -26,7 +26,7 @@
             android:title="@string/menu_tools" />
         <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/ic_place_black_24dp"
+            android:icon="@drawable/map_18dp"
             android:title="Map" />
     </group>
 

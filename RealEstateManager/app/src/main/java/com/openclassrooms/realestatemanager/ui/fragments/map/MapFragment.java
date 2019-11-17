@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.utils.places.GetNearbyPlacesData;
 
 import java.io.IOException;
 import java.util.List;
@@ -76,8 +78,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                 current = new LatLng(location.getLatitude(), location.getLongitude());
 
                 mapView.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_avatar_map)));
                 mapView.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+
 
                 for (int i = 0; i < SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses().size(); i++){
                     AdressHouse adressHouse = SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses().get(i);
@@ -95,10 +98,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
                     }
                 }
 
+                getMapMarker();
 
             }
         }
     };
+
+    //get google maps points of interest
+    public void getMapMarker(){
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+              current.latitude  + "," + current.longitude +
+                "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
+        Log.d("URLHERE",url);
+        Object dataTransfer[] = new Object[3];
+        dataTransfer[0] = url;
+        dataTransfer[1] = getContext();
+        dataTransfer[2] = mapView;
+        GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
+        getNearbyPlacesData.execute(dataTransfer);
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

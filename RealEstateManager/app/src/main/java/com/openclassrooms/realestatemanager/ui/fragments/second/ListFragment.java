@@ -18,18 +18,19 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.ui.fragments.details.DescriptionFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.details.LocationFragment;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
 import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.map.StaticMapFragment;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment {
@@ -43,6 +44,9 @@ public class ListFragment extends Fragment {
     private SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
     private MediaFragment mediaFragment;
     private InfoFragment infoFragment;
+    private StaticMapFragment mapFragment;
+    private LocationFragment locationFragment;
+    private DescriptionFragment descriptionFragment;
 
     public ListFragment() {
         // Required empty public constructor
@@ -67,6 +71,9 @@ public class ListFragment extends Fragment {
 
         this.configureAndShowMediaFragment();
         this.configureAndShowDetailsFragment();
+        this.configureAndShowStaticMap();
+        this.configureAndShowLocationFragment();
+        this.configureAndShowDescriptionFragment();
 
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
@@ -117,17 +124,28 @@ public class ListFragment extends Fragment {
         service.setHouse(event.house);
         if (mediaFragment!= null && mediaFragment.isVisible()){
             mediaFragment.updateAdapter(event.house);
-            infoFragment.updateAdapter(event.house);
+            configureAndShowDetailsFragment();
+            mapFragment.upDateMap(event.house);
+            locationFragment.upDateLocation(event.house);
+            descriptionFragment.upDateDescription(event.house);
         }else {
             Intent intent = new Intent(getContext(), DetailsActivity.class);
             startActivity(intent);
         }
     }
 
+    protected void configureAndShowStaticMap(){
+        mapFragment = (StaticMapFragment)  getActivity().getSupportFragmentManager().findFragmentById(R.id.static_map_fragment);
+        if (mapFragment == null && getActivity().findViewById(R.id.fragment_container_map) != null){
+            mapFragment = new StaticMapFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_map, mapFragment).commit();
+        }
+    }
+
 
     protected void configureAndShowMediaFragment() {
         mediaFragment = (MediaFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_media);
-        if (getActivity().findViewById(R.id.fragment_container_media) != null){
+        if (mediaFragment == null && getActivity().findViewById(R.id.fragment_container_media) != null){
             mediaFragment = new MediaFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_media, mediaFragment).commit();
         }
@@ -136,9 +154,25 @@ public class ListFragment extends Fragment {
 
     protected void configureAndShowDetailsFragment() {
         infoFragment = (InfoFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_info);
-        if (getActivity().findViewById(R.id.fragment_container_details) != null){
+        if (infoFragment == null && getActivity().findViewById(R.id.fragment_container_details) != null){
             infoFragment = new InfoFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
+        }
+    }
+
+    protected void configureAndShowLocationFragment() {
+        locationFragment = (LocationFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.location_fragment);
+        if (locationFragment == null && getActivity().findViewById(R.id.fragment_container_location) != null){
+            locationFragment = new LocationFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_location, locationFragment).commit();
+        }
+    }
+
+    protected void configureAndShowDescriptionFragment() {
+        descriptionFragment = (DescriptionFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.description_fragment);
+        if (descriptionFragment == null && getActivity().findViewById(R.id.fragment_container_description) != null){
+            descriptionFragment = new DescriptionFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_description, descriptionFragment).commit();
         }
     }
 

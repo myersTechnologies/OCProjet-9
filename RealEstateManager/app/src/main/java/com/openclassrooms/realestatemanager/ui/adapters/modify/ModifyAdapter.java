@@ -70,7 +70,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
        if (viewType == LAYOUT_TREE){
-           view = LayoutInflater.from(parent.getContext()).inflate(R.layout.description_layout,parent,false);
+           view = LayoutInflater.from(parent.getContext()).inflate(R.layout.description_edit_layout,parent,false);
            viewHolder= new DescriptionViewHolder(view);
        }
 

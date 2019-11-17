@@ -30,6 +30,7 @@ public class InfoFragment extends Fragment {
     private HouseDetails details;
     private List<HouseDetails> houseDetailsList;
     private SaveToDatabase database = SaveToDatabase.getInstance(getContext());
+    private MediaFragment mediaFragment;
 
     public static InfoFragment newInstance(){
         infoFragment = new InfoFragment();
@@ -48,35 +49,28 @@ public class InfoFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         service = DI.getService();
         infoList = view.findViewById(R.id.info_list);
-        layoutManager = new LinearLayoutManager(getContext());
-        if (service.getHouse() != null) {
-            houseDetailsList = database.houseDetailsDao().getDetails();
-            for (HouseDetails houseDetails : houseDetailsList) {
-                if (houseDetails.getId().equals(service.getHouse().getId())) {
-                    details = houseDetails;
-                }
-            }
 
-            adapter = new InfoFragmentAdapter(service.getHouse(), details, getContext());
-            infoList.setLayoutManager(layoutManager);
-            infoList.setAdapter(adapter);
+        if (service.getHouse() != null) {
+            updateAdapter(service.getHouse());
         }
 
         return view;
     }
 
     public void updateAdapter(House house){
-
         houseDetailsList = database.houseDetailsDao().getDetails();
-        for (HouseDetails houseDetails : houseDetailsList) {
-            if (houseDetails.getId().equals(house.getId())) {
-                details = houseDetails;
+        for (int i = 0; i < houseDetailsList.size(); i++){
+            if (houseDetailsList.get(i).getHouseId().equals(house.getId())) {
+                details = houseDetailsList.get(i);
             }
         }
         adapter = new InfoFragmentAdapter(house, details, getContext());
+        layoutManager = new LinearLayoutManager(getContext());
         infoList.setLayoutManager(layoutManager);
         infoList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
 
 
 }

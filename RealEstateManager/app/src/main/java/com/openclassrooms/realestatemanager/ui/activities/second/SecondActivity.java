@@ -11,11 +11,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.ImageView;
@@ -26,7 +26,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -35,9 +34,10 @@ import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActiv
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
-import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
+import com.openclassrooms.realestatemanager.ui.fragments.map.StaticMapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -45,7 +45,7 @@ import com.openclassrooms.realestatemanager.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecondActivity extends BaseActivity
+public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView userName, userEmail;
@@ -58,6 +58,7 @@ public class SecondActivity extends BaseActivity
     private MediaFragment mediaFragment;
     private InfoFragment infoFragment;
     private  Toolbar toolbar;
+    private StaticMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class SecondActivity extends BaseActivity
         setContentView(R.layout.activity_second);
 
         service = DI.getService();
-        service.setActivity(this, "second");
+        service.setActivity(this, "Second");
 
         //Loads all list from firebase to sql database
         Handler handler = new Handler();
@@ -95,10 +96,8 @@ public class SecondActivity extends BaseActivity
         userPhoto = navigationView.getHeaderView(0).findViewById(R.id.imageView);
         imageHeader = navigationView.getHeaderView(0).findViewById(R.id.header_image_view);
 
-       // changeFragment(new ListFragment(), "ListFragment");
-        this.configureAndShowListFragment();
-        this.configureAndShowMediaFragment();
-        this.configureAndShowDetailsFragment();
+       changeFragment(new ListFragment(), "ListFragment");
+
 
         userEmail.setText(service.getUser().getEmail());
 
@@ -131,32 +130,7 @@ public class SecondActivity extends BaseActivity
         super.onResume();
     }
 
-    @Override
-    protected void configureAndShowMediaFragment() {
-        mediaFragment = (MediaFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_media);
-        if (mediaFragment == null && findViewById(R.id.fragment_container_media) != null){
-            mediaFragment = new MediaFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_media, mediaFragment).commit();
-        }
-    }
 
-    @Override
-    protected void configureAndShowDetailsFragment() {
-        infoFragment = (InfoFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_info);
-        if (infoFragment == null && findViewById(R.id.fragment_container_details) != null){
-            infoFragment = new InfoFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
-        }
-    }
-
-    @Override
-    protected void configureAndShowListFragment() {
-        listFragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_list);
-        if (listFragment == null){
-            listFragment = new ListFragment();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_list, listFragment).commit();
-        }
-    }
 
     public List<House> getMyHouses(){
         myHouses = new ArrayList<>();
@@ -183,7 +157,7 @@ public class SecondActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-             configureAndShowListFragment();
+            changeFragment(new ListFragment(), "ListFragment");
         }
     }
 

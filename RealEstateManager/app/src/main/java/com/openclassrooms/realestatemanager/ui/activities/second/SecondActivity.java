@@ -35,10 +35,12 @@ import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActiv
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
+import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -254,6 +256,11 @@ public class SecondActivity extends BaseActivity
             case R.id.nav_tools:
                 Intent settings = new Intent(this, Settings.class);
                 startActivity(settings);
+                break;
+            case R.id.nav_map:
+                if (Utils.isInternetAvailable(this)) {
+                    changeFragment(new MapFragment(), "MapFragment");
+                }
                 break;
         }
 

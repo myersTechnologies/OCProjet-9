@@ -36,7 +36,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private Context context;
     private SaveToDatabase database;
-    
+
     public SearchAdapter(Context context) {
         this.context = context;
         database = SaveToDatabase.getInstance(context);
@@ -310,29 +310,50 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
                         case "Surface_Min":
                             SearchHelper.getSearch().setSurfaceMin(editable.toString());
                             break;
-                        case "Surface_Max":
-                            SearchHelper.getSearch().setSurfaceMax(editable.toString());
-                            break;
                         case "Rooms_Min":
                             SearchHelper.getSearch().setRoomsMin(editable.toString());
-                            break;
-                        case "Rooms_Max":
-                            SearchHelper.getSearch().setRoomsMax(editable.toString());
                             break;
                         case "Bathrooms_Min":
                             SearchHelper.getSearch().setBathroomsMin(editable.toString());
                             break;
-                        case "Bathrooms_Max":
-                            SearchHelper.getSearch().setBathroomsMax(editable.toString());
-                            break;
                         case "Bedrooms_Min":
                             SearchHelper.getSearch().setBedroomsMin(editable.toString());
                             break;
-                        case "Bedrooms_Max":
-                            SearchHelper.getSearch().setBedroomsMax(editable.toString());
-                            break;
                         case "Price_Min":
                             SearchHelper.getSearch().setPriceMin(editable.toString());
+                            break;
+                    }
+                }
+            }
+        });
+        holder.maxText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String tag = holder.minText.getTag().toString();
+                if (!TextUtils.isEmpty(editable)) {
+                    switch (tag) {
+                        case "Surface_Max":
+                            SearchHelper.getSearch().setSurfaceMax(editable.toString());
+                            break;
+                        case "Rooms_Max":
+                            SearchHelper.getSearch().setRoomsMax(editable.toString());
+                            break;
+                        case "Bathrooms_Max":
+                            SearchHelper.getSearch().setBathroomsMax(editable.toString());
+                            break;
+                        case "Bedrooms_Max":
+                            SearchHelper.getSearch().setBedroomsMax(editable.toString());
                             break;
                         case "Price_Max":
                             SearchHelper.getSearch().setPriceMax(editable.toString());

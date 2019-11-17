@@ -359,7 +359,8 @@ public class FirebaseService implements FirebaseHelper {
                     final String photoUrl = postSnapshot.child("photoUrl").getValue().toString().replaceAll(",", ".");
                     final Photo photo = new Photo(photoUrl, description, houseId);
                     photo.setId(id);
-                    if (!photos.contains(photo)) {
+                    final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", photo.getPhotoUrl());
+                    if (!localFile.exists()) {
                         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                         storageReference.child(photoUrl).getDownloadUrl().addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -369,8 +370,6 @@ public class FirebaseService implements FirebaseHelper {
                             @Override
                             public void onSuccess(Uri uri) {
                                 StorageReference urlRef = FirebaseStorage.getInstance().getReferenceFromUrl(uri.toString());
-                                final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", photo.getPhotoUrl());
-                                if (!localFile.exists()) {
                                     urlRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -389,13 +388,12 @@ public class FirebaseService implements FirebaseHelper {
                                                     "\n" + taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
-                                } else {
-                                    photo.setPhotoUrl(localFile.toString());
-                                }
-
                                 photos.add(photo);
                             }
                         });
+                    }  else {
+                        photo.setPhotoUrl(localFile.toString());
+                        photos.add(photo);
                     }
                 }
             }

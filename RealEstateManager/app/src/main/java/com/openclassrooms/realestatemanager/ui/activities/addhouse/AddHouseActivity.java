@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -60,12 +58,7 @@ public class AddHouseActivity extends AppCompatActivity {
         //Initialize service
         service = DI.getService();
 
-        //initialize toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar_new_house);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        setToolbar();
         //initialize recycler view
         addNewHouseToDoList = findViewById(R.id.new_house_list);
         layoutManager = new LinearLayoutManager(this);
@@ -78,6 +71,14 @@ public class AddHouseActivity extends AppCompatActivity {
         addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
 
         service.setActivity(this, "AddHouse");
+    }
+
+    private void setToolbar(){
+        //initialize toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar_new_house);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -142,7 +143,9 @@ public class AddHouseActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
-            AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            }
             return false;
         }
     }
@@ -152,6 +155,9 @@ public class AddHouseActivity extends AppCompatActivity {
         return editText.length() == 0|| editText.equals("");
     }
 
+    /**
+     * send error if any case is empty
+     */
     private void setDialogErrorEmptyCases(){
         String unCompleteCases = TextUtils.join(", ", textEmpty);
         AlertDialog.Builder notifyError = new AlertDialog.Builder(this);
@@ -171,6 +177,9 @@ public class AddHouseActivity extends AppCompatActivity {
         alert.show();
     }
 
+    /**
+     * Get all data from add or modify house and send notification
+     **/
     private void getViewsAndAddHouse() {
 
         final House house = AddModifyHouseHelper.getHouse();
@@ -203,7 +212,6 @@ public class AddHouseActivity extends AppCompatActivity {
         postHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 sendNotification(house);
                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
                 startActivity(intent);
@@ -212,6 +220,12 @@ public class AddHouseActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * code 100 for camera and 90 for media files
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
 
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == 100) {
@@ -251,6 +265,9 @@ public class AddHouseActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.cancel();
+                    if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                        AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+                    }
                 }
             });
 

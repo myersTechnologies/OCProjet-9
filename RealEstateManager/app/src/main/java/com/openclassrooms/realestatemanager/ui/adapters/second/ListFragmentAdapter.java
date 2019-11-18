@@ -1,14 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.adapters.second;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.DI.DI;
@@ -53,12 +51,9 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         house = houses.get(position);
         holder.houseName.setText(house.getName());
 
-        for (int i = 0; i < database.adressDao().getAdresses().size(); i++){
-            AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
-            if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))){
-                holder.houseAdress.setText(adressHouse.getCity());
-            }
-        }
+        AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
+        holder.houseAdress.setText(adressHouse.getCity());
+
         String valeurString = house.getPrice();
         String valeurBrute = valeurString.replaceAll(",", "");
         DecimalFormat formatter = new DecimalFormat("###,###,###");
@@ -83,7 +78,6 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new DetailsEvent(houses.get(position)));
-
             }
         });
 

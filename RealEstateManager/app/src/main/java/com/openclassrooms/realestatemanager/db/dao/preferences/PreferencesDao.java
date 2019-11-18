@@ -26,9 +26,9 @@ public interface PreferencesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPreferencesProvider(Preferences preferences);
 
+
     @Query("SELECT * FROM Preferences WHERE preferences_id = :preferencesId")
     Cursor getPreferencesWithCursor(String preferencesId);
-
 
     @Update
     int updatePreferencesProvider(Preferences preferences);

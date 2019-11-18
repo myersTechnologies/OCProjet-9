@@ -107,14 +107,20 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         loginButton.setReadPermissions("email");
         loginButton.setFragment(this);
 
+        checkIfButtonsShouldBeEnabled();
 
+        return view;
+
+    }
+
+    private void checkIfButtonsShouldBeEnabled(){
         if (!Utils.isInternetAvailable(getActivity())) {
             loginButton.setEnabled(false);
             googleSignIn.setEnabled(false);
         } else {
             loginButton.setEnabled(true);
             googleSignIn.setEnabled(true);
-            if (FirebaseAuth.getInstance().getCurrentUser() != null){
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 loginButton.setEnabled(false);
                 googleSignIn.setEnabled(false);
                 offlineLogin.setEnabled(false);
@@ -123,13 +129,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 signInWithFacebook();
                 signInWithGoogle();
             }
-
         }
-
-        return view;
-
     }
-
 
     @Override
     public void onResume() {
@@ -140,7 +141,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             signInWithFacebook();
             signInWithGoogle();
         }
-
     }
 
     public void signInWithFacebook(){

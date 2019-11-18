@@ -32,11 +32,6 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Search");
-        toolbar.getMenu().findItem(R.id.add).setVisible(false);
-        toolbar.getMenu().findItem(R.id.search).setVisible(false);
-
         recyclerView = view.findViewById(R.id.search_rv);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
@@ -45,6 +40,13 @@ public class SearchFragment extends Fragment {
 
         return view;
 
+    }
+
+    private void setToolbar(){
+        toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Search");
+        toolbar.getMenu().findItem(R.id.add).setVisible(false);
+        toolbar.getMenu().findItem(R.id.search).setVisible(false);
     }
 
     @Override

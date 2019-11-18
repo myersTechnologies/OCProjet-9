@@ -32,19 +32,15 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
     private int LAYOUT_SIX = 5;
+    private int COUNT = 6;
 
     private static AdressHouse adressHouse;
 
     private static List<Photo> photos;
     private static HouseDetails details;
 
-    public ModifyAdapter(House house, List<Photo> photos, HouseDetails details, Context context){
-        List<AdressHouse> adresses = SaveToDatabase.getInstance(context).adressDao().getAdresses();
-        for (int i = 0; i < adresses.size(); i++){
-            if (adresses.get(i).getHouseId().equals(String.valueOf(house.getId()))){
-                adressHouse = adresses.get(i);
-            }
-        }
+    public ModifyAdapter(House house, List<Photo> photos, HouseDetails details, Context context) {
+        adressHouse = SaveToDatabase.getInstance(context).adressDao().getAdressWithHouseId(house.getId());
         AddModifyHouseHelper.ModifyHouse(house, adressHouse, details, photos);
 
         this.house = house;
@@ -193,7 +189,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemCount() {
-        return 6;
+        return COUNT;
     }
 
 

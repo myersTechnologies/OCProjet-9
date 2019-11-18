@@ -17,7 +17,6 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
 
-import java.util.List;
 
 
 public class InfoFragment extends Fragment {
@@ -28,9 +27,7 @@ public class InfoFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private InfoFragmentAdapter adapter;
     private HouseDetails details;
-    private List<HouseDetails> houseDetailsList;
     private SaveToDatabase database = SaveToDatabase.getInstance(getContext());
-    private MediaFragment mediaFragment;
 
     public static InfoFragment newInstance(){
         infoFragment = new InfoFragment();
@@ -58,19 +55,13 @@ public class InfoFragment extends Fragment {
     }
 
     public void updateAdapter(House house){
-        houseDetailsList = database.houseDetailsDao().getDetails();
-        for (int i = 0; i < houseDetailsList.size(); i++){
-            if (houseDetailsList.get(i).getHouseId().equals(house.getId())) {
-                details = houseDetailsList.get(i);
-            }
-        }
+        details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
         adapter = new InfoFragmentAdapter(house, details, getContext());
         layoutManager = new LinearLayoutManager(getContext());
         infoList.setLayoutManager(layoutManager);
         infoList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-
 
 
 }

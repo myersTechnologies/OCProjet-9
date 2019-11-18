@@ -21,12 +21,20 @@ public interface AdressDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAdress(AdressHouse adressHouse);
 
+   @Query("SELECT * FROM adresshouse WHERE house_id = :houseId")
+   AdressHouse getAdressWithHouseId(String houseId);
+
+
+    @Query("SELECT * FROM adresshouse WHERE adress_id = :adressId")
+    AdressHouse getAdressById(String adressId);
+
+
+//Provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertAdressProvider(AdressHouse adressHouse);
 
     @Query("SELECT * FROM AdressHouse WHERE adress_id = :adressId")
     Cursor getAdressWithCursor(String adressId);
-
 
     @Update
     int updateAdressProvider(AdressHouse adressHouse);

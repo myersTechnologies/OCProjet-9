@@ -41,13 +41,8 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
     public void onBindViewHolder(ViewHolder holder, int position) {
         ViewHolder viewHolder = holder;
         final House house = myHouses.get(position);
-        List<Photo> photos = database.photoDao().getPhotos();
-        for (int i = 0; i < photos.size(); i++){
-            if (photos.get(i).getHouseId().equals(String.valueOf(house.getId()))){
-                Glide.with(viewHolder.itemView.getContext()).load(photos.get(i).getPhotoUrl()).into(viewHolder.houseImg);
-                break;
-            }
-        }
+        Photo photo = database.photoDao().getPhotoWithHouseId(house.getId());
+        Glide.with(viewHolder.itemView.getContext()).load(photo.getPhotoUrl()).into(viewHolder.houseImg);
         viewHolder.houseImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

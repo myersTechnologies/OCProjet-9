@@ -36,6 +36,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private RealEstateManagerAPIService service = DI.getService();
     private Context context;
     private static String click;
+    private int LAYOUT_ONE = 0;
+    private int LAYOUT_TWO = 1;
+    private int LAYOUT_TREE = 2;
+    private int LAYOUT_FOUR = 3;
+    private int LAYOUT_FIVE = 4;
+    private int LAYOUT_SIX = 5;
+    private int LAYOUT_SEVEN = 6;
+
 
     public SettingsAdapter(Context context) {
         this.context = context;
@@ -46,26 +54,26 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
 
-        if(viewType== 0 || viewType == 1)
+        if(viewType== LAYOUT_ONE || viewType == LAYOUT_TWO)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.money_type_layout,parent,false);
             viewHolder = new ViewHolder(view);
         }
 
-        if (viewType == 2)
+        if (viewType == LAYOUT_TREE)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_name_layout,parent,false);
             viewHolder= new UserNameViewHolder(view);
         }
 
-        if (viewType == 3 || viewType == 4)
+        if (viewType == LAYOUT_FOUR || viewType == LAYOUT_FIVE)
         {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.header_image_layout,parent,false);
             viewHolder= new ImageViewHolder(view);
         }
 
 
-        if (viewType == 5 || viewType == 6){
+        if (viewType == LAYOUT_SIX || viewType == LAYOUT_SEVEN){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.button_layout,parent,false);
             viewHolder= new ButtonViewHolder(view);
         }
@@ -76,20 +84,20 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
-        if (holderView.getItemViewType() == 0) {
+        if (holderView.getItemViewType() == LAYOUT_ONE) {
             ViewHolder holder = (ViewHolder) holderView;
             getSwitchListener(holder);
-        } else  if (holderView.getItemViewType() == 1) {
+        } else  if (holderView.getItemViewType() == LAYOUT_TWO) {
             ViewHolder holder = (ViewHolder) holderView;
             holder.titleText.setText("Unit Measure");
             holder.choice1Text.setText("sq");
             holder.choice2Text.setText("m");
             getMeasureListener(holder);
-        }  else if (holderView.getItemViewType() == 2){
+        }  else if (holderView.getItemViewType() == LAYOUT_TREE){
             UserNameViewHolder userNameViewHolder = (UserNameViewHolder) holderView;
             userNameViewHolder.editText.setHint(service.getUser().getName());
             getUserNameTextListener(userNameViewHolder);
-        } else if (holderView.getItemViewType() == 3){
+        } else if (holderView.getItemViewType() == LAYOUT_FOUR){
             ImageViewHolder imageViewHolder = (ImageViewHolder) holderView;
             imageViewHolder.textView.setText("User image");
 
@@ -99,7 +107,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 Glide.with(context).load(service.getUser().getPhotoUri()).apply(RequestOptions.circleCropTransform()).into(imageViewHolder.imageView);
                 getImageUserListener(imageViewHolder);
             }
-        } else if (holderView.getItemViewType() == 4){
+        } else if (holderView.getItemViewType() == LAYOUT_FIVE){
             ImageViewHolder imageViewHolder = (ImageViewHolder) holderView;
             if (service.getPreferences().getMenuImage() != null){
                 Glide.with(context).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageViewHolder.imageView);
@@ -107,13 +115,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 imageViewHolder.imageView.setImageResource(R.drawable.main_image);
             }
             getMenuImageListener(imageViewHolder);
-        } else if (holderView.getItemViewType() == 5){
+        } else if (holderView.getItemViewType() == LAYOUT_SIX){
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
             buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             buttonViewHolder.button.setText("Default settings");
             buttonViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
             getButtonDefaultListener(buttonViewHolder);
-        } else if (holderView.getItemViewType() == 6){
+        } else if (holderView.getItemViewType() == LAYOUT_SEVEN){
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
             buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             buttonViewHolder.button.setText("Confirm changes");
@@ -215,15 +223,6 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         });
     }
 
-    private void getButtonDeleteListener(ButtonViewHolder holder){
-        holder.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-    }
-
     private void getConfirmChanges(final ButtonViewHolder holder){
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,19 +244,19 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         switch (position){
             case 0:
-                return 0;
+                return LAYOUT_ONE;
             case 1:
-                return 1;
+                return LAYOUT_TWO;
             case 2:
-                return 2;
+                return LAYOUT_TREE;
             case 3:
-                return 3;
+                return LAYOUT_FOUR;
             case 4:
-                return 4;
+                return LAYOUT_FIVE;
             case 5:
-                return 5;
+                return LAYOUT_SIX;
             case 6:
-                return 6;
+                return LAYOUT_SEVEN;
         }
         return position;
     }

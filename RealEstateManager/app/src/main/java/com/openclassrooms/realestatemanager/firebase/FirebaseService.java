@@ -280,7 +280,9 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addPhotoToFireStore(Photo photo) {
-            Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+        Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+        final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", uploadImage.getLastPathSegment());
+        if (!localFile.exists()) {
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference photoRef = storageRef.child(uploadImage.getLastPathSegment());
             photoRef.putFile(uploadImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -299,6 +301,7 @@ public class FirebaseService implements FirebaseHelper {
                     Toast.makeText(DI.getService().getActivity(), taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
                 }
             });
+        }
     }
 
     @Override
@@ -314,6 +317,7 @@ public class FirebaseService implements FirebaseHelper {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference reference = database.getReference("photos");
                     reference.child(photo.getId()).removeValue();
+                    photos.remove(photo);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

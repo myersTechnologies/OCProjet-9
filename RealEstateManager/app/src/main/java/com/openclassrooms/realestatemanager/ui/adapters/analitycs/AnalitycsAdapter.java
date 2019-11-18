@@ -21,6 +21,14 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private List<House> myHouses;
     private List<House> houses;
 
+    private int LAYOUT_ONE = 0;
+    private int LAYOUT_TWO = 1;
+    private int LAYOUT_TREE = 2;
+    private int LAYOUT_FOUR = 3;
+    private int LAYOUT_FIVE = 4;
+    private int LAYOUT_SIX = 5;
+    private int COUNT = 6;
+
     public AnalitycsAdapter(List<House> myHouses, List<House> houses) {
         this.myHouses = myHouses;
         this.houses = houses;
@@ -31,17 +39,17 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         View view = null;
         RecyclerView.ViewHolder viewHolder = null;
 
-        if (viewType == 0 || viewType == 2){
+        if (viewType == LAYOUT_ONE || viewType == LAYOUT_TREE){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_header_expendable_list,parent,false);
             viewHolder = new HeaderViewHolder(view);
         }
 
-        if (viewType == 1 || viewType == 3){
+        if (viewType == LAYOUT_TWO || viewType == LAYOUT_FOUR){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.photo_list_layout,parent,false);
             viewHolder = new StatusHouseViewHolder(view);
         }
 
-        if (viewType == 4 || viewType == 5){
+        if (viewType == LAYOUT_FIVE || viewType == LAYOUT_SIX){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.progressbar_myhouses_layout,parent,false);
             viewHolder = new ProgressViewHolder(view);
         }
@@ -52,12 +60,12 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        if (holderView.getItemViewType() == 0) {
+        if (holderView.getItemViewType() == LAYOUT_ONE) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holderView;
             headerViewHolder.textView.setText("Your houses for sale :");
         }
 
-        if (holderView.getItemViewType() == 1) {
+        if (holderView.getItemViewType() == LAYOUT_TWO) {
            StatusHouseViewHolder holder = (StatusHouseViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext() , LinearLayoutManager.HORIZONTAL, false);
             holder.recyclerView.setLayoutManager(layoutManager);
@@ -70,11 +78,11 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(saleHouses, holder.itemView.getContext());
             holder.recyclerView.setAdapter(adapter);
         }
-        if (holderView.getItemViewType() == 2){
+        if (holderView.getItemViewType() == LAYOUT_TREE){
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holderView;
             headerViewHolder.textView.setText("Houses you sold  :");
         }
-        if (holderView.getItemViewType() == 3) {
+        if (holderView.getItemViewType() == LAYOUT_FOUR) {
             StatusHouseViewHolder holder = (StatusHouseViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext() , LinearLayoutManager.HORIZONTAL, false);
             holder.recyclerView.setLayoutManager(layoutManager);
@@ -87,7 +95,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             PhotoAnalyticsAdapter adapter = new PhotoAnalyticsAdapter(soldHouses, holder.itemView.getContext());
             holder.recyclerView.setAdapter(adapter);
         }
-        if (holderView.getItemViewType() == 4){
+        if (holderView.getItemViewType() == LAYOUT_FIVE){
             ProgressViewHolder progressViewHolder = (ProgressViewHolder) holderView;
             List<House> soldHouses = new ArrayList<>();
             for (int i = 0; i < myHouses.size(); i++){
@@ -100,7 +108,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             progressViewHolder.progressBar.setMax(myHouses.size());
         }
 
-        if (holderView.getItemViewType() == 5){
+        if (holderView.getItemViewType() == LAYOUT_SIX){
             ProgressViewHolder progressViewHolder = (ProgressViewHolder) holderView;
             int countTotal = 0;
             int countAllListSize = 0;
@@ -134,24 +142,24 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public int getItemViewType(int position) {
         switch (position){
             case 0:
-                return 0;
+                return LAYOUT_ONE;
             case 1:
-                return 1;
+                return LAYOUT_TWO;
             case 2:
-                return 2;
+                return LAYOUT_TREE;
             case 3:
-                return 3;
+                return LAYOUT_FOUR;
             case 4:
-                return 4;
+                return LAYOUT_FIVE;
             case 5:
-                return 5;
+                return LAYOUT_SIX;
         }
         return position;
     }
 
     @Override
     public int getItemCount() {
-        return 6;
+        return COUNT;
     }
 
     static class HeaderViewHolder extends RecyclerView.ViewHolder{

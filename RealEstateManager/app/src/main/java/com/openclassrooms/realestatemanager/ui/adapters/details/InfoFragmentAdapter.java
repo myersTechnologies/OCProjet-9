@@ -36,13 +36,18 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RealEstateManagerAPIService service;
     private HouseDetails details;
     private SaveToDatabase database;
-    private Context context;
+    private int LAYOUT_ONE = 0;
+    private int LAYOUT_TWO = 1;
+    private int LAYOUT_TREE = 2;
+    private int LAYOUT_FOUR = 3;
+    private int LAYOUT_FIVE = 4;
+    private int COUNT_ALL = 5;
+    private int COUNT_SECOND = 2;
 
     public InfoFragmentAdapter(House house, HouseDetails details, Context context) {
         this.house = house;
         service = DI.getService();
         this.details = details;
-        this.context = context;
         database = SaveToDatabase.getInstance(context);
     }
 
@@ -52,33 +57,33 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         RecyclerView.ViewHolder viewHolder = null;
 
         if (DI.getService().activityName() != "Second") {
-            if (viewType == 0){
+            if (viewType == LAYOUT_ONE){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.info_details_layout,parent,false);
                 viewHolder = new ViewHolder(view);
             }
-            if (viewType == 1){
+            if (viewType == LAYOUT_TWO){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_description, parent, false);
                 viewHolder = new DescriptionViewHolder(view);
             }
-            if (viewType == 2) {
+            if (viewType == LAYOUT_TREE) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_location, parent, false);
                 viewHolder = new LocationHolder(view);
             }
-            if (viewType == 3){
+            if (viewType == LAYOUT_FOUR){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.details_details_second,parent,false);
                 viewHolder = new SecondViewHolder(view);
             }
-            if (viewType == 4) {
+            if (viewType == LAYOUT_FIVE) {
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_static_map, parent, false);
                 viewHolder = new MapViewHolder(view);
             }
         } else {
-            if (viewType == 0){
+            if (viewType == LAYOUT_ONE){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.info_details_layout,parent,false);
                 viewHolder = new ViewHolder(view);
             }
 
-            if (viewType == 1){
+            if (viewType == LAYOUT_TWO){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.details_details_second,parent,false);
                 viewHolder = new SecondViewHolder(view);
             }
@@ -91,7 +96,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderView, int position) {
         if (DI.getService().activityName() != "Second") {
-            if (holderView.getItemViewType() == 0) {
+            if (holderView.getItemViewType() == LAYOUT_ONE) {
                 ViewHolder holder = (ViewHolder) holderView;
                 if (details != null) {
                     holder.surfaceText.setText(Utils.getMeasureWithMeasureSystem(house, details));
@@ -101,33 +106,26 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             }
 
-            if (holderView.getItemViewType() == 1) {
+            if (holderView.getItemViewType() == LAYOUT_TWO) {
                 DescriptionViewHolder descriptionViewHolder = (DescriptionViewHolder) holderView;
                 LinearLayoutManager layoutManager = new LinearLayoutManager(descriptionViewHolder.itemView.getContext());
                 DescriptionAdapter adapter = new DescriptionAdapter(details);
                 descriptionViewHolder.descriptionRv.setLayoutManager(layoutManager);
                 descriptionViewHolder.descriptionRv.setAdapter(adapter);
-
             }
 
-            if (holderView.getItemViewType() == 2) {
+            if (holderView.getItemViewType() == LAYOUT_TREE) {
                 LocationHolder locationHolder = (LocationHolder) holderView;
-                for (int i = 0; i < database.adressDao().getAdresses().size(); i++) {
-                    AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
-                    if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))) {
-                        AdressHouse findedHouse = adressHouse;
-                        locationHolder.textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
-                                "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
-                        if (locationHolder.titleImg.getVisibility() == View.GONE){
-                            locationHolder.titleImg.setVisibility(View.VISIBLE);
-                            locationHolder.titleText.setVisibility(View.VISIBLE);
-                        }
-
-                    }
+                AdressHouse findedHouse = database.adressDao().getAdressWithHouseId(house.getId());
+                locationHolder.textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
+                        "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
+                if (locationHolder.titleImg.getVisibility() == View.GONE){
+                    locationHolder.titleImg.setVisibility(View.VISIBLE);
+                    locationHolder.titleText.setVisibility(View.VISIBLE);
                 }
             }
 
-            if (holderView.getItemViewType() == 3) {
+            if (holderView.getItemViewType() == LAYOUT_FOUR) {
                 SecondViewHolder holder = (SecondViewHolder) holderView;
 
                 String valeurString = house.getPrice();
@@ -145,31 +143,30 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 if (house.isAvailable()) {
                     holder.isAvailableImg.setImageResource(R.drawable.for_sale);
+                    holder.isAvailableTxt.setText("On sale since : " + details.getOnLineDate());
                 } else {
                     holder.isAvailableImg.setImageResource(R.drawable.sold);
+                    holder.isAvailableTxt.setText("On sale since : " + details.getOnLineDate() + " Sold on : " + details.getSoldDate());
                 }
-
             }
 
-            if (holderView.getItemViewType() == 4) {
+            if (holderView.getItemViewType() == LAYOUT_FIVE) {
                 MapViewHolder mapViewHolder = (MapViewHolder) holderView;
-                for (int j = 0; j < database.adressDao().getAdresses().size(); j++) {
-                    if (database.adressDao().getAdresses().get(j).getHouseId().equals(house.getId())) {
-                        Context context = holderView.itemView.getContext();
-                        AdressHouse adressHouse = database.adressDao().getAdresses().get(j);
-                        LatLng latLng = getLocationFromAddress(context, adressHouse.getAdress() + "," + adressHouse.getCity());
-                        String lat = String.valueOf(latLng.latitude);
-                        String lng = String.valueOf(latLng.longitude);
-                        String url = "http://maps.google.com/maps/api/staticmap?center="
-                                + lat + "," + lng +
-                                "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
-                                "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
-                        Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
-                    }
-                }
+
+                Context context = holderView.itemView.getContext();
+                AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
+                LatLng latLng = getLocationFromAddress(context, adressHouse.getAdress() + "," + adressHouse.getCity());
+                String lat = String.valueOf(latLng.latitude);
+                String lng = String.valueOf(latLng.longitude);
+                String url = "http://maps.google.com/maps/api/staticmap?center="
+                        + lat + "," + lng +
+                        "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
+                        "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
+                Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
+
             }
         } else {
-            if (holderView.getItemViewType() == 0) {
+            if (holderView.getItemViewType() == LAYOUT_ONE) {
                 ViewHolder holder = (ViewHolder) holderView;
                 if (details != null) {
                     holder.surfaceText.setText(Utils.getMeasureWithMeasureSystem(house, details));
@@ -178,7 +175,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.bedroomsText.setText(String.valueOf(details.getBedroomsNumber()));
                 }
             }
-            if (holderView.getItemViewType() == 1) {
+            if (holderView.getItemViewType() == LAYOUT_TWO) {
                 SecondViewHolder holder = (SecondViewHolder) holderView;
 
                 String valeurString = house.getPrice();
@@ -196,8 +193,10 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 if (house.isAvailable()) {
                     holder.isAvailableImg.setImageResource(R.drawable.for_sale);
+                    holder.isAvailableTxt.setText("On sale since : " + details.getOnLineDate());
                 } else {
                     holder.isAvailableImg.setImageResource(R.drawable.sold);
+                    holder.isAvailableTxt.setText("On sale since : " + details.getOnLineDate() + " Sold on : " + details.getSoldDate());
                 }
 
             }
@@ -210,15 +209,15 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public int getItemViewType(int position) {
         switch (position){
             case 0:
-                return 0;
+                return LAYOUT_ONE;
             case 1:
-                return 1;
+                return LAYOUT_TWO;
             case 2 :
-                return 2;
+                return LAYOUT_TREE;
             case 3:
-                return 3;
+                return LAYOUT_FOUR;
             case 4:
-                return 4;
+                return LAYOUT_FIVE;
         }
         return position;
     }
@@ -226,9 +225,9 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public int getItemCount() {
         if (DI.getService().activityName() != "Second") {
-            return 5;
+            return COUNT_ALL;
         } else {
-            return 2;
+            return COUNT_SECOND;
         }
     }
 
@@ -279,6 +278,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private ImageView agentAvatar;
         private TextView agentName;
         private ImageView isAvailableImg;
+        private TextView isAvailableTxt;
 
         public SecondViewHolder(View itemView) {
             super(itemView);
@@ -286,6 +286,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             agentAvatar = itemView.findViewById(R.id.agent_details_avatar);
             agentName = itemView.findViewById(R.id.agent_details_name);
             isAvailableImg = itemView.findViewById(R.id.is_available_img);
+            isAvailableTxt = itemView.findViewById(R.id.available_txt);
         }
     }
 

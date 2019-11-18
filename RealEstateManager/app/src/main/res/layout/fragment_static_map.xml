@@ -12,6 +12,7 @@
         android:id="@+id/static_map_image"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"/>
 
 </FrameLayout>

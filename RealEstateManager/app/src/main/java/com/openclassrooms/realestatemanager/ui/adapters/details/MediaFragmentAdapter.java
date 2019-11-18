@@ -1,13 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.adapters.details;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +14,6 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.activities.imageview.FullScreenImage;
-import com.openclassrooms.realestatemanager.ui.adapters.analitycs.AnalitycsAdapter;
 
 
 import java.util.List;
@@ -69,8 +66,6 @@ public class MediaFragmentAdapter extends RecyclerView.Adapter<MediaFragmentAdap
     public int getItemCount() {
         return photos.size();
     }
-
-
 
 
     static class ViewHolderItem extends RecyclerView.ViewHolder {

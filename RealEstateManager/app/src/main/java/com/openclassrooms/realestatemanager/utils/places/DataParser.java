@@ -1,11 +1,6 @@
 package com.openclassrooms.realestatemanager.utils.places;
 
 
-
-import android.util.Log;
-
-import com.facebook.login.LoginManager;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

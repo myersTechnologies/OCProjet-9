@@ -46,14 +46,12 @@ public class SearchHelper {
 
     private static void checkCity(House house, HouseDetails details) {
         if (search.getCity() != null){
-            for (int i = 0; i < database.adressDao().getAdresses().size(); i++){
-                AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
-                if (adressHouse.getHouseId().equals(house.getId())){
-                    if (search.getCity().equals(adressHouse.getCity())){
-                        addHouse(details);
-                    }
-                }
+            AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
+            if (search.getCity().equals(adressHouse.getCity())){
+                addHouse(details);
             }
+
+
         } else {
             addHouse(details);
         }

@@ -1,16 +1,18 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.LayoutDirection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -19,7 +21,6 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.MediaFragmentAdapter;
-import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,9 @@ public class MediaFragment extends Fragment {
                              Bundle savedInstanceState) {
 
        View view = inflater.inflate(R.layout.fragment_media, container, false);
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        }
        photosList = view.findViewById(R.id.photos_list);
         RealEstateManagerAPIService service = DI.getService();
 

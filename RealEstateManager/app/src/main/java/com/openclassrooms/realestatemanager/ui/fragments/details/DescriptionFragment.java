@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -18,7 +16,6 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DescriptionAdapter;
 
-import java.util.List;
 
 
 public class DescriptionFragment extends Fragment {
@@ -45,19 +42,11 @@ public class DescriptionFragment extends Fragment {
     }
 
     public void upDateDescription(House house){
-        HouseDetails details = null;
-        List<HouseDetails> houseDetailsList = database.houseDetailsDao().getDetails();
-        for (int i = 0; i < houseDetailsList.size(); i++){
-            if (houseDetailsList.get(i).getHouseId().equals(house.getId())) {
-                details = houseDetailsList.get(i);
-            }
-        }
+        HouseDetails details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
         DescriptionAdapter adapter = new DescriptionAdapter(details);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         descriptionRv.setLayoutManager(manager);
         descriptionRv.setAdapter(adapter);
-
-
 
     }
 

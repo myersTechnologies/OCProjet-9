@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.activities.modify;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -42,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-//Almost the same as Add nEW New House Activity
+//Almost the same as Add New House Activity
 public class ModifyActivity extends AppCompatActivity {
 
     private RecyclerView modifyHouseList;
@@ -60,16 +63,18 @@ public class ModifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify);
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 95);
+        }
+
         service = DI.getService();
 
-        Toolbar toolbar = findViewById(R.id.toolbar_modify_house);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar();
 
         modifyHouseList = findViewById(R.id.modify_list);
         layoutManager = new LinearLayoutManager(this);
         modifyHouseList.setLayoutManager(layoutManager);
+
         List<Photo> photos = database.photoDao().getPhotos();
         houseImages = new ArrayList<>();
         for (int i = 0; i < photos.size(); i++){
@@ -77,23 +82,25 @@ public class ModifyActivity extends AppCompatActivity {
                 houseImages.add(photos.get(i));
             }
         }
-        List<HouseDetails> houseDetailsList = database.houseDetailsDao().getDetails();
-        for (HouseDetails houseDetails : houseDetailsList){
-            if (houseDetails.getId().equals(service.getHouse().getId())){
-                details = houseDetails;
-            }
-        }
+
+        details = database.houseDetailsDao().getDetailsWithHouseId(service.getHouse().getId());
 
         adapter = new ModifyAdapter(service.getHouse(), houseImages, details, this);
         modifyHouseList.setAdapter(adapter);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(modifyHouseList.getContext(),
                 layoutManager.getOrientation());
-
         modifyHouseList.addItemDecoration(dividerItemDecoration);
 
         service.setActivity(this, "Modify");
 
+    }
+
+    private void setToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar_modify_house);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -153,7 +160,9 @@ public class ModifyActivity extends AppCompatActivity {
         if (dataSize == totalSize) {
             return true;
         } else {
-            AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            }
             return false;
         }
     }
@@ -168,11 +177,13 @@ public class ModifyActivity extends AppCompatActivity {
         service.addHouseToList(house, this);
         for (int i = 0; i < AddModifyHouseHelper.getPhotos().size(); i++){
             if (!database.photoDao().getPhotos().contains(AddModifyHouseHelper.getPhotos().get(i))){
-                Photo photo = AddModifyHouseHelper.getPhotos().get(i);
-                service.addPhotos(AddModifyHouseHelper.getPhotos().get(i), this);
-                FirebaseHelper helper = DI.getFirebaseDatabase();
-                helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
-                helper.addPhotoToFireStore(photo);
+                if (!AddModifyHouseHelper.getPhotos().get(i).getDescription().equals("Add new photo")) {
+                    Photo photo = AddModifyHouseHelper.getPhotos().get(i);
+                    service.addPhotos(AddModifyHouseHelper.getPhotos().get(i), this);
+                    FirebaseHelper helper = DI.getFirebaseDatabase();
+                    helper.addPhotoToFirebase(photo, Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                    helper.addPhotoToFireStore(photo);
+                }
             }
         }
         service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), this);
@@ -254,6 +265,9 @@ public class ModifyActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.cancel();
+                    if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                        AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+                    }
                 }
             });
 

@@ -16,7 +16,6 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
-import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,18 +47,13 @@ public class LocationFragment extends Fragment {
     }
 
     public void upDateLocation(House house) {
-        for (int i = 0; i < database.adressDao().getAdresses().size(); i++) {
-            AdressHouse adressHouse = database.adressDao().getAdresses().get(i);
-            if (adressHouse.getHouseId().equals(String.valueOf(house.getId()))) {
-                AdressHouse findedHouse = adressHouse;
-                textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
-                        "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
-                if (title.getVisibility() == View.GONE){
-                    titleImg.setVisibility(View.VISIBLE);
-                    title.setVisibility(View.VISIBLE);
-                }
-            }
-
+        AdressHouse findedHouse =  database.adressDao().getAdressWithHouseId(house.getId());
+        textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
+                "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
+        if (title.getVisibility() == View.GONE) {
+            titleImg.setVisibility(View.VISIBLE);
+            title.setVisibility(View.VISIBLE);
         }
+
     }
 }

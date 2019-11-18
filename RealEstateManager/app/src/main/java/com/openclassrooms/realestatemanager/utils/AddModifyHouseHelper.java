@@ -39,13 +39,9 @@ public class AddModifyHouseHelper {
         data = new ArrayList<>();
         photos = new ArrayList<>();
 
-        if (database.houseDao().getHouses().size() > 0) {
-            house = new House(UUID.randomUUID().toString(), "",
-                    "0", false, service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
-        } else {
-            house = new House(UUID.randomUUID().toString(), "", "0", false,
+        house = new House(UUID.randomUUID().toString(), "", "0", false,
                     service.getPreferences().getMonetarySystem(), service.getPreferences().getMeasureUnity());
-        }
+
         adressHouse = new AdressHouse("", "", "", "", "", "", "");
         houseDetails = new HouseDetails(house.getId(), house.getId());
         houseDetails.setOnLineDate(Utils.getTodayDate());

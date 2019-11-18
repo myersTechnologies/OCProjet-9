@@ -25,11 +25,7 @@ public class AnalitycsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_analitycs);
 
-        Toolbar toolbar = findViewById(R.id.toolbar_analitycs);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Analitycs");
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setToolbar();
 
         service.setActivity(this, "Analytics");
 
@@ -40,6 +36,14 @@ public class AnalitycsActivity extends AppCompatActivity {
             AnalitycsAdapter adapter = new AnalitycsAdapter(service.getMyHouses(), database.houseDao().getHouses());
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    private void setToolbar(){
+        Toolbar toolbar = findViewById(R.id.toolbar_analitycs);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Analitycs");
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

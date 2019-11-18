@@ -16,12 +16,21 @@ import java.util.List;
 
 @Dao
 public interface HouseDetailsDao {
+
     @Query("SELECT * FROM housedetails")
     List<HouseDetails> getDetails();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDetails(HouseDetails houseDetails);
 
+    @Query("SELECT * FROM housedetails WHERE house_id = :houseId")
+    HouseDetails getDetailsWithHouseId(String houseId);
+
+
+    @Query("SELECT * FROM housedetails WHERE id = :detailsId")
+    HouseDetails getDetailsWithId(String detailsId);
+
+    //Content provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHouseDetailsProvider(HouseDetails houseDetails);
 
@@ -31,6 +40,4 @@ public interface HouseDetailsDao {
     @Update
     int updateHouseDetailsProvider(HouseDetails houseDetails);
 
-    @Query("DELETE FROM HouseDetails WHERE id = :detailsId")
-    int deleteHouseDetailsFromProvider(String detailsId);
 }

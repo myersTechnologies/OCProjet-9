@@ -29,15 +29,11 @@ import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.activities.BaseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.map.StaticMapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
@@ -54,16 +50,16 @@ public class SecondActivity extends AppCompatActivity
     private List<House> myHouses;
     private List<User> users;
     private SaveToDatabase database = SaveToDatabase.getInstance(this);
-    private ListFragment listFragment;
-    private MediaFragment mediaFragment;
-    private InfoFragment infoFragment;
     private  Toolbar toolbar;
-    private StaticMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 95);
+        }
 
         service = DI.getService();
         service.setActivity(this, "Second");
@@ -115,14 +111,12 @@ public class SecondActivity extends AppCompatActivity
                             .apply(RequestOptions.circleCropTransform()).into(userPhoto);
                 }
             }
-
         //check if user set a custom menu image
             if (service.getPreferences().getMenuImage() != null) {
                 Glide.with(this).load(Uri.parse(service.getPreferences().getMenuImage())).into(imageHeader);
             } else {
                 Glide.with(this).load(R.drawable.main_image).into(imageHeader);
             }
-
     }
 
     @Override

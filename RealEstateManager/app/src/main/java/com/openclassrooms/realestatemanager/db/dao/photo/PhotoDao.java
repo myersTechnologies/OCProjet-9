@@ -22,9 +22,14 @@ public interface PhotoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPhoto(Photo photo);
 
+    @Query("SELECT * FROM photo WHERE house_id = :houseId")
+    Photo getPhotoWithHouseId(String houseId);
+
     @Delete
     void deletePhoto(Photo photo);
 
+
+    //For content provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPhotoProvider(Photo photo);
 

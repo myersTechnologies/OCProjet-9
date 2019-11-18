@@ -19,7 +19,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
@@ -98,18 +100,21 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.title.setText("Rooms");
             holder.minText.setTag("Rooms_Min");
             holder.maxText.setTag("Rooms_Max");
+            getEditTextText(holder);
         }
         if (position == 3){
             SearchViewHolder holder = (SearchViewHolder) holderView;
             holder.title.setText("Bathrooms");
             holder.minText.setTag("Bathrooms_Min");
             holder.maxText.setTag("Bathrooms_Max");
+            getEditTextText(holder);
         }
         if (position == 4){
             SearchViewHolder holder = (SearchViewHolder) holderView;
             holder.title.setText("Bedrooms");
             holder.minText.setTag("Bedrooms_Min");
             holder.maxText.setTag("Bedrooms_Max");
+            getEditTextText(holder);
         }
         if (position == 5){
             SearchViewHolder holder = (SearchViewHolder) holderView;
@@ -118,6 +123,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             holder.maxText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
             holder.minText.setTag("Price_Min");
             holder.maxText.setTag("Price_Max");
+            getEditTextText(holder);
         }
 
         if (position == 6){
@@ -152,7 +158,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    private void getSpinnerCityListener(final SpinnerViewHolder holder) {
+    private void getSpinnerCityListener(SpinnerViewHolder holder) {
         holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -169,13 +175,14 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-    private void getSpinnerListener(final SpinnerViewHolder holder) {
+    private void getSpinnerListener(SpinnerViewHolder holder) {
         holder.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if (adapterView.getItemAtPosition(i).toString() != "Select Type...") {
                     SearchHelper.getSearch().setName(adapterView.getItemAtPosition(i).toString());
+                    Toast.makeText(DI.getService().getActivity(), adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -204,89 +211,10 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Search search = SearchHelper.getSearch();
-                if (search.getSurfaceMin() == null){
-                    search.setSurfaceMin("1");
-                }
-                if (search.getRoomsMin() == null){
-                    search.setRoomsMin("1");
-                }
-
-                if (search.getBedroomsMin() == null){
-                    search.setBedroomsMin("1");
-                }
-
-                if (search.getSurfaceMax() == null){
-                    search.setSurfaceMax(getSurfaceMax());
-                }
-
-                if (search.getRoomsMax() == null){
-                    search.setRoomsMax(getRoomsMax());
-                }
-
-                if (search.getBedroomsMax() == null){
-                    search.setBedroomsMax(getBedroomsMax());
-                }
-
                 Intent intent = new Intent(context, SecondActivity.class);
                 context.startActivity(intent);
             }
         });
-    }
-
-
-    private String getBedroomsMax(){
-        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
-        String bedroomsMax = null;
-        int max = 0;
-        for (int i = 0; i < detailsList.size(); i++) {
-            for (int j = i + 1; j < detailsList.size(); j++) {
-                HouseDetails details = detailsList.get(i);
-                if (Integer.parseInt(details.getBedroomsNumber()) >= Integer.parseInt(detailsList.get(j).getBedroomsNumber())) {
-                    if (max < Integer.parseInt(details.getBedroomsNumber())) {
-                        max = Integer.parseInt(details.getBedroomsNumber());
-                        bedroomsMax = String.valueOf(max);
-                    }
-                }
-            }
-        }
-        return bedroomsMax;
-    }
-
-    private String getRoomsMax(){
-        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
-        String roomsMax = null;
-        int max = 0;
-        for (int i = 0; i < detailsList.size(); i++) {
-            for (int j = i + 1; j < detailsList.size(); j++) {
-                HouseDetails details = detailsList.get(i);
-                if (Integer.parseInt(details.getRoomsNumber()) >= Integer.parseInt(detailsList.get(j).getRoomsNumber())) {
-                    if (max < Integer.parseInt(details.getRoomsNumber())) {
-                        max = Integer.parseInt(details.getRoomsNumber());
-                        roomsMax = String.valueOf(max);
-                    }
-                }
-            }
-        }
-        return roomsMax;
-    }
-
-    private String getSurfaceMax(){
-        List<HouseDetails> detailsList = database.houseDetailsDao().getDetails();
-        String surfaceText = null;
-        int max = 0;
-        for (int i = 0; i < detailsList.size(); i++) {
-            for (int j = i + 1; j < detailsList.size(); j++) {
-                HouseDetails details = detailsList.get(i);
-                if (Integer.parseInt(details.getSurface()) >= Integer.parseInt(detailsList.get(j).getSurface())) {
-                    if (max < Integer.parseInt(details.getSurface())) {
-                        max = Integer.parseInt(details.getSurface());
-                        surfaceText = String.valueOf(max);
-                    }
-                }
-            }
-        }
-        return surfaceText;
     }
 
     private void getEditTextText(final SearchViewHolder holder) {
@@ -309,19 +237,19 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
                     switch (tag) {
                         case "Surface_Min":
                             SearchHelper.getSearch().setSurfaceMin(editable.toString());
-                            break;
+                            return;
                         case "Rooms_Min":
                             SearchHelper.getSearch().setRoomsMin(editable.toString());
-                            break;
+                            return;
                         case "Bathrooms_Min":
                             SearchHelper.getSearch().setBathroomsMin(editable.toString());
-                            break;
+                            return;
                         case "Bedrooms_Min":
                             SearchHelper.getSearch().setBedroomsMin(editable.toString());
-                            break;
+                            return;
                         case "Price_Min":
                             SearchHelper.getSearch().setPriceMin(editable.toString());
-                            break;
+                            return;
                     }
                 }
             }
@@ -340,24 +268,24 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             @Override
             public void afterTextChanged(Editable editable) {
 
-                String tag = holder.minText.getTag().toString();
+                String tag = holder.maxText.getTag().toString();
                 if (!TextUtils.isEmpty(editable)) {
                     switch (tag) {
                         case "Surface_Max":
                             SearchHelper.getSearch().setSurfaceMax(editable.toString());
-                            break;
+                            return;
                         case "Rooms_Max":
                             SearchHelper.getSearch().setRoomsMax(editable.toString());
-                            break;
+                            return;
                         case "Bathrooms_Max":
                             SearchHelper.getSearch().setBathroomsMax(editable.toString());
-                            break;
+                            return;
                         case "Bedrooms_Max":
                             SearchHelper.getSearch().setBedroomsMax(editable.toString());
-                            break;
+                            return;
                         case "Price_Max":
                             SearchHelper.getSearch().setPriceMax(editable.toString());
-                            break;
+                            return;
                     }
                 }
             }

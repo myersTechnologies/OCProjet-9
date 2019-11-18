@@ -34,6 +34,7 @@ import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
+import com.openclassrooms.realestatemanager.utils.SearchHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 
@@ -147,6 +148,7 @@ public class SecondActivity extends AppCompatActivity
                     Intent searchIntent = new Intent(this, SearchActivity.class);
                     startActivity(searchIntent);
                 }
+                SearchHelper.setNull();
                 return true;
         }
 

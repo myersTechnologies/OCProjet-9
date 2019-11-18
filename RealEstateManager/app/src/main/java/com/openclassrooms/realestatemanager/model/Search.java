@@ -1,19 +1,19 @@
 package com.openclassrooms.realestatemanager.model;
 
 public class Search {
-    private String name;
-    private String surfaceMin;
-    private String surfaceMax;
-    private String roomsMin;
-    private String roomsMax;
-    private String bathroomsMin;
-    private String bathroomsMax;
-    private String bedroomsMin;
-    private String bedroomsMax;
-    private String priceMin;
-    private String priceMax;
+    private String name = "none";
+    private String surfaceMin = "0";
+    private String surfaceMax = "100000";
+    private String roomsMin = "0";
+    private String roomsMax = "100000";
+    private String bathroomsMin = "0";
+    private String bathroomsMax = "100000";
+    private String bedroomsMin = "0";
+    private String bedroomsMax = "100000";
+    private String priceMin = "0";
+    private String priceMax = "10000000";
     private String availability;
-    private String city;
+    private String city = "none";
 
     public Search() {
     }

@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -253,13 +254,21 @@ public class AddHouseActivity extends AppCompatActivity {
             notifyNewPhoto.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Uri imageUri = data.getData();
-                    Photo photo;
-                    photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
-                            AddModifyHouseHelper.getHouse().getId());
-                    photo.setId(UUID.randomUUID().toString());
-                    AddModifyHouseHelper.getPhotos().add(photo);
-                    adapter.notifyDataSetChanged();
+                    try {
+                        Uri imageUri = data.getData();
+                        Photo photo;
+                        photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                                AddModifyHouseHelper.getHouse().getId());
+                        photo.setId(UUID.randomUUID().toString());
+                        AddModifyHouseHelper.getPhotos().add(photo);
+                        adapter.notifyDataSetChanged();
+                    } catch(Exception e){
+                        Toast.makeText(getApplicationContext(), "Photo empty", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setType("image/*");
+                        intent.setAction(Intent.ACTION_GET_CONTENT);
+                        startActivityForResult(intent, 90);
+                    }
 
                 }
             });

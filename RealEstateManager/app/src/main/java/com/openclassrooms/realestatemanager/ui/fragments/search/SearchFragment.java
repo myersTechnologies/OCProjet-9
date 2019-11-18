@@ -61,6 +61,5 @@ public class SearchFragment extends Fragment {
                 toolbar.getMenu().findItem(R.id.search).setVisible(true);
             }
         }
-        SearchHelper.setNull();
     }
 }

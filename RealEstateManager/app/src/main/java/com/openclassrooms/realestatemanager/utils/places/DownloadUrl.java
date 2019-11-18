@@ -40,10 +40,8 @@ public class DownloadUrl {
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.d("ERRORHERE", "Download1");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d("ERRORHERE", "Download 2");
         } finally {
             if (inputStream != null) {
                 inputStream.close();

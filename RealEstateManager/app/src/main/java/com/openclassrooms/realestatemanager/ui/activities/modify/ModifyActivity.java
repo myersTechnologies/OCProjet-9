@@ -175,6 +175,7 @@ public class ModifyActivity extends AppCompatActivity {
 
         house = AddModifyHouseHelper.getHouse();
         service.addHouseToList(house, this);
+
         for (int i = 0; i < AddModifyHouseHelper.getPhotos().size(); i++){
             if (!database.photoDao().getPhotos().contains(AddModifyHouseHelper.getPhotos().get(i))){
                 if (!AddModifyHouseHelper.getPhotos().get(i).getDescription().equals("Add new photo")) {

@@ -166,6 +166,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (marker.getTitle() != null){
+            if (marker.isInfoWindowShown()){
+                marker.hideInfoWindow();
+            } else {
+                marker.showInfoWindow();
+            }
+        }
+
         for (int i = 0; i < SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses().size(); i++){
             AdressHouse adressHouse = SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses().get(i);
             LatLng housesPosition = getLocationFromAddress(getContext(), adressHouse.getAdress() + ", " + adressHouse.getCity());

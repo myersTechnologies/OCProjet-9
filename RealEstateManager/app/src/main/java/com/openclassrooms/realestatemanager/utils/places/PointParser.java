@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.utils.places;
 
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,34 +8,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
-public class DataParser {
-
+public class PointParser {
     public HashMap<String, String> getPlace(JSONObject googlePlaceJson){
         HashMap<String, String > googlePlaceMap = new HashMap<>();
 
-        String latitude = "-NA-";
-        String longitude = "-NA-";
-        String name = "-NA-";
+        String type = "-NA";
 
         try {
-
-            if (!googlePlaceJson.isNull("name")){
-                name = googlePlaceJson.getString("name");
+            if(!googlePlaceJson.isNull("types")){
+                JSONArray types = googlePlaceJson.getJSONArray("types");
+                String typePlace = types.get(0).toString();
+                if (!typePlace.equals("point_of_interest")) {
+                    type = typePlace;
+                }  else {
+                    type = types.get(1).toString();
+                }
             }
 
-            if (!googlePlaceJson.getJSONObject("geometry").getJSONObject("location").isNull("lat")){
-                latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
-            }
-
-            if (!googlePlaceJson.getJSONObject("geometry").getJSONObject("location").isNull("lng")){
-                longitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            }
-
-
-            googlePlaceMap.put("name", name);
-            googlePlaceMap.put("lat", latitude);
-            googlePlaceMap.put("lng", longitude);
+            googlePlaceMap.put("type", type);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -75,7 +64,4 @@ public class DataParser {
 
         return getPlaces(jsonArray);
     }
-
-
-
 }

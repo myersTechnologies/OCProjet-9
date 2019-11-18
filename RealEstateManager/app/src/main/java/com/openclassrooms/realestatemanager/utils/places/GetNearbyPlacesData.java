@@ -3,13 +3,12 @@ package com.openclassrooms.realestatemanager.utils.places;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.utils.PointsUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,39 +54,13 @@ public class GetNearbyPlacesData extends AsyncTask<Object, String, String> {
 
     private void setPlaceMarkerInfo(HashMap<String, String> googlePlace) {
 
-        String type = googlePlace.get("type");
+        String name = googlePlace.get("name");
         String latitude = googlePlace.get("lat");
         String longitude = googlePlace.get("lng");
         LatLng latLng = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
 
-        Log.d("TYPEHERE", type);
         mapView.addMarker(new MarkerOptions().position(latLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
-        if (type.equals("school")) {
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-        }
-        if (type.contains("car")){
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-        }
-        if (type.equals("locality") || type.equals("political")) {
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-        }
-        if (type.equals("establishment")){
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-        }
-        if (type.equals("insurance_agency")){
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        }
-        if (type.equals("health")){
-            mapView.addMarker(new MarkerOptions().position(latLng)
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
-        }
-
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))).setTitle(name);
 
     }
 

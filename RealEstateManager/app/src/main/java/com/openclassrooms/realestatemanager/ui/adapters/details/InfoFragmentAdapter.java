@@ -41,8 +41,9 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private int LAYOUT_TREE = 2;
     private int LAYOUT_FOUR = 3;
     private int LAYOUT_FIVE = 4;
-    private int COUNT_ALL = 5;
-    private int COUNT_SECOND = 2;
+    private int LAYOUT_SIX = 5;
+    private int COUNT_ALL = 6;
+    private int COUNT_SECOND = 3;
 
     public InfoFragmentAdapter(House house, HouseDetails details, Context context) {
         this.house = house;
@@ -77,6 +78,11 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_static_map, parent, false);
                 viewHolder = new MapViewHolder(view);
             }
+            if (viewType == LAYOUT_SIX){
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.points_layout, parent, false);
+                viewHolder = new PointsViewHolder(view);
+            }
+
         } else {
             if (viewType == LAYOUT_ONE){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.info_details_layout,parent,false);
@@ -86,6 +92,11 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             if (viewType == LAYOUT_TWO){
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.details_details_second,parent,false);
                 viewHolder = new SecondViewHolder(view);
+            }
+
+            if (viewType == LAYOUT_TREE){
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.points_layout, parent, false);
+                viewHolder = new PointsViewHolder(view);
             }
         }
 
@@ -165,6 +176,13 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
 
             }
+            if (holderView.getItemViewType() == LAYOUT_SIX){
+                PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
+                PointsAdapter adapter = new PointsAdapter(house, holderView.itemView.getContext());
+                LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+                pointsViewHolder.pointsRv.setLayoutManager(manager);
+                pointsViewHolder.pointsRv.setAdapter(adapter);
+            }
         } else {
             if (holderView.getItemViewType() == LAYOUT_ONE) {
                 ViewHolder holder = (ViewHolder) holderView;
@@ -199,6 +217,13 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     holder.isAvailableTxt.setText("On sale since : " + details.getOnLineDate() + " Sold on : " + details.getSoldDate());
                 }
 
+            }
+            if (holderView.getItemViewType() == LAYOUT_TREE){
+                PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
+                PointsAdapter adapter = new PointsAdapter(house, holderView.itemView.getContext());
+                LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+                pointsViewHolder.pointsRv.setLayoutManager(manager);
+                pointsViewHolder.pointsRv.setAdapter(adapter);
             }
 
         }
@@ -318,6 +343,15 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             super(itemView);
 
             descriptionRv = itemView.findViewById(R.id.description_rv);
+        }
+    }
+
+    static class PointsViewHolder extends RecyclerView.ViewHolder {
+        private RecyclerView pointsRv;
+        public PointsViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            pointsRv = itemView.findViewById(R.id.points_rv);
         }
     }
 

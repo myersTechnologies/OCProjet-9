@@ -196,16 +196,18 @@ public class AddHouseActivity extends AppCompatActivity {
         service.addAdresses(adress, this);
         for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
             final Photo photo = PhotoListAdapter.getAllPhotos().get(i);
-            Handler postHandler = new Handler();
-            postHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    service.addPhotos(photo, getApplicationContext());
-                    final  FirebaseHelper helper = DI.getFirebaseDatabase();
-                    helper.addPhotoToFirebase(photo, Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
-                    helper.addPhotoToFireStore(photo);
-                }
+            if (!photo.getDescription().equals("Add new photo")) {
+                Handler postHandler = new Handler();
+                postHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        service.addPhotos(photo, getApplicationContext());
+                        final FirebaseHelper helper = DI.getFirebaseDatabase();
+                        helper.addPhotoToFirebase(photo, Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                        helper.addPhotoToFireStore(photo);
+                    }
                 }, 1000);
+            }
         }
 
         Handler postHandler = new Handler();

@@ -263,17 +263,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             database.preferencesDao().insertPreferences(setPreferences());
         }
 
-
         databaseRef.child(userId).setValue(user);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(getContext(), SecondActivity.class);
-                startActivity(intent);
-            }
-        }, 3000);
+        Intent intent = new Intent(getContext(), SecondActivity.class);
+        startActivity(intent);
+
 
 
     }

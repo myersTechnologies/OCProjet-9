@@ -253,23 +253,14 @@ public class ModifyActivity extends AppCompatActivity {
             notifyNewPhoto.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Uri imageUri = data.getData();
-                    Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
-                                String.valueOf(AddModifyHouseHelper.getHouse().getId()));
-                    photo.setId(UUID.randomUUID().toString());
-                    AddModifyHouseHelper.getPhotos().add(photo);
-                    adapter.notifyDataSetChanged();
-                }
-            });
 
-            notifyNewPhoto.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                    if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
-                        AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+                        Uri imageUri = data.getData();
+                        Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                                String.valueOf(AddModifyHouseHelper.getHouse().getId()));
+                        photo.setId(UUID.randomUUID().toString());
+                        AddModifyHouseHelper.getPhotos().add(photo);
+                        adapter.notifyDataSetChanged();
                     }
-                }
             });
 
             AlertDialog alert = notifyNewPhoto.create();

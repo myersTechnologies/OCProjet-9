@@ -138,33 +138,29 @@ public class APIService implements RealEstateManagerAPIService {
 
     @Override
     public void setHousesDetails(Context context) {
-        database = SaveToDatabase.getInstance(context);
         helper = DI.getFirebaseDatabase();
-        Utils.compareDetailsLists(helper.getDetails(), database.houseDetailsDao().getDetails());
+        Utils.compareDetailsLists(helper.getDetails());
 
     }
 
     @Override
     public void setPhotos(Context context) {
         helper = DI.getFirebaseDatabase();
-        database = SaveToDatabase.getInstance(context);
-        Utils.comparePhotosLists(helper.getPhotos(), database.photoDao().getPhotos());
+        Utils.comparePhotosLists(helper.getPhotos());
 
     }
 
     @Override
     public void setAdresses(Context context) {
-        database = SaveToDatabase.getInstance(context);
         helper = DI.getFirebaseDatabase();
-        Utils.compareAdressLists(helper.getHousesAdresses(),database.adressDao().getAdresses());
+        Utils.compareAdressLists(helper.getHousesAdresses());
 
     }
 
     @Override
     public void setHousesList(Context context) {
-        database = SaveToDatabase.getInstance(context);
         helper = DI.getFirebaseDatabase();
-        Utils.compareHousesLists(helper.getHouses(), database.houseDao().getHouses());
+        Utils.compareHousesLists(helper.getHouses());
     }
 
     @Override

@@ -100,6 +100,7 @@ public class PointsUtils {
         utilsPoints.add("plumber");
         utilsPoints.add("roofing_contractor");
         utilsPoints.add("storage");
+        utilsPoints.add("general_contractor");
         return utilsPoints;
     }
 
@@ -165,6 +166,7 @@ public class PointsUtils {
         campAndHotel.add("campground");
         campAndHotel.add("rv_park");
         campAndHotel.add("hotel");
+        campAndHotel.add("lodging");
         return campAndHotel;
     }
 

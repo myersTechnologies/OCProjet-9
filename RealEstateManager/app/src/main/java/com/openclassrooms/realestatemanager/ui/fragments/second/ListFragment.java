@@ -27,6 +27,7 @@ import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.MediaFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.map.StaticMapFragment;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
+import com.openclassrooms.realestatemanager.utils.database.DatabaseUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -77,17 +78,11 @@ public class ListFragment extends Fragment {
 
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    houses = database.houseDao().getHouses();
-                    if (houses != null) {
-                        adapter = new ListFragmentAdapter(houses, getActivity());
-                        initList();
-                    }
-                }
-            }, 2000);
+            houses = database.houseDao().getHouses();
+            if (houses != null) {
+                adapter = new ListFragmentAdapter(houses, getActivity());
+                initList();
+            }
         } else {
             adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
             Toast.makeText(getActivity(), String.valueOf(SearchHelper.getHouses().size()), Toast.LENGTH_SHORT).show();
@@ -103,6 +98,18 @@ public class ListFragment extends Fragment {
 
 
     private void initList() {
+        //Loads all list from firebase to sql database
+        if (DI.getFirebaseDatabase().getHouses() == null) {
+            Object dataTransfer[] = new Object[5];
+            dataTransfer[0] = service;
+            dataTransfer[1] = getContext();
+            dataTransfer[2] = DI.getFirebaseDatabase();
+            dataTransfer[3] = adapter;
+            dataTransfer[4] = database;
+            DatabaseUtil databaseUtil = new DatabaseUtil();
+            databaseUtil.execute(dataTransfer);
+        }
+
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
     }

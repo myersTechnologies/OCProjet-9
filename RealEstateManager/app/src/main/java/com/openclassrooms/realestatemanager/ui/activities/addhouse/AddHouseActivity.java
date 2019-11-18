@@ -260,18 +260,11 @@ public class AddHouseActivity extends AppCompatActivity {
                     photo.setId(UUID.randomUUID().toString());
                     AddModifyHouseHelper.getPhotos().add(photo);
                     adapter.notifyDataSetChanged();
+
                 }
             });
 
-            notifyNewPhoto.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.cancel();
-                    if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
-                        AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
-                    }
-                }
-            });
+
 
             AlertDialog alert = notifyNewPhoto.create();
             alert.getWindow().setGravity(Gravity.BOTTOM);

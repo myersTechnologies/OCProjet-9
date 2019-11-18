@@ -28,6 +28,8 @@ public interface AdressDao {
     @Query("SELECT * FROM adresshouse WHERE adress_id = :adressId")
     AdressHouse getAdressById(String adressId);
 
+    @Update
+    void updateAddress(AdressHouse adressHouse);
 
 //Provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)

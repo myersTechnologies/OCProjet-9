@@ -3,9 +3,7 @@ package com.openclassrooms.realestatemanager.utils.places;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
 import com.openclassrooms.realestatemanager.utils.PointsUtils;
 

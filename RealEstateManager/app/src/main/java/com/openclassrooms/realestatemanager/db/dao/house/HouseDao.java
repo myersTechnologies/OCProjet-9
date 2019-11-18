@@ -26,6 +26,8 @@ public interface HouseDao {
 
     @Query("SELECT * FROM house WHERE id = :houseId")
     House getHouseById(String houseId);
+    @Update
+    void updateHouse(House house);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHouseProvider(House photo);

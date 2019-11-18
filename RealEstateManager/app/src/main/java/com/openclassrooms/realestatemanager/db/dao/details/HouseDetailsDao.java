@@ -30,6 +30,9 @@ public interface HouseDetailsDao {
     @Query("SELECT * FROM housedetails WHERE id = :detailsId")
     HouseDetails getDetailsWithId(String detailsId);
 
+    @Update
+    void updateDetails(HouseDetails houseDetails);
+
     //Content provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertHouseDetailsProvider(HouseDetails houseDetails);

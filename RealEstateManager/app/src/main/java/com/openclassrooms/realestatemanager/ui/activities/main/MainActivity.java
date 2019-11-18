@@ -27,27 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
         service.setActivity(this, "Main");
 
-        final FirebaseHelper helper = DI.getFirebaseDatabase();
-        service.setUsers(helper.getUsersFromFireBase());
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        helper.getHouseFromFirebase();
-                        helper.getDetailsFromFireBase();
-                        helper.getPhotosFromFirebase();
-                        helper.getHousesAdressesFromFirebase();
-                    }
-                });
-
-            }
-        };
-       Thread thread = new Thread(runnable);
-       thread.start();
-       runnable.run();
-
        changeFragment(new ConnectionFragment(), "ConnectionFrag");
 
 

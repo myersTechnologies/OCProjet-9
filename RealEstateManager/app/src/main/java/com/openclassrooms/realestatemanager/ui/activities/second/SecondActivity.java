@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -25,21 +24,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
+import com.openclassrooms.realestatemanager.ui.activities.map.MapActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
+import com.openclassrooms.realestatemanager.ui.activities.search.SearchActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class SecondActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -47,9 +43,6 @@ public class SecondActivity extends AppCompatActivity
     private TextView userName, userEmail;
     private ImageView userPhoto, imageHeader;
     private RealEstateManagerAPIService service;
-    private List<House> myHouses;
-    private List<User> users;
-    private SaveToDatabase database = SaveToDatabase.getInstance(this);
     private  Toolbar toolbar;
 
     @Override
@@ -63,19 +56,6 @@ public class SecondActivity extends AppCompatActivity
 
         service = DI.getService();
         service.setActivity(this, "Second");
-
-        //Loads all list from firebase to sql database
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    service.setHousesList(getApplicationContext());
-                    service.setHousesDetails(getApplicationContext());
-                    service.setAdresses(getApplicationContext());
-                    service.setPhotos(getApplicationContext());
-                    service.setMyHousesList(getMyHouses());
-                }
-            }, 500);
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -124,27 +104,6 @@ public class SecondActivity extends AppCompatActivity
         super.onResume();
     }
 
-
-
-    public List<House> getMyHouses(){
-        myHouses = new ArrayList<>();
-        for (int i = 0; i < database.houseDao().getHouses().size(); i++){
-            House house = database.houseDao().getHouses().get(i);
-            if (house.getAgentId().equals(service.getUser().getUserId())){
-                myHouses.add(house);
-            }
-        }
-        return myHouses;
-    }
-
-    public List<User> getUsersList(){
-
-        users = new ArrayList<>();
-        users.add(service.getUser());
-
-        return users;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -182,7 +141,12 @@ public class SecondActivity extends AppCompatActivity
                 }
                 return true;
             case R.id.search:
-                changeFragment(new SearchFragment(), "Search");
+                if (findViewById(R.id.fragment_container_media) == null) {
+                    changeFragment(new SearchFragment(), "Search");
+                } else {
+                    Intent searchIntent = new Intent(this, SearchActivity.class);
+                    startActivity(searchIntent);
+                }
                 return true;
         }
 
@@ -227,7 +191,12 @@ public class SecondActivity extends AppCompatActivity
                 break;
             case R.id.nav_map:
                 if (Utils.isInternetAvailable(this)) {
-                    changeFragment(new MapFragment(), "MapFragment");
+                    if (findViewById(R.id.fragment_container_media) == null) {
+                        changeFragment(new MapFragment(), "MapFragment");
+                    }else {
+                        Intent mapIntent = new Intent(this, MapActivity.class);
+                        startActivity(mapIntent);
+                    }
                 }
                 break;
         }

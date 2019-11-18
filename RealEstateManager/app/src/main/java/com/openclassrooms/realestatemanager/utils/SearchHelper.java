@@ -146,13 +146,7 @@ public class SearchHelper {
     }
 
     private static House getHouse(String id){
-        House house = null;
-        for (int j = 0; j < database.houseDao().getHouses().size(); j++){
-            if (database.houseDao().getHouses().get(j).getId().equals(id)){
-                house = database.houseDao().getHouses().get(j);
-            }
-
-        }
+        House house = database.houseDao().getHouseById(id);
         return house;
     }
 

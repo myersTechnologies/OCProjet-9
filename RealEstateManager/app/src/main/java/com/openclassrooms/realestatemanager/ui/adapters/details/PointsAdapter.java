@@ -16,7 +16,6 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.utils.PointsUtils;
 import com.openclassrooms.realestatemanager.utils.places.GetPointsString;
 
 import java.io.IOException;

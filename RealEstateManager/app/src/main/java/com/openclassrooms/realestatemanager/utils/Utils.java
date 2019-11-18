@@ -80,42 +80,64 @@ public class Utils {
         return (int) Math.abs(meter * 10.76);
     }
 
-    public static List<House> compareHousesLists(List<House> housesFb, List<House> houses1Db){
+
+
+    public static List<House> compareHousesLists(final List<House> housesFb){
+        SaveToDatabase database =  SaveToDatabase.getInstance(DI.getService().getActivity());
         if (housesFb.size() > 0) {
                 for (int i = 0; i < housesFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().insertHouse(housesFb.get(i));
+                    if (database.houseDao().getHouseById(housesFb.get(i).getId()) == null) {
+                        SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().insertHouse(housesFb.get(i));
+                    } else {
+                       database.houseDao().updateHouse(housesFb.get(i));
+                    }
                 }
             }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().getHouses();
+        return database.houseDao().getHouses();
     }
 
-    public static List<AdressHouse> compareAdressLists(List<AdressHouse> adressHousesFb, List<AdressHouse> adressHouses1Db){
+    public static List<AdressHouse> compareAdressLists(List<AdressHouse> adressHousesFb){
+        SaveToDatabase database =  SaveToDatabase.getInstance(DI.getService().getActivity());
         if (adressHousesFb.size() > 0) {
                 for (int i = 0; i < adressHousesFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().insertAdress(adressHousesFb.get(i));
+                    if (database.adressDao().getAdressById(adressHousesFb.get(i).getId()) == null) {
+                        database.adressDao().insertAdress(adressHousesFb.get(i));
+                    } else {
+                        database.adressDao().updateAddress(adressHousesFb.get(i));
+                    }
                 }
         }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses();
+        return database.adressDao().getAdresses();
     }
 
-    public static List<HouseDetails> compareDetailsLists(List<HouseDetails> detailsFb, List<HouseDetails> detailsDb){
+    public static List<HouseDetails> compareDetailsLists(List<HouseDetails> detailsFb){
+        SaveToDatabase database =  SaveToDatabase.getInstance(DI.getService().getActivity());
         if (detailsFb.size() > 0) {
                 for (int i = 0; i < detailsFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().insertDetails(detailsFb.get(i));
+                    if (database.houseDetailsDao().getDetailsWithHouseId(detailsFb.get(i).getHouseId()) == null) {
+                        database.houseDetailsDao().insertDetails(detailsFb.get(i));
+                    } else {
+                        database.houseDetailsDao().updateDetails(detailsFb.get(i));
+                    }
 
                 }
         }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().getDetails();
+        return database.houseDetailsDao().getDetails();
     }
 
-    public static List<Photo> comparePhotosLists(List<Photo> photosFb, List<Photo> photosDb){
+    public static List<Photo> comparePhotosLists(List<Photo> photosFb){
+        SaveToDatabase database =  SaveToDatabase.getInstance(DI.getService().getActivity());
         if (photosFb.size() > 0) {
             for (int i = 0; i < photosFb.size(); i++) {
-                SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().insertPhoto(photosFb.get(i));
+                if (database.photoDao().getPhotoWithHouseId(photosFb.get(i).getHouseId()) == null) {
+                    database.photoDao().insertPhoto(photosFb.get(i));
+                } else {
+                    database.photoDao().updatePhoto(photosFb.get(i));
+                }
             }
         }
 
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().getPhotos();
+        return database.photoDao().getPhotos();
     }
 
     public static String getRealPathFromURI(Uri contentURI) {

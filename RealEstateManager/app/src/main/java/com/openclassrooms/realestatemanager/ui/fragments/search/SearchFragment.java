@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.adapters.search.SearchAdapter;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
@@ -31,7 +32,7 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-
+        setToolbar();
         recyclerView = view.findViewById(R.id.search_rv);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
@@ -43,17 +44,23 @@ public class SearchFragment extends Fragment {
     }
 
     private void setToolbar(){
-        toolbar = getActivity().findViewById(R.id.toolbar);
-        toolbar.setTitle("Search");
-        toolbar.getMenu().findItem(R.id.add).setVisible(false);
-        toolbar.getMenu().findItem(R.id.search).setVisible(false);
+        if (!DI.getService().activityName().equals("Search")) {
+            toolbar = getActivity().findViewById(R.id.toolbar);
+            toolbar.setTitle("Search");
+            toolbar.getMenu().findItem(R.id.add).setVisible(false);
+            toolbar.getMenu().findItem(R.id.search).setVisible(false);
+        }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        toolbar.getMenu().findItem(R.id.add).setVisible(true);
-        toolbar.getMenu().findItem(R.id.search).setVisible(true);
+        if (!DI.getService().activityName().equals("Search")) {
+            if (toolbar.getMenu().findItem(R.id.add) != null) {
+                toolbar.getMenu().findItem(R.id.add).setVisible(true);
+                toolbar.getMenu().findItem(R.id.search).setVisible(true);
+            }
+        }
         SearchHelper.setNull();
     }
 }

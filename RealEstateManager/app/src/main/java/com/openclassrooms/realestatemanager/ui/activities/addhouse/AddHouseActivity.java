@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -24,20 +26,25 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
+import com.openclassrooms.realestatemanager.utils.places.GetPointsString;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -188,28 +195,24 @@ public class AddHouseActivity extends AppCompatActivity {
         if (service.getUser() != null){
             house.setAgentId(service.getUser().getUserId());
         }
-        service.addHouseToList(house, this);
-        service.setHouse(house);
         AdressHouse adress = AddModifyHouseHelper.getAdressHouse();
         adress.setId(String.valueOf(house.getId()));
         adress.setHouseId(String.valueOf(house.getId()));
-        service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), this);
-        service.addAdresses(adress, this);
-        for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
-            final Photo photo = PhotoListAdapter.getAllPhotos().get(i);
-            if (!photo.getDescription().equals("Add new photo")) {
-                Handler postHandler = new Handler();
-                postHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        service.addPhotos(photo, getApplicationContext());
-                        final FirebaseHelper helper = DI.getFirebaseDatabase();
-                        helper.addPhotoToFirebase(photo, Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
-                        helper.addPhotoToFireStore(photo);
-                    }
-                }, 1000);
-            }
-        }
+
+        LatLng current = getLocationFromAddress(this, adress.getAdress() + "," + adress.getCity());
+        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                current.latitude  + "," + current.longitude +
+                "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
+        Object dataTransfer[] = new Object[7];
+        dataTransfer[0] = url;
+        dataTransfer[1] = house;
+        dataTransfer[2] = service;
+        dataTransfer[3] = this;
+        dataTransfer[4] = AddModifyHouseHelper.getHouseDetails();
+        dataTransfer[5] = adress;
+        dataTransfer[6] = PhotoListAdapter.getAllPhotos();
+        GetPointsString getNearbyPlacesData = new GetPointsString();
+        getNearbyPlacesData.execute(dataTransfer);
 
         Handler postHandler = new Handler();
         postHandler.postDelayed(new Runnable() {
@@ -221,6 +224,28 @@ public class AddHouseActivity extends AppCompatActivity {
             }
         }, PhotoListAdapter.getAllPhotos().size() * 1000);
 
+    }
+
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return p1;
     }
 
     /**

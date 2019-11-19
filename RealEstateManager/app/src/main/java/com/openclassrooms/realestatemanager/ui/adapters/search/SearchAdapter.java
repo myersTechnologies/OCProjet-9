@@ -3,6 +3,8 @@ package com.openclassrooms.realestatemanager.ui.adapters.search;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
@@ -17,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +31,8 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
+import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
@@ -70,8 +75,13 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             viewHolder = new AvailableViewHolder(view);
         }
 
-
         if (viewType == 8){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.points_layout,parent,false);
+            viewHolder = new PointsViewHolder(view);
+        }
+
+
+        if (viewType == 9){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.button_layout,parent,false);
             viewHolder = new ButtonViewHolder(view);
         }
@@ -153,6 +163,14 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if (position == 8){
+           PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
+            SearchPointsAdapter adapter = new SearchPointsAdapter();
+            LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
+            pointsViewHolder.pointsRv.setLayoutManager(manager);
+            pointsViewHolder.pointsRv.setAdapter(adapter);
+        }
+
+        if (position == 9){
            ButtonViewHolder holder = (ButtonViewHolder)holderView;
            getConfirmButtonSearch(holder);
         }
@@ -294,7 +312,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 9;
+        return 10;
     }
 
     @Override
@@ -318,6 +336,8 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
                 return 7;
             case 8:
                 return 8;
+            case 9:
+                return 9;
         }
 
         return position;
@@ -382,6 +402,15 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         public SpinnerViewHolder(View itemView) {
             super(itemView);
             spinner = itemView.findViewById(R.id.spinner_house);
+        }
+    }
+
+    static class PointsViewHolder extends RecyclerView.ViewHolder {
+        private RecyclerView pointsRv;
+        public PointsViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            pointsRv = itemView.findViewById(R.id.points_rv);
         }
     }
 

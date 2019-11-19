@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.R;
@@ -113,6 +114,7 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
         }
 
         viewHolder.imageView.setImageResource(icon);
+        viewHolder.textView.setText(point);
 
 
     }
@@ -124,48 +126,20 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
+        private TextView textView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.points_image);
+            textView = itemView.findViewById(R.id.points_text);
         }
     }
 
     //get google maps points of interest
     public void getPoints(){
-        AdressHouse address = SaveToDatabase.getInstance(context).adressDao().getAdressWithHouseId(house.getId());
-        LatLng current = getLocationFromAddress(context, address.getAdress() + "," + address.getCity());
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                current.latitude  + "," + current.longitude +
-                "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
-        Object dataTransfer[] = new Object[4];
-        dataTransfer[0] = url;
-        dataTransfer[1] = context;
-        dataTransfer[2] = points;
-        dataTransfer[3] = PointsAdapter.this;
-        GetPointsString getNearbyPlacesData = new GetPointsString();
-        getNearbyPlacesData.execute(dataTransfer);
-    }
-
-    public LatLng getLocationFromAddress(Context context, String strAddress) {
-
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude());
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        String[] point = house.getPointsOfInterest().split(",");
+        for (int i = 0; i < point.length; i++){
+            points.add(point[i]);
         }
-
-        return p1;
     }
 
 }

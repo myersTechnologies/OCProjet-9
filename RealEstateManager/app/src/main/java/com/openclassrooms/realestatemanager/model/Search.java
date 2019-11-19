@@ -14,6 +14,7 @@ public class Search {
     private String priceMax = "10000000";
     private String availability;
     private String city = "none";
+    private String pointsOfInterest = "none";
 
     public Search() {
     }
@@ -120,5 +121,13 @@ public class Search {
 
     public void setPriceMax(String priceMax) {
         this.priceMax = priceMax;
+    }
+
+    public String getPointsOfInterest() {
+        return pointsOfInterest;
+    }
+
+    public void setPointsOfInterest(String pointsOfInterest) {
+        this.pointsOfInterest = pointsOfInterest;
     }
 }

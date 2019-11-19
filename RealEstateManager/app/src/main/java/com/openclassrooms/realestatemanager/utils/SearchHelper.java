@@ -4,6 +4,7 @@ package com.openclassrooms.realestatemanager.utils;
 import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
@@ -103,7 +104,21 @@ public class SearchHelper {
         if (!search.getCity().equals("none")){
             AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
             if (search.getCity().equals(adressHouse.getCity())){
-                addHouse(details);
+                checkPoints(house, details);
+            }
+        } else {
+            checkPoints(house, details);
+        }
+    }
+
+    private static void checkPoints(House house, HouseDetails details){
+        if (!search.getPointsOfInterest().equals("none")){
+            String points = search.getPointsOfInterest();
+            String[] point = points.split(",");
+            for (int i = 0; i < point.length; i++){
+                if (house.getPointsOfInterest().contains(point[i])){
+                    addHouse(details);
+                }
             }
         } else {
             addHouse(details);
@@ -133,6 +148,57 @@ public class SearchHelper {
     public static void setNull(){
         search = null;
         houses = null;
+    }
+
+    public static List<Integer> getPointsTypesImage(){
+        List<Integer> points = new ArrayList<>();
+        points.add(R.drawable.transports);
+        points.add(R.drawable.parc_amusant);
+        points.add(R.drawable.education);
+        points.add(R.drawable.store);
+        points.add(R.drawable.health);
+        points.add(R.drawable.utils);
+        points.add(R.drawable.political);
+        points.add(R.drawable.pray);
+        points.add(R.drawable.food);
+        points.add(R.drawable.hotel);
+        points.add(R.drawable.court);
+        points.add(R.drawable.cart);
+        points.add(R.drawable.money);
+        points.add(R.drawable.police);
+        points.add(R.drawable.fire);
+        points.add(R.drawable.gym);
+        points.add(R.drawable.gas);
+        points.add(R.drawable.logo);
+        points.add(R.drawable.stadium);
+        points.add(R.drawable.parking);
+        points.add(R.drawable.post_offce);
+        return points;
+    }
+    public static List<String> getPointsTypesString(){
+        List<String> points = new ArrayList<>();
+        points.add("transport");
+        points.add("amusement");
+        points.add("education");
+        points.add("establissement");
+        points.add("health");
+        points.add("utils");
+        points.add("political");
+        points.add("pray");
+        points.add("food");
+        points.add("hotel");
+        points.add("court");
+        points.add("cart");
+        points.add("money");
+        points.add("police");
+        points.add("fire_station");
+        points.add("gym");
+        points.add("gas_station");
+        points.add("real_estate_agency");
+        points.add("stadium");
+        points.add("parking");
+        points.add("post_office");
+        return points;
     }
 
 }

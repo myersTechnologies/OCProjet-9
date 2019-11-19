@@ -116,7 +116,12 @@ public class FirebaseService implements FirebaseHelper {
                     String monetarySystem = postSnapshot.child("monetarySystem").getValue().toString();
                     String price = postSnapshot.child("price").getValue().toString();
                     String measureUnity = postSnapshot.child("measureUnity").getValue().toString();
+                    String pointsOfInterest = null;
+                    if (postSnapshot.child("pointsOfInterest").exists()) {
+                        pointsOfInterest = postSnapshot.child("pointsOfInterest").getValue().toString();
+                    }
                     House house = new House(id,name, price, Boolean.parseBoolean(available), monetarySystem, measureUnity);
+                    house.setPointsOfInterest(pointsOfInterest);
                     house.setAgentId(agentId);
                     if (!houses.contains(house)) {
                         houses.add(house);

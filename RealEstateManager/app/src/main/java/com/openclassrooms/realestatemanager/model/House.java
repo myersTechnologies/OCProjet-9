@@ -34,6 +34,8 @@ public class House {
     @ColumnInfo(name = "measure_system")
     @NonNull
     private String measureUnity;
+    @ColumnInfo(name = "points_of_interest")
+    private String pointsOfInterest;
 
 
     public House(String id, String name, String price, boolean available, String monetarySystem, String measureUnity) {
@@ -101,6 +103,14 @@ public class House {
         this.measureUnity = measureUnity;
     }
 
+    public String getPointsOfInterest() {
+        return pointsOfInterest;
+    }
+
+    public void setPointsOfInterest(String pointsOfInterest) {
+        this.pointsOfInterest = pointsOfInterest;
+    }
+
     public static House fromContentValues(ContentValues values){
         final House house = new House(null, null, null, false, null, null);
         if (values.containsKey("house_id")) house.setId(values.getAsString("house_id"));
@@ -109,6 +119,7 @@ public class House {
         if (values.containsKey("available")) house.setAvailable(values.getAsBoolean("available"));
         if (values.containsKey("monetary")) house.setMonetarySystem(values.getAsString("monetary"));
         if (values.containsKey("measure")) house.setMeasureUnity(values.getAsString("measure"));
+        if (values.containsKey("points_of_interest")) house.setMeasureUnity(values.getAsString("points_of_interest"));
         return house;
     }
 }

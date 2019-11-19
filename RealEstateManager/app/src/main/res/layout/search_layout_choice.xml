@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:textSize="18sp"
-        android:text="Price"
         android:textColor="@android:color/black"/>
 
     <LinearLayout

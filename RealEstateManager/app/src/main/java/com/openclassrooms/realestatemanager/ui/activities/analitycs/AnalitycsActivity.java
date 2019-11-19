@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.activities.analitycs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -10,8 +11,11 @@ import android.view.MenuItem;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.analitycs.AnalitycsAdapter;
+
+import java.util.List;
 
 public class AnalitycsActivity extends AppCompatActivity {
 
@@ -29,11 +33,12 @@ public class AnalitycsActivity extends AppCompatActivity {
 
         service.setActivity(this, "Analytics");
 
+        List<House> houses = database.houseDao().getHouses();
         recyclerView = findViewById(R.id.analytics_rv);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         if (service.getMyHouses().size() > 0) {
-            AnalitycsAdapter adapter = new AnalitycsAdapter(service.getMyHouses(), database.houseDao().getHouses());
+            AnalitycsAdapter adapter = new AnalitycsAdapter(service.getMyHouses(), houses);
             recyclerView.setAdapter(adapter);
         }
     }

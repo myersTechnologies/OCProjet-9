@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.model.House;
+import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.text.DecimalFormat;
@@ -113,22 +115,27 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             int countTotal = 0;
             int countAllListSize = 0;
             House house = null;
+            String totalHouses = null;
             for (int j =0; j < houses.size(); j++){
                 house = houses.get(j);
-                countAllListSize = countAllListSize + Integer.parseInt(houses.get(j).getPrice().replaceAll(",", ""));
+                int price = Integer.parseInt(houses.get(j).getPrice().replaceAll(",", ""));
+                String valeurBruteTotal =  formatter.format(price).replaceAll("\\s", "");
+                int total = countAllListSize + Integer.parseInt(valeurBruteTotal);
+                totalHouses =  getPriceWithMonetarySystem(String.valueOf(total), house, formatter);
+                countAllListSize = countAllListSize + price;
             }
             House myHouse = null;
+            String  totalOwn = null;
             for (int i = 0; i < myHouses.size(); i++){
                 myHouse = myHouses.get(i);
                 if (!myHouses.get(i).isAvailable()){
-                    countTotal = countTotal + Integer.parseInt(myHouses.get(i).getPrice().replaceAll(",", ""));
+                    int price = Integer.parseInt(myHouses.get(i).getPrice().replaceAll(",", ""));
+                    String myValeurBrute = formatter.format(price).replaceAll("\\s", "");
+                    int total = countTotal + Integer.parseInt(myValeurBrute);
+                    totalOwn = getPriceWithMonetarySystem(String.valueOf(total), myHouse, formatter);
+                    countTotal = countTotal + price;
                 }
             }
-
-            String valeurBruteTotal =  formatter.format(countAllListSize).replaceAll("\\s", "");
-            String totalHouses =  Utils.getPriceWithMonetarySystem(valeurBruteTotal, house, formatter);
-            String myValeurBrute = formatter.format(countTotal).replaceAll("\\s", "");
-            String  totalOwn = Utils.getPriceWithMonetarySystem(myValeurBrute, myHouse, formatter);
 
             progressViewHolder.progressBar.setMax(countAllListSize);
             progressViewHolder.textView.setText("For a total of " + totalOwn + "/" + totalHouses);
@@ -137,6 +144,28 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
 
     }
+
+    public static String getPriceWithMonetarySystem(String valeurBrute, House house, DecimalFormat formatter){
+        RealEstateManagerAPIService service = DI.getService();
+        String result = null;
+        if (service.getPreferences().getMonetarySystem().equals("€") && house.getMonetarySystem().equals("$")) {
+            String resultString = formatter.format(Utils.convertDollarToEuro(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            result = "€" + " " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals("$") && house.getMonetarySystem().equals("€")){
+            String resultString = formatter.format(Utils.convertEuroToDollar(Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            result = "$ " + decimalReplacement;
+        }
+        if (service.getPreferences().getMonetarySystem().equals(house.getMonetarySystem())){
+                String resultString = formatter.format((Integer.parseInt(valeurBrute)));
+            String decimalReplacement = resultString.replaceAll("\\s", ",");
+            result = house.getMonetarySystem() + " " + decimalReplacement;
+        }
+        return result;
+    }
+
 
     @Override
     public int getItemViewType(int position) {

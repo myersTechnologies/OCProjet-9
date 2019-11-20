@@ -40,18 +40,8 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
         Uri photoUri = Uri.parse(context.getResources().getDrawable(R.drawable.ic_add_blue_24dp).toString());
         addPhoto = new Photo(photoUri.toString(), "Add new photo", houseId);
         addPhoto.setId("jjjj");
-        if (photos.size() > 0) {
-            for (int i = 0; i < photos.size(); i++){
-                if (!photos.get(i).getDescription().equals("Add new photo")){
-                    i++;
-                    if (i == photos.size()){
-                        photos.add(addPhoto);
-                    }
-                }
-            }
-        } else {
-            photos.add(addPhoto);
-        }
+
+        photos.add(addPhoto);
         this.photos = photos;
     }
 

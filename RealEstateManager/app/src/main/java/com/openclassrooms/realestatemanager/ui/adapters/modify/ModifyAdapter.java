@@ -134,7 +134,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
              LinearLayoutManager layoutManager = new LinearLayoutManager(imageViewViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
              imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
              PhotoListAdapter adapter;
-             adapter = new PhotoListAdapter(AddModifyHouseHelper.getPhotos(), house.getId(), imageViewViewHolder.itemView.getContext());
+             adapter = new PhotoListAdapter(photos, house.getId(), imageViewViewHolder.itemView.getContext());
              imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
         } if (holderView.getItemViewType() == LAYOUT_SIX){
             StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;

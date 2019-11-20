@@ -14,6 +14,7 @@ import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActiv
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
+import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -46,6 +47,7 @@ public class SearchActivity extends AppCompatActivity {
             case android.R.id.home:
                 Intent listIntent = new Intent(this, SecondActivity.class);
                 startActivity(listIntent);
+                SearchHelper.setNull();
                 return true;
         }
 

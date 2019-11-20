@@ -178,7 +178,7 @@ public class ModifyActivity extends AppCompatActivity {
         service.addHouseToList(house, this);
 
         for (int i = 0; i < AddModifyHouseHelper.getPhotos().size(); i++){
-            if (!database.photoDao().getPhotos().contains(AddModifyHouseHelper.getPhotos().get(i))){
+            if (database.photoDao().getPhototWithId(AddModifyHouseHelper.getPhotos().get(i).getId()) == null){
                 if (!AddModifyHouseHelper.getPhotos().get(i).getDescription().equals("Add new photo")) {
                     Photo photo = AddModifyHouseHelper.getPhotos().get(i);
                     service.addPhotos(AddModifyHouseHelper.getPhotos().get(i), this);
@@ -192,13 +192,13 @@ public class ModifyActivity extends AppCompatActivity {
         service.addAdresses(AddModifyHouseHelper.getAdressHouse(), this);
         service.setHouse(house);
 
-        sendNotification();
 
     }
 
     private String getRealPathFromURI(Uri contentURI) {
         String filePath;
-        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(contentURI, proj, null, null, null);
         if (cursor == null) {
             filePath = contentURI.getPath();
         } else {
@@ -231,16 +231,14 @@ public class ModifyActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
         if (requestCode == 100) {
-            Intent intent = new Intent();
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, 90);
         }
 
         if (requestCode == 90) {
 
             AlertDialog.Builder notifyNewPhoto = new AlertDialog.Builder(this);
-            notifyNewPhoto.setCancelable(true);
             notifyNewPhoto.setTitle("Add a description");
             notifyNewPhoto.setMessage("What kind of room is it?");
             notifyNewPhoto.setIcon(R.drawable.ic_add_blue_24dp);
@@ -272,6 +270,7 @@ public class ModifyActivity extends AppCompatActivity {
             });
 
             AlertDialog alert = notifyNewPhoto.create();
+            alert.setCanceledOnTouchOutside(false);
             alert.getWindow().setGravity(Gravity.BOTTOM);
             alert.show();
 

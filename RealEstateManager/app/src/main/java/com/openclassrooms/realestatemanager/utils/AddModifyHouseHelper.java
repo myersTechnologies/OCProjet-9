@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.utils;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -23,6 +25,7 @@ import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,7 +47,6 @@ public class AddModifyHouseHelper {
 
         adressHouse = new AdressHouse("", "", "", "", "", "", "");
         houseDetails = new HouseDetails(house.getId(), house.getId());
-        houseDetails.setOnLineDate(Utils.getTodayDate());
 
     }
 
@@ -164,19 +166,51 @@ public class AddModifyHouseHelper {
                     available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
                     available.setChecked(true);
                     house.setAvailable(true);
+                    getCalendar("onSale", available);
                 }
             }
         });
         sold.setEnabled(false);
     }
 
+    private static void getCalendar(final String state, CheckedTextView checkedTextView){
+        Calendar calendar = Calendar.getInstance();
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int month = calendar.get(Calendar.MONTH);
+        final int year = calendar.get(Calendar.YEAR);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(checkedTextView.getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
+                String date = mDay + "/" + (mMonth + 1) + "/" + mYear;
+                switch (state){
+                    case "onSale":
+                        houseDetails.setOnLineDate(date);
+                        house.setAvailable(true);
+                        break;
+                    case "sold":
+                        house.setAvailable(false);
+                        houseDetails.setSoldDate(date);
+
+                        break;
+                }
+            }
+        }, year, month, day);
+        datePickerDialog.show();
+    }
+
     public static void setModifyCheckedListener(final CheckedTextView available, final CheckedTextView sold){
+        //to modify house set state of house
         if (house.isAvailable()){
             available.setChecked(true);
             available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+            sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+
         } else {
             sold.setChecked(true);
-            available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
+            available.setChecked(false);
+            available.setEnabled(false);
+            available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+            sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
         }
         available.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,11 +221,11 @@ public class AddModifyHouseHelper {
                 } else {
                     available.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
                     available.setChecked(true);
+                    getCalendar("onSale", available);
                     if (sold.isChecked()) {
                         sold.setChecked(false);
                         sold.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
                     }
-                    house.setAvailable(true);
                 }
             }
         });
@@ -207,12 +241,13 @@ public class AddModifyHouseHelper {
                 } else {
                     sold.setCheckMarkDrawable(R.drawable.ic_check_green_24dp);
                     sold.setChecked(true);
+                    getCalendar("sold", sold);
                     if (available.isChecked()){
                         available.setChecked(false);
                         available.setCheckMarkDrawable(R.drawable.ic_check_white_24dp);
+                        getCalendar("onSale", available);
                     }
-                    house.setAvailable(false);
-                    houseDetails.setSoldDate(Utils.getTodayDate());
+
                 }
             }
         });

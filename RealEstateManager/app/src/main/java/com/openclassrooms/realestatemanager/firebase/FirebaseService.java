@@ -20,6 +20,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.openclassrooms.realestatemanager.DI.DI;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.dialog.Dialogs;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
@@ -284,26 +286,34 @@ public class FirebaseService implements FirebaseHelper {
     }
 
     @Override
-    public void addPhotoToFireStore(Photo photo) {
+    public void addPhotoToFireStore(final Photo photo) {
         Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
         final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", uploadImage.getLastPathSegment());
         if (!localFile.exists()) {
+            final Dialogs dialogs = new Dialogs();
+            dialogs.notificationUpload(photo, DI.getService().getActivity(),
+                    0, 1
+            );
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference photoRef = storageRef.child(uploadImage.getLastPathSegment());
             photoRef.putFile(uploadImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(DI.getService().getActivity(), "success", Toast.LENGTH_SHORT).show();
+                    dialogs.dismissUpload();
+                    dialogs.sendNotification(SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().getHouseById(photo.getHouseId()),
+                            DI.getService().getActivity());
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
+                    dialogs.dismissUpload();
                     Toast.makeText(DI.getService().getActivity(), "failed", Toast.LENGTH_SHORT).show();
                 }
             }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    Toast.makeText(DI.getService().getActivity(), taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
+                    String value = taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount();
+                    dialogs.updateNotificationUpload(value);
                 }
             });
         }
@@ -336,7 +346,8 @@ public class FirebaseService implements FirebaseHelper {
 
     private String getRealPathFromURI(Uri contentURI) {
         String filePath;
-        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, null, null, null, null);
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, proj, null, null, null);
         if (cursor == null) {
             filePath = contentURI.getPath();
         } else {
@@ -363,7 +374,7 @@ public class FirebaseService implements FirebaseHelper {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     String id = postSnapshot.child("id").getValue().toString();
-                    String houseId = postSnapshot.child("houseId").getValue().toString();
+                    final String houseId = postSnapshot.child("houseId").getValue().toString();
                     String description = postSnapshot.child("description").getValue().toString();
                     final String photoUrl = postSnapshot.child("photoUrl").getValue().toString().replaceAll(",", ".");
                     final Photo photo = new Photo(photoUrl, description, houseId);
@@ -382,19 +393,16 @@ public class FirebaseService implements FirebaseHelper {
                                     urlRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            photo.setPhotoUrl(localFile.toString());
-                                            Toast.makeText(DI.getService().getActivity(), "Download at " + photo.getPhotoUrl(), Toast.LENGTH_SHORT).show();
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
                                         public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(DI.getService().getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(DI.getService().getActivity(), "Failed Download", Toast.LENGTH_SHORT).show();
                                         }
                                     }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                                            Toast.makeText(DI.getService().getActivity(), "progress " + localFile.toString() +
-                                                    "\n" + taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
                                         }
                                     });
                                 photos.add(photo);

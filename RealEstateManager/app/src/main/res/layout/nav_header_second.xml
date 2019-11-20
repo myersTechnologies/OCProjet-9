@@ -33,7 +33,7 @@
             android:layout_marginLeft="25dp"
             android:text="Real Estate Manager"
             android:textColor="@android:color/white"
-            android:textSize="20dp"/>
+            android:textSize="@dimen/header_title"/>
 
         <ImageView
             android:id="@+id/imageView"
@@ -52,6 +52,7 @@
             app:layout_constraintLeft_toRightOf="@id/imageView"
             app:layout_constraintTop_toTopOf="@id/imageView"
             app:layout_constraintBottom_toBottomOf="@id/imageView"
+            android:textSize="@dimen/title_text_size"
             android:paddingLeft="10dp"/>
 
         <TextView
@@ -60,6 +61,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/user_name_nav_text"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
+            android:textSize="@dimen/content_text_size"
             app:layout_constraintLeft_toRightOf="@id/imageView"
             android:paddingLeft="10dp"
             />

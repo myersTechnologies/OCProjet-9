@@ -138,6 +138,9 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
 
             progressViewHolder.progressBar.setMax(countAllListSize);
+            if (totalOwn == null){
+                totalOwn = "0";
+            }
             progressViewHolder.textView.setText("For a total of " + totalOwn + "/" + totalHouses);
             progressViewHolder.progressBar.setProgress(countTotal);
         }

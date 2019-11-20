@@ -45,6 +45,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
@@ -89,10 +90,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
        int MY_STORAGE_REQUEST_CODE = 90;
        int MY_LOCATION_REQUEST_CODE = 80;
 
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, MY_CAMERA_REQUEST_CODE);
-        }
-
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
         }
@@ -136,7 +133,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         super.onResume();
         if (service.getUser() != null){
-
+            Intent intent = new Intent(getContext(), SecondActivity.class  );
+            startActivity(intent);
         } else {
             signInWithFacebook();
             signInWithGoogle();
@@ -264,11 +262,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         }
 
         databaseRef.child(userId).setValue(user);
-
-        Intent intent = new Intent(getContext(), SecondActivity.class);
-        startActivity(intent);
-
-
 
     }
 

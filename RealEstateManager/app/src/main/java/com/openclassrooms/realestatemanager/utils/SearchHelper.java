@@ -12,6 +12,10 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SearchHelper {
@@ -114,19 +118,52 @@ public class SearchHelper {
     private static void checkPoints(House house, HouseDetails details){
         if (!search.getPointsOfInterest().equals("none")){
             String points = search.getPointsOfInterest();
-            String[] point = points.split(",");
-            for (int i = 0; i < point.length; i++){
-                if (house.getPointsOfInterest().contains(point[i])){
-                    addHouse(details);
-                }
+            String housePoint = house.getPointsOfInterest();
+            List<String> searchPoints = new ArrayList<>();
+            for (int i = 0; i < points.split(",").length; i++){
+                searchPoints.add(points.split(",")[i]);
+            }
+
+
+            List<String> housePoints = new ArrayList<>();
+            for (int j = 0; j < housePoint.split(",").length; j++){
+                housePoints.add(housePoint.split(",")[j]);
+            }
+
+            List<String> common = new ArrayList<>(searchPoints);
+            common.retainAll(housePoints);
+
+            Toast.makeText(DI.getService().getActivity(), housePoint, Toast.LENGTH_SHORT ).show();
+            Toast.makeText(DI.getService().getActivity(), points, Toast.LENGTH_SHORT ).show();
+            if (housePoints.size() == common.size()) {
+               checkOnSaleDate(house, details);
             }
         } else {
-            addHouse(details);
+            checkOnSaleDate(house, details);
         }
     }
 
-    private static void addHouse(HouseDetails details){
-        House house = getHouse(details.getHouseId());
+    private static void checkOnSaleDate(House house, HouseDetails details){
+        if (!search.getOnSaleDate().equals("none")){
+            if (search.getOnSaleDate().equals(details.getOnLineDate())){
+                checkSoldDate(house, details);
+            }
+        }else {
+            checkSoldDate(house, details);
+        }
+    }
+
+    private static void checkSoldDate(House house, HouseDetails details){
+        if (!search.getSoldDate().equals("none")){
+            if (search.getSoldDate().equals(details.getSoldDate())){
+                addHouse(house);
+            }
+        } else {
+            addHouse(house);
+        }
+    }
+
+    private static void addHouse(House house){
         if (!houses.contains(house)) {
             houses.add(house);
         }

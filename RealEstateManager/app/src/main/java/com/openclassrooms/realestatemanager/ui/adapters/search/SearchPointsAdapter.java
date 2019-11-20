@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.adapters.search;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SearchPointsAdapter extends RecyclerView.Adapter<SearchPointsAdapter.PointsViewHolder> {
@@ -51,18 +54,25 @@ public class SearchPointsAdapter extends RecyclerView.Adapter<SearchPointsAdapte
                 if (viewHolder.imageView.getBackground() == null) {
                     viewHolder.imageView.setBackgroundColor(Color.GREEN);
                     if (SearchHelper.getSearch().getPointsOfInterest().equals("none")){
-                        SearchHelper.getSearch().setPointsOfInterest(type);
+                        SearchHelper.getSearch().setPointsOfInterest(type + ",");
                     } else {
                         if (!SearchHelper.getSearch().getPointsOfInterest().contains(type)){
                             String pointsOfInterest = SearchHelper.getSearch().getPointsOfInterest();
-                            SearchHelper.getSearch().setPointsOfInterest(pointsOfInterest + "," + type);
+                            SearchHelper.getSearch().setPointsOfInterest(pointsOfInterest + type + ",");
                         }
                     }
                 } else {
                     viewHolder.imageView.setBackground(null);
-                    if (SearchHelper.getSearch().getPointsOfInterest().contains(type)){
-                       SearchHelper.getSearch().getPointsOfInterest().replace("," + type, "");
+                    String [] remove = SearchHelper.getSearch().getPointsOfInterest().split(",");
+                    List<String> types = new ArrayList<>();
+                    for (int i = 0; i < remove.length; i++){
+                        if (!remove[i].equals(type)) {
+                            types.add(remove[i]);
+                        }
                     }
+                    String points = TextUtils.join(",", types);
+                    SearchHelper.getSearch().setPointsOfInterest(points);
+
                 }
             }
         });

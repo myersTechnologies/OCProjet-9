@@ -25,6 +25,9 @@ public interface PhotoDao {
     @Query("SELECT * FROM photo WHERE house_id = :houseId")
     Photo getPhotoWithHouseId(String houseId);
 
+    @Query("SELECT * FROM photo WHERE photo_id = :id")
+    Photo getPhototWithId(String id);
+
     @Delete
     void deletePhoto(Photo photo);
 

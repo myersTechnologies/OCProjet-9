@@ -15,6 +15,8 @@ public class Search {
     private String availability;
     private String city = "none";
     private String pointsOfInterest = "none";
+    private String onSaleDate = "none";
+    private String soldDate = "none";
 
     public Search() {
     }
@@ -129,5 +131,21 @@ public class Search {
 
     public void setPointsOfInterest(String pointsOfInterest) {
         this.pointsOfInterest = pointsOfInterest;
+    }
+
+    public String getOnSaleDate() {
+        return onSaleDate;
+    }
+
+    public void setOnSaleDate(String onSaleDate) {
+        this.onSaleDate = onSaleDate;
+    }
+
+    public String getSoldDate() {
+        return soldDate;
+    }
+
+    public void setSoldDate(String soldDate) {
+        this.soldDate = soldDate;
     }
 }

@@ -21,7 +21,7 @@
             android:layout_marginRight="5dp">
     <TextView
         android:id="@+id/money_text"
-        android:textSize="20sp"
+        android:textSize="@dimen/title_text_size"
         android:text="Monetary system"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:text="$"
-        android:textSize="25sp"
+        android:textSize="@dimen/content_text_size"
         android:textColor="@android:color/black"
         android:layout_marginRight="10dp"
         />
@@ -59,7 +59,7 @@
         android:layout_marginBottom="15dp"
         android:text="€"
         android:layout_marginRight="10dp"
-        android:textSize="28sp"
+        android:textSize="@dimen/content_text_size"
         android:textColor="@android:color/black"
 
             />

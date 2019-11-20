@@ -218,7 +218,7 @@ public class AddHouseActivity extends AppCompatActivity {
         postHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                sendNotification(house);
+
                 Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
                 startActivity(intent);
             }
@@ -301,6 +301,7 @@ public class AddHouseActivity extends AppCompatActivity {
 
 
             AlertDialog alert = notifyNewPhoto.create();
+            alert.setCanceledOnTouchOutside(false);
             alert.getWindow().setGravity(Gravity.BOTTOM);
             alert.show();
         }

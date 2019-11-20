@@ -223,6 +223,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 PointsAdapter adapter = new PointsAdapter(house, holderView.itemView.getContext());
                 LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
                 pointsViewHolder.pointsRv.setLayoutManager(manager);
+                pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0, 0);
                 pointsViewHolder.pointsRv.setAdapter(adapter);
             }
 

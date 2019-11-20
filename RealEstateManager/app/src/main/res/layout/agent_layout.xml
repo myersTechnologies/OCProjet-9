@@ -10,7 +10,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@android:color/black"
         android:text="Agent en charge"
-        android:textSize="15sp"/>
+        android:textSize="@dimen/title_text_size"/>
 
     <ImageView
         android:id="@+id/agent_avatar"
@@ -28,7 +28,7 @@
         android:layout_marginLeft="80dp"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@id/agent_avatar"
-        android:textSize="15sp"/>
+        android:textSize="@dimen/content_text_size"/>
 
 
 

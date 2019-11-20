@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.search;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -31,12 +33,14 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
+import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.details.InfoFragmentAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -76,12 +80,17 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if (viewType == 8){
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_header_expendable_list,parent,false);
+            viewHolder = new TitleViewHolder(view);
+        }
+
+        if (viewType == 9){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.points_layout,parent,false);
             viewHolder = new PointsViewHolder(view);
         }
 
 
-        if (viewType == 9){
+        if (viewType == 10){
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.button_layout,parent,false);
             viewHolder = new ButtonViewHolder(view);
         }
@@ -161,16 +170,21 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             SearchHelper.getSearch().setAvailability("none");
             getSwitchListener(holder);
         }
-
         if (position == 8){
+            TitleViewHolder titleViewHolder = (TitleViewHolder) holderView;
+            titleViewHolder.textHeader.setText("Select points of interest");
+        }
+
+        if (position == 9){
            PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
             SearchPointsAdapter adapter = new SearchPointsAdapter();
             LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
             pointsViewHolder.pointsRv.setLayoutManager(manager);
+            pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0, 0);
             pointsViewHolder.pointsRv.setAdapter(adapter);
         }
 
-        if (position == 9){
+        if (position == 10){
            ButtonViewHolder holder = (ButtonViewHolder)holderView;
            getConfirmButtonSearch(holder);
         }
@@ -212,17 +226,48 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
         });
     }
 
-    private void getSwitchListener(AvailableViewHolder holder) {
+    private void getSwitchListener(final AvailableViewHolder holder) {
         holder.availableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b){
                     SearchHelper.getSearch().setAvailability("false");
+                    setDate("sold");
                 } else {
                     SearchHelper.getSearch().setAvailability("true");
+                    setDate("onSale");
                 }
             }
         });
+    }
+
+    private void setDate(final String state){
+        Calendar calendar = Calendar.getInstance();
+        final int day = calendar.get(Calendar.DAY_OF_MONTH);
+        final int month = calendar.get(Calendar.MONTH);
+        final int year = calendar.get(Calendar.YEAR);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
+                String date = mDay + "/" + (mMonth + 1) + "/" + mYear;
+                switch (state){
+                    case "onSale":
+                        SearchHelper.getSearch().setOnSaleDate(date);
+                        if (!SearchHelper.getSearch().getSoldDate().equals("none")){
+                            SearchHelper.getSearch().setSoldDate("none");
+                        }
+                        break;
+                    case "sold":
+                        SearchHelper.getSearch().setSoldDate(date);
+                        if (!SearchHelper.getSearch().getOnSaleDate().equals("none")){
+                            SearchHelper.getSearch().setOnSaleDate("none");
+                        }
+                        break;
+                }
+            }
+        }, year, month, day);
+        datePickerDialog.show();
     }
 
     private void getConfirmButtonSearch(ButtonViewHolder holder) {
@@ -312,7 +357,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 10;
+        return 11;
     }
 
     @Override
@@ -338,6 +383,8 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
                 return 8;
             case 9:
                 return 9;
+            case 10:
+                return 10;
         }
 
         return position;
@@ -412,6 +459,15 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
             pointsRv = itemView.findViewById(R.id.points_rv);
         }
+    }
+    static class TitleViewHolder extends RecyclerView.ViewHolder{
+        private TextView textHeader;
+
+        public TitleViewHolder(View itemView) {
+            super(itemView);
+            textHeader = itemView.findViewById(R.id.txt_header);
+        }
+
     }
 
 }

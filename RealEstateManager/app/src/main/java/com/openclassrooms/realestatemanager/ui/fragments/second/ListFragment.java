@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
@@ -32,6 +34,8 @@ import com.openclassrooms.realestatemanager.utils.database.DatabaseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ListFragment extends Fragment {
@@ -42,7 +46,7 @@ public class ListFragment extends Fragment {
     private LinearLayoutManager layoutManager;
     private List<House> houses;
     private RealEstateManagerAPIService service;
-    private SaveToDatabase database = SaveToDatabase.getInstance(getActivity());
+    private SaveToDatabase database;
     private MediaFragment mediaFragment;
     private InfoFragment infoFragment;
     private StaticMapFragment mapFragment;
@@ -68,6 +72,7 @@ public class ListFragment extends Fragment {
 
         housesList = view.findViewById(R.id.houses_list_second_f);
         layoutManager = new LinearLayoutManager(view.getContext());
+        database = SaveToDatabase.getInstance(getActivity());
         service = DI.getService();
 
         this.configureAndShowMediaFragment();
@@ -79,39 +84,54 @@ public class ListFragment extends Fragment {
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
             houses = database.houseDao().getHouses();
-            if (houses != null) {
+            if (DI.getFirebaseDatabase().getHouses() != null) {
+                List<House> commons = new ArrayList<>(DI.getFirebaseDatabase().getHouses());
+                commons.retainAll(houses);
+                if (houses.size() == commons.size()) {
+                    adapter = new ListFragmentAdapter(houses, getActivity());
+                    initList();
+                } else {
+                    adapter = new ListFragmentAdapter(houses, getActivity());
+                    checkFirebase();
+                }
+            } else {
                 adapter = new ListFragmentAdapter(houses, getActivity());
-                initList();
+                checkFirebase();
             }
         } else {
             adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
-            Toast.makeText(getActivity(), String.valueOf(SearchHelper.getHouses().size()), Toast.LENGTH_SHORT).show();
             initList();
         }
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(housesList.getContext(),
-                layoutManager.getOrientation());
-        housesList.addItemDecoration(dividerItemDecoration);
 
         return view;
     }
 
+    private void checkFirebase(){
+        FirebaseHelper helper = DI.getFirebaseDatabase();
 
-    private void initList() {
         //Loads all list from firebase to sql database
-        if (DI.getFirebaseDatabase().getHouses() == null) {
-            Object dataTransfer[] = new Object[5];
-            dataTransfer[0] = service;
-            dataTransfer[1] = getContext();
-            dataTransfer[2] = DI.getFirebaseDatabase();
+        Object dataTransfer[] = new Object[6];
+        dataTransfer[0] = service;
+        dataTransfer[1] = getContext();
+        dataTransfer[2] = DI.getFirebaseDatabase();
             dataTransfer[3] = adapter;
             dataTransfer[4] = database;
-            DatabaseUtil databaseUtil = new DatabaseUtil();
+            dataTransfer[5] = housesList;
+            DatabaseUtil databaseUtil = new DatabaseUtil(helper);
             databaseUtil.execute(dataTransfer);
-        }
 
+        initList();
+    }
+
+
+    private void initList() {
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(housesList.getContext(),
+                layoutManager.getOrientation());
+        housesList.addItemDecoration(dividerItemDecoration);
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
+
+
     }
 
     @Override

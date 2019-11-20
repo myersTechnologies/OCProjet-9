@@ -63,15 +63,12 @@ public class PhotoAnalyticsAdapter  extends RecyclerView.Adapter<PhotoAnalyticsA
 
         private ImageView houseImg;
         private TextView descriptionText;
-        private ImageView deleteImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             houseImg = itemView.findViewById(R.id.edit_img_view);
             descriptionText = itemView.findViewById(R.id.media_image_description_edit);
-            deleteImage = itemView.findViewById(R.id.delete_img_view);
-            deleteImage.setVisibility(View.INVISIBLE);
         }
     }
 

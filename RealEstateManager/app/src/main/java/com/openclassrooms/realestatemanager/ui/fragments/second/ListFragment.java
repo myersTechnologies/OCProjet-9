@@ -110,14 +110,13 @@ public class ListFragment extends Fragment {
         FirebaseHelper helper = DI.getFirebaseDatabase();
 
         //Loads all list from firebase to sql database
-        Object dataTransfer[] = new Object[6];
+        Object dataTransfer[] = new Object[5];
         dataTransfer[0] = service;
-        dataTransfer[1] = getContext();
-        dataTransfer[2] = DI.getFirebaseDatabase();
-            dataTransfer[3] = adapter;
-            dataTransfer[4] = database;
-            dataTransfer[5] = housesList;
-            DatabaseUtil databaseUtil = new DatabaseUtil(helper);
+        dataTransfer[1] = DI.getFirebaseDatabase();
+            dataTransfer[2] = adapter;
+            dataTransfer[3] = database;
+            dataTransfer[4] = housesList;
+            DatabaseUtil databaseUtil = new DatabaseUtil(helper, getActivity());
             databaseUtil.execute(dataTransfer);
 
         initList();

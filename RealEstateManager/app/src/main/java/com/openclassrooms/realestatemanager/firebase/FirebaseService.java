@@ -322,17 +322,21 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public void removePhoto(final Photo photo) {
         if (photos.contains(photo)) {
-            Uri deleteImage = Uri.fromFile(new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+            final File file  = new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())));
+            Uri deleteImage = Uri.fromFile(file);
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference photoRef = storageRef.child(deleteImage.getLastPathSegment());
             photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
                     Toast.makeText(DI.getService().getActivity(), "Success deleted", Toast.LENGTH_SHORT).show();
-                    FirebaseDatabase database = FirebaseDatabase.getInstance();
-                    DatabaseReference reference = database.getReference("photos");
-                    reference.child(photo.getId()).removeValue();
                     photos.remove(photo);
+                        if(!photos.toString().contains(photo.getPhotoUrl())) {
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference reference = database.getReference("photos");
+                            reference.child(photo.getId()).removeValue();
+                            file.delete();
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override

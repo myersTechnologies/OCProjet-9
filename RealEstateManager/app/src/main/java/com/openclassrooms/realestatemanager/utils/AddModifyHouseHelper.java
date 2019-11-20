@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.utils;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -38,7 +39,7 @@ public class AddModifyHouseHelper {
     private static HouseDetails houseDetails;
     private static RealEstateManagerAPIService service = DI.getService();
 
-    public static void setNewAdd(SaveToDatabase database){
+    public static void setNewAdd(SaveToDatabase databas){
         data = new ArrayList<>();
         photos = new ArrayList<>();
 
@@ -267,6 +268,10 @@ public class AddModifyHouseHelper {
         if (data != null){
             data.add(editText);
         }
+    }
+
+    public static void setNull(){
+        house = null;
     }
 
     public static List<Photo> getPhotos() {

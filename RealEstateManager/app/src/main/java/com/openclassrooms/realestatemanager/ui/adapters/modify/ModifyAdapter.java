@@ -34,18 +34,24 @@ public class ModifyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private int LAYOUT_SIX = 5;
     private int COUNT = 6;
 
-    private static AdressHouse adressHouse;
+    private AdressHouse adressHouse;
 
-    private static List<Photo> photos;
-    private static HouseDetails details;
+    private List<Photo> photos;
+    private HouseDetails details;
 
     public ModifyAdapter(House house, List<Photo> photos, HouseDetails details, Context context) {
         adressHouse = SaveToDatabase.getInstance(context).adressDao().getAdressWithHouseId(house.getId());
-        AddModifyHouseHelper.ModifyHouse(house, adressHouse, details, photos);
+        if (AddModifyHouseHelper.getHouse() == null) {
+            AddModifyHouseHelper.ModifyHouse(house, adressHouse, details, photos);
+            this.house = house;
+            this.photos = photos;
+            this.details = details;
+        } else {
+            this.house = AddModifyHouseHelper.getHouse();
+            this.photos = AddModifyHouseHelper.getPhotos();
+            this.details = AddModifyHouseHelper.getHouseDetails();
+        }
 
-        this.house = house;
-        this.photos = photos;
-        this.details = details;
     }
 
     @Override

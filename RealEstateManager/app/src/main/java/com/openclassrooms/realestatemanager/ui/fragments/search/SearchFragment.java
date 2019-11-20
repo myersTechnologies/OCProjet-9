@@ -30,7 +30,6 @@ public class SearchFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         setToolbar();
         recyclerView = view.findViewById(R.id.search_rv);
@@ -43,22 +42,28 @@ public class SearchFragment extends Fragment {
 
     }
 
+
+
     private void setToolbar(){
-        if (!DI.getService().activityName().equals("Search")) {
-            toolbar = getActivity().findViewById(R.id.toolbar);
-            toolbar.setTitle("Search");
-            toolbar.getMenu().findItem(R.id.add).setVisible(false);
-            toolbar.getMenu().findItem(R.id.search).setVisible(false);
+        if (toolbar != null) {
+            if (!DI.getService().activityName().equals("Search")) {
+                toolbar = getActivity().findViewById(R.id.toolbar);
+                toolbar.setTitle("Search");
+                toolbar.getMenu().findItem(R.id.add).setVisible(false);
+                toolbar.getMenu().findItem(R.id.search).setVisible(false);
+            }
         }
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (!DI.getService().activityName().equals("Search")) {
-            if (toolbar.getMenu().findItem(R.id.add) != null) {
-                toolbar.getMenu().findItem(R.id.add).setVisible(true);
-                toolbar.getMenu().findItem(R.id.search).setVisible(true);
+        if (toolbar != null) {
+            if (!DI.getService().activityName().equals("Search")) {
+                if (toolbar.getMenu().findItem(R.id.add) != null) {
+                    toolbar.getMenu().findItem(R.id.add).setVisible(true);
+                    toolbar.getMenu().findItem(R.id.search).setVisible(true);
+                }
             }
         }
     }

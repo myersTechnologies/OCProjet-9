@@ -25,14 +25,22 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
     private ListFragmentAdapter adapter;
     private SaveToDatabase database;
     private RecyclerView recyclerView;
+    private ProgressDialog dialog;
+    private String load;
 
-    public DatabaseUtil(FirebaseHelper helper) {
+    public DatabaseUtil(FirebaseHelper helper, Context context) {
         this.helper = helper;
+        this.context = context;
+        dialog = new ProgressDialog(context);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setTitle("Loading data");
+        load = "Please wait...";
+        dialog.setMessage(load);
+
     }
 
     @Override
     protected void onPreExecute() {
-        super.onPreExecute();
         while (helper.getHouses() == null) {
             helper.getHouseFromFirebase();
             helper.getDetailsFromFireBase();
@@ -40,34 +48,43 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
             helper.getHousesAdressesFromFirebase();
             helper.getUsersFromFireBase();
         }
+        dialog.show();
     }
 
     @Override
     protected String doInBackground(Object... objects) {
         this.service = (RealEstateManagerAPIService) objects[0];
-        this.context = (Context) objects[1];
-        this.helper = (FirebaseHelper) objects[2];
-        this.adapter = (ListFragmentAdapter) objects[3];
-        this.database = (SaveToDatabase) objects[4];
-        this.recyclerView = (RecyclerView) objects[5];
+        this.helper = (FirebaseHelper) objects[1];
+        this.adapter = (ListFragmentAdapter) objects[2];
+        this.database = (SaveToDatabase) objects[3];
+        this.recyclerView = (RecyclerView) objects[4];
 
-        if (database.houseDao().getHouses().size() < 1) {
-            while (database.houseDao().getHouses().size() < 1) {
+
+            if (database.houseDao().getHouses().size() < 1) {
+                while (database.houseDao().getHouses().size() < 1) {
+                    service.setHousesList(context);
+
+                }
                 service.setHousesList(context);
 
-            }
-        } else {
-            while (database.houseDao().getHouses().size() < helper.getHouses().size()){
+                service.setHousesDetails(context);
+
+                service.setAdresses(context);
+
+                service.setPhotos(context);
+            } else {
                 service.setHousesList(context);
+
+                service.setHousesList(context);
+
+                service.setHousesDetails(context);
+
+                service.setAdresses(context);
+
+                service.setPhotos(context);
             }
-        }
-        service.setHousesDetails(context);
 
-        service.setAdresses(context);
-
-        service.setPhotos(context);
-
-        service.setUsers(helper.getUsers());
+            service.setUsers(helper.getUsers());
 
 
         if (helper.getHouses() != null) {
@@ -77,12 +94,17 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
         }
     }
 
+
+
     @Override
     protected void onPostExecute(String s) {
-        super.onPostExecute(s);
         service.setMyHousesList(getMyHouses());
+        adapter.notifyDataSetChanged();
         adapter = new ListFragmentAdapter(database.houseDao().getHouses(), context);
         recyclerView.setAdapter(adapter);
+        if (dialog.isShowing()){
+            dialog.dismiss();
+        }
     }
 
     public List<House> getMyHouses(){

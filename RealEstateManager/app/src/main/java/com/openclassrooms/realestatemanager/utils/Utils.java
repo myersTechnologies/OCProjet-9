@@ -15,9 +15,11 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -111,11 +113,12 @@ public class Utils {
     }
 
     public static List<Photo> comparePhotosLists(List<Photo> photosFb){
+
         if (photosFb.size() > 0) {
             for (int i = 0; i < photosFb.size(); i++) {
                 SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().insertPhoto(photosFb.get(i));
-            }
 
+            }
         }
 
         return SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().getPhotos();

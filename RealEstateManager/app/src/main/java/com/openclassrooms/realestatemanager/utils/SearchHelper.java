@@ -22,7 +22,6 @@ public class SearchHelper {
 
     private static Search search;
     private static List<House> houses;
-    private static List<House> housesList;
     private static SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
 
     public static Search getSearch(){
@@ -132,9 +131,6 @@ public class SearchHelper {
 
             List<String> common = new ArrayList<>(searchPoints);
             common.retainAll(housePoints);
-
-            Toast.makeText(DI.getService().getActivity(), housePoint, Toast.LENGTH_SHORT ).show();
-            Toast.makeText(DI.getService().getActivity(), points, Toast.LENGTH_SHORT ).show();
             if (housePoints.size() == common.size()) {
                checkOnSaleDate(house, details);
             }
@@ -177,9 +173,10 @@ public class SearchHelper {
     }
 
     public static void setNewSearch(){
-        search = new Search();
-        houses = new ArrayList<>();
-        housesList = new ArrayList<>();
+        if (search == null) {
+            search = new Search();
+            houses = new ArrayList<>();
+        }
     }
 
     public static void setNull(){

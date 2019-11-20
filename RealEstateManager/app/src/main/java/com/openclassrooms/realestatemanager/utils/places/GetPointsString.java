@@ -147,7 +147,7 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
         if (type.equals("parking")){
             typePoint = "parking";
         }
-        if (type.equals("post_office")){
+        if (type.equals("post_office") || type.equals("post_box")){
             typePoint = "post";
         }
        if (house.getPointsOfInterest() == null){

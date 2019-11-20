@@ -15,12 +15,14 @@ import android.view.MenuItem;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DetailsActivityPagerAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.ui.fragments.details.InfoFragment;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 
 
 public class DetailsActivity extends AppCompatActivity {
@@ -84,11 +86,13 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.add:
                 Intent intent = new Intent(this, AddHouseActivity.class);
                 startActivity(intent);
+                AddModifyHouseHelper.setNewAdd(SaveToDatabase.getInstance(this));
                 return true;
             case R.id.modify:
                 if (String.valueOf(service.getHouse().getAgentId()).equals(service.getUser().getUserId())) {
                     Intent modifyIntent = new Intent(this, ModifyActivity.class);
                     startActivity(modifyIntent);
+                    AddModifyHouseHelper.setNull();
                 }
                 return true;
             case android.R.id.home:

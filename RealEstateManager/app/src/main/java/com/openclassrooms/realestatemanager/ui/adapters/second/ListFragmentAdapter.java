@@ -13,14 +13,17 @@ import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.events.DetailsEvent;
+import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +63,23 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         holder.housePrice.setText(Utils.getPriceWithMonetarySystem(valeurBrute, house, formatter));
 
         List<Photo> photoList = new ArrayList<>();
-        if (database.photoDao().getPhotos() != null) {
-            for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
-                Photo photo = database.photoDao().getPhotos().get(i);
-                if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
-                    photoList.add(photo);
+        try {
+            if (database.photoDao().getPhotos() != null) {
+                for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
+                    Photo photo = database.photoDao().getPhotos().get(i);
+                    if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
+                        photoList.add(photo);
+                    }
+                }
+            }
+        } catch (IndexOutOfBoundsException e){
+            FirebaseHelper helper = DI.getFirebaseDatabase();
+            if (helper.getPhotos() != null) {
+                for (int i = 0; i < helper.getPhotos().size(); i++) {
+                    Photo photo = helper.getPhotos().get(i);
+                    if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
+                        photoList.add(photo);
+                    }
                 }
             }
         }

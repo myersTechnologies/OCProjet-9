@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
 import com.openclassrooms.realestatemanager.ui.activities.analitycs.AnalitycsActivity;
@@ -34,6 +35,7 @@ import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
+import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -70,7 +72,8 @@ public class SecondActivity extends AppCompatActivity
         userPhoto = navigationView.getHeaderView(0).findViewById(R.id.imageView);
         imageHeader = navigationView.getHeaderView(0).findViewById(R.id.header_image_view);
 
-       changeFragment(new ListFragment(), "ListFragment");
+
+        changeFragment(new ListFragment(), "ListFragment");
 
 
         userEmail.setText(service.getUser().getEmail());
@@ -129,6 +132,7 @@ public class SecondActivity extends AppCompatActivity
             case R.id.add:
                 Intent intent = new Intent(this, AddHouseActivity.class);
                 startActivity(intent);
+                AddModifyHouseHelper.setNewAdd(SaveToDatabase.getInstance(this));
                 return true;
             case R.id.modify:
                 if (service.getHouse() != null) {
@@ -139,12 +143,8 @@ public class SecondActivity extends AppCompatActivity
                 }
                 return true;
             case R.id.search:
-                if (findViewById(R.id.fragment_container_media) == null) {
-                    changeFragment(new SearchFragment(), "Search");
-                } else {
-                    Intent searchIntent = new Intent(this, SearchActivity.class);
-                    startActivity(searchIntent);
-                }
+                Intent searchIntent = new Intent(this, SearchActivity.class);
+                startActivity(searchIntent);
                 SearchHelper.setNull();
                 return true;
         }

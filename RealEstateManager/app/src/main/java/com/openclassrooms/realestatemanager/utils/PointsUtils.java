@@ -138,6 +138,7 @@ public class PointsUtils {
         List<String> moneyPoints = new ArrayList<>();
         moneyPoints.add("accounting");
         moneyPoints.add("atm");
+        moneyPoints.add("finance");
         moneyPoints.add("bank");
         return moneyPoints;
     }

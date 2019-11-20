@@ -28,8 +28,6 @@ public interface PhotoDao {
     @Query("SELECT * FROM photo WHERE photo_id = :id")
     Photo getPhototWithId(String id);
 
-    @Delete
-    void deletePhoto(Photo photo);
 
     @Update
     void updatePhoto(Photo photo);

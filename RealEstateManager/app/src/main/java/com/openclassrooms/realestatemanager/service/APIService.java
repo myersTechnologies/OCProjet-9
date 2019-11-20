@@ -163,13 +163,6 @@ public class APIService implements RealEstateManagerAPIService {
         Utils.compareHousesLists(helper.getHouses());
     }
 
-    @Override
-    public void removePhoto(Photo photo, Context context) {
-        database = SaveToDatabase.getInstance(context);
-        database.photoDao().deletePhoto(photo);
-        FirebaseHelper helper = DI.getFirebaseDatabase();
-        helper.removePhoto(photo);
-    }
 
 
 

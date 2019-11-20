@@ -11,6 +11,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.UUID;
 
 
+
 public class AddHouseActivity extends AppCompatActivity {
 
     private RecyclerView addNewHouseToDoList;
@@ -58,28 +60,28 @@ public class AddHouseActivity extends AppCompatActivity {
     private RealEstateManagerAPIService service;
     private List<String> textEmpty;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_house);
         //Initialize service
         service = DI.getService();
+            setToolbar();
+            //initialize recycler view
+            addNewHouseToDoList = findViewById(R.id.new_house_list);
+            layoutManager = new LinearLayoutManager(this);
+            addNewHouseToDoList.setLayoutManager(layoutManager);
 
-        setToolbar();
-        //initialize recycler view
-        addNewHouseToDoList = findViewById(R.id.new_house_list);
-        layoutManager = new LinearLayoutManager(this);
-        addNewHouseToDoList.setLayoutManager(layoutManager);
-        adapter = new AddNewHouseAdapter(this);
-        addNewHouseToDoList.setAdapter(adapter);
-        //divider
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
-                layoutManager.getOrientation());
-        addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
+            adapter = new AddNewHouseAdapter(this);
+            addNewHouseToDoList.setAdapter(adapter);
 
-        service.setActivity(this, "AddHouse");
+            //divider
+            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
+                    layoutManager.getOrientation());
+            addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
+            service.setActivity(this, "AddHouse");
     }
+
 
     private void setToolbar(){
         //initialize toolbar
@@ -117,36 +119,42 @@ public class AddHouseActivity extends AppCompatActivity {
     //Check if all data is filled else return false to show AlertDialog
     private boolean checkAllData(List<EditText> data){
         textEmpty = new ArrayList<>();
-        List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
-        checkPhotos.remove( PhotoListAdapter.getAddPhoto());
+        int totalSize = 0;
         int dataSize = 0;
-        if (AddModifyHouseHelper.getHouse().getName() != "Select..."){
-            dataSize++;
-        } else {
-            textEmpty.add("Name");
-        }
-        for (EditText e : data){
-            if (!isEmpty(e)){
+        try {
+            List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
+            checkPhotos.remove(PhotoListAdapter.getAddPhoto());
+
+            if (AddModifyHouseHelper.getHouse().getName() != "Select...") {
                 dataSize++;
             } else {
-                textEmpty.add(String.valueOf(e.getTag()));
+                textEmpty.add("Name");
             }
+            for (EditText e : data) {
+                if (!isEmpty(e)) {
+                    dataSize++;
+                } else {
+                    textEmpty.add(String.valueOf(e.getTag()));
+                }
+            }
+
+            if (AddModifyHouseHelper.getHouse().isAvailable()) {
+                dataSize++;
+            } else {
+                textEmpty.add("Availability");
+            }
+
+
+            if (checkPhotos.size() >= 1) {
+                dataSize++;
+            } else {
+                textEmpty.add("Photos");
+            }
+
+            totalSize = data.size() + 3;
+        } catch (NullPointerException e){
+            Toast.makeText(this, "Fill all info please!", Toast.LENGTH_SHORT).show();
         }
-
-        if (AddModifyHouseHelper.getHouse().isAvailable()){
-            dataSize++;
-        } else {
-            textEmpty.add("Availability");
-        }
-
-
-        if (checkPhotos.size() >= 1){
-            dataSize++;
-        } else {
-            textEmpty.add("Photos");
-        }
-
-        int totalSize = data.size() + 3;
 
         if (dataSize == totalSize) {
             return true;

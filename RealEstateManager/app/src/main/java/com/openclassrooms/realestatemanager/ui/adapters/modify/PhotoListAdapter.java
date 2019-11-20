@@ -41,8 +41,13 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
         addPhoto = new Photo(photoUri.toString(), "Add new photo", houseId);
         addPhoto.setId("jjjj");
         if (photos.size() > 0) {
-            if (!photos.get(photos.size() -1).getPhotoUrl().equals(addPhoto.getPhotoUrl())) {
-                photos.add(addPhoto);
+            for (int i = 0; i < photos.size(); i++){
+                if (!photos.get(i).getDescription().equals("Add new photo")){
+                    i++;
+                    if (i == photos.size()){
+                        photos.add(addPhoto);
+                    }
+                }
             }
         } else {
             photos.add(addPhoto);
@@ -72,28 +77,6 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
             public void onClick(View view) {
                 if (holder.descriptionText.getText().equals("Add new photo")){
                     showDialogAddNewPhoto(holder);
-                }
-            }
-        });
-
-        if (photos.get(i).getDescription().equals("Add new photo")){
-            holder.deleteImage.setVisibility(View.INVISIBLE);
-        } else {
-            holder.deleteImage.setVisibility(View.VISIBLE);
-        }
-
-        holder.deleteImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (service.activityName().equals("AddHouse")) {
-                    AddModifyHouseHelper.getPhotos().remove(photos.get(position));
-                    notifyDataSetChanged();
-                }
-                if (service.activityName().equals("Modify")) {
-                    Photo photo = photos.get(position);
-                    service.removePhoto(photos.get(i), holder.itemView.getContext());
-                    AddModifyHouseHelper.getPhotos().remove(photo);
-                    notifyDataSetChanged();
                 }
             }
         });
@@ -160,14 +143,12 @@ public class PhotoListAdapter extends RecyclerView.Adapter<PhotoListAdapter.View
 
         private ImageView houseImg;
         private TextView descriptionText;
-        private ImageView deleteImage;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             houseImg = itemView.findViewById(R.id.edit_img_view);
             descriptionText = itemView.findViewById(R.id.media_image_description_edit);
-            deleteImage = itemView.findViewById(R.id.delete_img_view);
         }
     }
 

@@ -41,6 +41,14 @@ public class SearchPointsAdapter extends RecyclerView.Adapter<SearchPointsAdapte
     public void onBindViewHolder(@NonNull PointsViewHolder pointsViewHolder, int position) {
         int point = points.get(position);
         String pointString = pointsString.get(position);
+        if (!SearchHelper.getSearch().getPointsOfInterest().equals("none")){
+            for (int i = 0; i < SearchHelper.getSearch().getPointsOfInterest().split(",").length; i++){
+                String check = SearchHelper.getSearch().getPointsOfInterest().split(",")[i];
+                if (pointString.equals(check)){
+                    pointsViewHolder.imageView.setBackgroundColor(Color.GREEN);
+                }
+            }
+        }
         pointsViewHolder.imageView.setImageResource(point);
         pointsViewHolder.pointText.setText(pointString);
         setOnImageClickListener(pointsViewHolder);

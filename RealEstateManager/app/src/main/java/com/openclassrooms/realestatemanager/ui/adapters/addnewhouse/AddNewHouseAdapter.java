@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.adapters.addnewhouse;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,8 +13,11 @@ import android.widget.Spinner;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
+
+import java.util.Arrays;
 
 public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -29,7 +33,10 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public AddNewHouseAdapter(Context context){
         database = SaveToDatabase.getInstance(context);
-        AddModifyHouseHelper.setNewAdd(database);
+        if (AddModifyHouseHelper.getHouse() == null) {
+            AddModifyHouseHelper.setNewAdd(database);
+        }
+
     }
 
     @Override
@@ -113,6 +120,16 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void setTextWatchersViewHolder(ViewHolder holder) {
+        if (AddModifyHouseHelper.getHouseDetails() != null){
+            if (AddModifyHouseHelper.getHouse().getName() != null) {
+                holder.nameText.setSelection(Arrays.asList(AddModifyHouseHelper.getHousesTypes()).indexOf(AddModifyHouseHelper.getHouse().getName()));
+            }
+            holder.surfaceText.setText(AddModifyHouseHelper.getHouseDetails().getSurface());
+            holder.roomsText.setText(AddModifyHouseHelper.getHouseDetails().getRoomsNumber());
+            holder.bathroomsText.setText(AddModifyHouseHelper.getHouseDetails().getBathroomsNumber());
+            holder.bedroomsText.setText(AddModifyHouseHelper.getHouseDetails().getBedroomsNumber());
+            holder.price.setText(AddModifyHouseHelper.getHouse().getPrice());
+        }
 
         AddModifyHouseHelper.spinnerListener(holder.nameText, holder.nameText.getContext());
         AddModifyHouseHelper.getEditTextTextWatcher(holder.surfaceText);
@@ -124,6 +141,13 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void setLocationTextWatcher(LocationViewHolder locationViewHolder){
+        if (AddModifyHouseHelper.getAdressHouse() != null){
+            locationViewHolder.locationText.setText(AddModifyHouseHelper.getAdressHouse().getAdress());
+            locationViewHolder.city.setText(AddModifyHouseHelper.getAdressHouse().getCity());
+            locationViewHolder.zipCode.setText(AddModifyHouseHelper.getAdressHouse().getZipCode());
+            locationViewHolder.state.setText(AddModifyHouseHelper.getAdressHouse().getState());
+            locationViewHolder.country.setText(AddModifyHouseHelper.getAdressHouse().getCountry());
+        }
         AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.locationText);
         AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.city);
         AddModifyHouseHelper.getEditTextTextWatcher(locationViewHolder.state);
@@ -132,10 +156,20 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void setTextWatcherToDescriptionViewHolder(DescriptionViewHolder descriptionHolder){
+        if (AddModifyHouseHelper.getHouseDetails() != null){
+            descriptionHolder.descriptionContent.setText(AddModifyHouseHelper.getHouseDetails().getDescription());
+        }
         AddModifyHouseHelper.getEditTextTextWatcher(descriptionHolder.descriptionContent);
     }
 
     private void setAvailibilityListener(StatusViewHolder statusViewHolder){
+        if (AddModifyHouseHelper.getHouseDetails() != null){
+            if (AddModifyHouseHelper.getHouse().isAvailable()){
+                statusViewHolder.available.setChecked(true);
+            } else {
+                statusViewHolder.sold.setChecked(false);
+            }
+        }
         AddModifyHouseHelper.setCheckTextListener(statusViewHolder.available, statusViewHolder.sold);
     }
 

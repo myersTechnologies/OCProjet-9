@@ -154,7 +154,6 @@
                     android:id="@+id/bathrooms_edit_text_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
                     android:textSize="@dimen/content_text_size"
                     android:gravity="center"
                     android:inputType="number"

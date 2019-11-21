@@ -178,9 +178,10 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             if (holderView.getItemViewType() == LAYOUT_SIX){
                 PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
-                PointsAdapter adapter = new PointsAdapter(house, holderView.itemView.getContext());
+                PointsAdapter adapter = new PointsAdapter(house);
                 LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
                 pointsViewHolder.pointsRv.setLayoutManager(manager);
+                pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0,0);
                 pointsViewHolder.pointsRv.setAdapter(adapter);
             }
         } else {
@@ -220,7 +221,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             if (holderView.getItemViewType() == LAYOUT_TREE){
                 PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
-                PointsAdapter adapter = new PointsAdapter(house, holderView.itemView.getContext());
+                PointsAdapter adapter = new PointsAdapter(house);
                 LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
                 pointsViewHolder.pointsRv.setLayoutManager(manager);
                 pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0, 0);

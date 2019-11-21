@@ -31,5 +31,6 @@ public interface FirebaseHelper {
     List<Photo> getPhotos();
     void addPhotoToFireStore(Photo photo);
     void removePhoto(Photo photo);
+    boolean isHousesTaskFinish();
 
 }

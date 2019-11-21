@@ -14,7 +14,6 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SearchPointsAdapter extends RecyclerView.Adapter<SearchPointsAdapter.PointsViewHolder> {

@@ -73,8 +73,10 @@ public class DetailsActivity extends AppCompatActivity {
         item.setVisible(true);
         if (infoFragment != null && infoFragment.isVisible()){
             menu.findItem(R.id.search).setVisible(true);
+            menu.findItem(R.id.sync).setVisible(true);
         } else {
             menu.findItem(R.id.search).setVisible(false);
+            menu.findItem(R.id.sync).setVisible(false);
         }
         return true;
     }

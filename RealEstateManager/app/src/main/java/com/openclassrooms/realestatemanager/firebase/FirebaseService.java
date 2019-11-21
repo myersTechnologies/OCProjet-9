@@ -47,6 +47,7 @@ public class FirebaseService implements FirebaseHelper {
     private List<HouseDetails> detailsList;
     private List<Photo> photos;
     private List<String> photosArray;
+    private boolean isHouseEmpty;
 
     @Override
     public void setUsersList(List<User> users) {
@@ -70,9 +71,7 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public List<User> getUsersFromFireBase() {
-        if(users == null) {
-            users = new ArrayList<>();
-        }
+        users = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference();
         databaseRef.child(USERS).addValueEventListener(new ValueEventListener() {
@@ -101,12 +100,11 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public List<House> getHouseFromFirebase() {
 
-        if (houses == null) {
-            houses = new ArrayList<>();
-        }
 
+        houses = new ArrayList<>();
+        isHouseEmpty = false;
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference("house");
+        final DatabaseReference databaseReference = firebaseDatabase.getReference("house");
         databaseReference.orderByChild(ID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -125,10 +123,12 @@ public class FirebaseService implements FirebaseHelper {
                     House house = new House(id,name, price, Boolean.parseBoolean(available), monetarySystem, measureUnity);
                     house.setPointsOfInterest(pointsOfInterest);
                     house.setAgentId(agentId);
-                    if (!houses.contains(house)) {
-                        houses.add(house);
-                    }
+
+                    houses.add(house);
+                    Utils.compareHousesLists(house);
+
                 }
+                isHouseEmpty = true;
             }
 
             @Override
@@ -163,9 +163,8 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addAdressToFrirebase(AdressHouse adressHouse) {
-        if (adressHouses == null){
-            adressHouses = new ArrayList<>();
-        }
+
+        adressHouses = new ArrayList<>();
         adressHouses.add(adressHouse);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("adresses");
@@ -181,9 +180,8 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public List<AdressHouse> getHousesAdressesFromFirebase() {
-        if (adressHouses == null){
-            adressHouses = new ArrayList<>();
-        }
+        isHouseEmpty = false;
+        adressHouses = new ArrayList<>();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("adresses");
         databaseReference.orderByChild(ID).addValueEventListener(new ValueEventListener() {
@@ -198,10 +196,12 @@ public class FirebaseService implements FirebaseHelper {
                     String country = postSnapshot.child("country").getValue().toString();
                     String zipCode = postSnapshot.child("zipCode").getValue().toString();
                     AdressHouse adressHouse = new AdressHouse(id, houseId, adress, city, state, country, zipCode);
-                    if (!adressHouses.contains(adressHouse)) {
+
                         adressHouses.add(adressHouse);
-                    }
+                        Utils.compareAdressLists(adressHouse);
+
                 }
+                isHouseEmpty = true;
             }
 
             @Override
@@ -215,9 +215,7 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addDetailsToFireBase(HouseDetails details) {
-        if (this.detailsList == null){
-            this.detailsList = new ArrayList<>();
-        }
+        this.detailsList = new ArrayList<>();
         this.detailsList.add(details);
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference databaseRef = firebaseDatabase.getReference("details");
@@ -226,9 +224,8 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void getDetailsFromFireBase() {
-        if (detailsList == null){
-            detailsList = new ArrayList<>();
-        }
+        detailsList = new ArrayList<>();
+        isHouseEmpty = false;
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference("details");
         databaseReference.orderByChild(ID).addValueEventListener(new ValueEventListener() {
@@ -255,10 +252,12 @@ public class FirebaseService implements FirebaseHelper {
                         soldDate= postSnapshot.child("soldDate").getValue().toString();
                         details.setSoldDate(soldDate);
                     }
-                    if (!detailsList.contains(details)) {
-                        detailsList.add(details);
-                    }
+
+                    detailsList.add(details);
+                    Utils.compareDetailsLists(details);
+
                 }
+                isHouseEmpty = true;
             }
 
             @Override
@@ -348,6 +347,11 @@ public class FirebaseService implements FirebaseHelper {
 
     }
 
+    @Override
+    public boolean isHousesTaskFinish() {
+        return isHouseEmpty;
+    }
+
     private String getRealPathFromURI(Uri contentURI) {
         String filePath;
         String[] proj = { MediaStore.Images.Media.DATA };
@@ -365,12 +369,10 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void getPhotosFromFirebase() {
-        if (photosArray == null){
-            photosArray = new ArrayList<>();
-        }
-        if (photos == null){
-            photos = new ArrayList<>();
-        }
+
+        photosArray = new ArrayList<>();
+        photos = new ArrayList<>();
+        isHouseEmpty = false;
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference("photos");
         databaseRef.orderByChild("id").addValueEventListener(new ValueEventListener() {
@@ -410,13 +412,16 @@ public class FirebaseService implements FirebaseHelper {
                                         }
                                     });
                                 photos.add(photo);
+                                Utils.comparePhotosLists(photo);
                             }
                         });
                     }  else {
                         photo.setPhotoUrl(localFile.toString());
                         photos.add(photo);
+                        Utils.comparePhotosLists(photo);
                     }
                 }
+                isHouseEmpty = true;
             }
 
             @Override

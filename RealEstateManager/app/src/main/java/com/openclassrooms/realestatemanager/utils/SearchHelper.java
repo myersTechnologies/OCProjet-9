@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.utils;
 
 
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -12,10 +11,6 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Search;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class SearchHelper {
@@ -207,31 +202,33 @@ public class SearchHelper {
         points.add(R.drawable.stadium);
         points.add(R.drawable.parking);
         points.add(R.drawable.post_offce);
+        points.add(R.drawable.car);
         return points;
     }
     public static List<String> getPointsTypesString(){
         List<String> points = new ArrayList<>();
-        points.add("transport");
-        points.add("amusement");
-        points.add("education");
-        points.add("establissement");
-        points.add("health");
-        points.add("utils");
-        points.add("political");
-        points.add("pray");
-        points.add("food");
-        points.add("hotel");
-        points.add("court");
-        points.add("cart");
-        points.add("money");
-        points.add("police");
-        points.add("fire_station");
-        points.add("gym");
-        points.add("gas_station");
-        points.add("real_estate_agency");
-        points.add("stadium");
-        points.add("parking");
-        points.add("post_office");
+        points.add("Transports");
+        points.add("Diversion");
+        points.add("School");
+        points.add("Establishment");
+        points.add("Health");
+        points.add("Utils");
+        points.add("Politic");
+        points.add("Religion");
+        points.add("Food");
+        points.add("Hotel");
+        points.add("Court");
+        points.add("Market");
+        points.add("Bank");
+        points.add("Police");
+        points.add("Fire Station");
+        points.add("Gym");
+        points.add("Gas station");
+        points.add("Agency");
+        points.add("Stadium");
+        points.add("Parking");
+        points.add("Post Office");
+        points.add("Car Workshop");
         return points;
     }
 

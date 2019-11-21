@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.utils;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -255,8 +254,8 @@ public class AddModifyHouseHelper {
     }
 
     public static String[] getHousesTypes(){
-        String[] houseTypes = new String[]{"Select...", "Maison", "Appartement", "Terrain", "Propriété", "Commerce", "Bureau",
-                "Immeuble", "Parking/Garage", "Château", "Manoir"};
+        String[] houseTypes = new String[]{"Select...", "House", "Apartment", "Field", "Flat", "Office",
+                "Building", "Parking/Garage", "Castel", "Manor", "Loft", "Villa"};
         return houseTypes;
     }
 

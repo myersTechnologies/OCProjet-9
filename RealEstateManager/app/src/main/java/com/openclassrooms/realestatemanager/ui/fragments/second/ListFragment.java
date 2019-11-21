@@ -3,16 +3,15 @@ package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
@@ -34,14 +33,13 @@ import com.openclassrooms.realestatemanager.utils.database.DatabaseUtil;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ListFragment extends Fragment {
 
 
     private RecyclerView housesList;
+    private static ListFragment listFragment;
     private ListFragmentAdapter adapter;
     private LinearLayoutManager layoutManager;
     private List<House> houses;
@@ -52,9 +50,18 @@ public class ListFragment extends Fragment {
     private StaticMapFragment mapFragment;
     private LocationFragment locationFragment;
     private DescriptionFragment descriptionFragment;
+    private ProgressDialog  dialog;
+    private DatabaseUtil databaseUtil;
 
     public ListFragment() {
         // Required empty public constructor
+    }
+
+    public static ListFragment getInstance(){
+        if (listFragment == null){
+            listFragment = new ListFragment();
+        }
+        return listFragment;
     }
 
     @Override
@@ -70,8 +77,8 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
 
+        setRetainInstance(true);
         housesList = view.findViewById(R.id.houses_list_second_f);
-        layoutManager = new LinearLayoutManager(view.getContext());
         database = SaveToDatabase.getInstance(getActivity());
         service = DI.getService();
 
@@ -84,39 +91,53 @@ public class ListFragment extends Fragment {
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
             houses = database.houseDao().getHouses();
-            if (DI.getFirebaseDatabase().getHouses() != null) {
-                List<House> commons = new ArrayList<>(DI.getFirebaseDatabase().getHouses());
-                commons.retainAll(houses);
-                if (houses.size() == commons.size()) {
-                    adapter = new ListFragmentAdapter(houses, getActivity());
-                    initList();
-                } else {
-                    adapter = new ListFragmentAdapter(houses, getActivity());
-                    checkFirebase();
-                }
-            } else {
+            if (DI.getFirebaseDatabase().getHouses() == null) {
+                layoutManager = new LinearLayoutManager(view.getContext());
                 adapter = new ListFragmentAdapter(houses, getActivity());
                 checkFirebase();
+            } else {
+                layoutManager = new LinearLayoutManager(view.getContext());
+                adapter = new ListFragmentAdapter(houses, getActivity());
+                initList();
             }
         } else {
+            layoutManager = new LinearLayoutManager(view.getContext());
             adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
             initList();
         }
 
+        setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.sync:
+                checkFirebase();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void checkFirebase(){
         FirebaseHelper helper = DI.getFirebaseDatabase();
+        dialog = new ProgressDialog(getActivity());
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setTitle("Loading data");
+        dialog.setMessage("Please wait...");
+        dialog.show();
 
         //Loads all list from firebase to sql database
-        Object dataTransfer[] = new Object[5];
+        Object dataTransfer[] = new Object[6];
         dataTransfer[0] = service;
         dataTransfer[1] = DI.getFirebaseDatabase();
             dataTransfer[2] = adapter;
             dataTransfer[3] = database;
             dataTransfer[4] = housesList;
-            DatabaseUtil databaseUtil = new DatabaseUtil(helper, getActivity());
+            dataTransfer[5] = dialog;
+            databaseUtil = new DatabaseUtil(helper, getActivity());
             databaseUtil.execute(dataTransfer);
 
         initList();
@@ -124,12 +145,8 @@ public class ListFragment extends Fragment {
 
 
     private void initList() {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(housesList.getContext(),
-                layoutManager.getOrientation());
-        housesList.addItemDecoration(dividerItemDecoration);
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
-
 
     }
 
@@ -143,6 +160,14 @@ public class ListFragment extends Fragment {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+        if (databaseUtil != null) {
+            if (databaseUtil.getStatus() == AsyncTask.Status.RUNNING || databaseUtil.getStatus() == AsyncTask.Status.PENDING) {
+                databaseUtil.cancel(true);
+            }
+        }
+        if (dialog != null && dialog.isShowing()){
+            dialog.dismiss();
+        }
     }
 
     @Subscribe
@@ -201,6 +226,7 @@ public class ListFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_description, descriptionFragment).commit();
         }
     }
+
 
 }
 

@@ -5,16 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.ui.activities.addhouse.AddHouseActivity;
-import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 
 public class MapActivity extends AppCompatActivity {
 

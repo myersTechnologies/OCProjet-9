@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.utils;
 
-import com.openclassrooms.realestatemanager.model.Search;
 
 import java.util.ArrayList;
 import java.util.List;

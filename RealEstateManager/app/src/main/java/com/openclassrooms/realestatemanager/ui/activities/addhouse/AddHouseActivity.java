@@ -1,8 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.activities.addhouse;
 
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +9,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -30,21 +27,16 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
-import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.utils.places.GetPointsString;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +71,7 @@ public class AddHouseActivity extends AppCompatActivity {
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
                     layoutManager.getOrientation());
             addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
+        addNewHouseToDoList.getRecycledViewPool().setMaxRecycledViews(0,0);
             service.setActivity(this, "AddHouse");
     }
 
@@ -103,7 +96,9 @@ public class AddHouseActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 onBackPressed();
-                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+                try {
+                    PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+                } catch (NullPointerException e){}
                 return true;
             case R.id.confirm_add:
                 if (checkAllData(AddModifyHouseHelper.getData())) {
@@ -121,10 +116,11 @@ public class AddHouseActivity extends AppCompatActivity {
         textEmpty = new ArrayList<>();
         int totalSize = 0;
         int dataSize = 0;
-        try {
-            List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
+        List<Photo> checkPhotos = null;
+        if (PhotoListAdapter.getAllPhotos() != null) {
+            checkPhotos = PhotoListAdapter.getAllPhotos();
             checkPhotos.remove(PhotoListAdapter.getAddPhoto());
-
+        }
             if (AddModifyHouseHelper.getHouse().getName() != "Select...") {
                 dataSize++;
             } else {
@@ -145,22 +141,22 @@ public class AddHouseActivity extends AppCompatActivity {
             }
 
 
-            if (checkPhotos.size() >= 1) {
-                dataSize++;
-            } else {
-                textEmpty.add("Photos");
+            if (checkPhotos != null) {
+                if (checkPhotos.size() >= 1) {
+                    dataSize++;
+                } else {
+                    textEmpty.add("Photos");
+                }
             }
 
             totalSize = data.size() + 3;
-        } catch (NullPointerException e){
-            Toast.makeText(this, "Fill all info please!", Toast.LENGTH_SHORT).show();
-        }
+
 
         if (dataSize == totalSize) {
             return true;
         } else {
-            if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
-                AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
             }
             return false;
         }
@@ -329,18 +325,11 @@ public class AddHouseActivity extends AppCompatActivity {
         }
     }
 
-    private void sendNotification(House house){
-        String message = "You added " + house.getName() + " with success";
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.notif_icon)
-                .setAutoCancel(true)
-                .setContentTitle("Success ! ");
-        builder.setStyle(new Notification.BigTextStyle()
-                .bigText(message));
-
-        NotificationManager notif = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notif.notify(0, builder.build());
-        PhotoListAdapter.getAllPhotos().clear();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
+            PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+        }
     }
-
 }

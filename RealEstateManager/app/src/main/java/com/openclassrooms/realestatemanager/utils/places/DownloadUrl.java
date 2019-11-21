@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.utils.places;
 
 
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;

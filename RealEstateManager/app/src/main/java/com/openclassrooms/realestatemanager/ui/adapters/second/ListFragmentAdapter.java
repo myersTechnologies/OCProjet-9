@@ -18,12 +18,10 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;

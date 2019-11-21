@@ -3,21 +3,19 @@ package com.openclassrooms.realestatemanager.utils.database;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
-import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
-import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseUtil extends AsyncTask<Object, String, String> {
+public final class DatabaseUtil extends AsyncTask<Object, String, String> {
 
     private RealEstateManagerAPIService service;
     private Context context;
@@ -26,29 +24,16 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
     private SaveToDatabase database;
     private RecyclerView recyclerView;
     private ProgressDialog dialog;
-    private String load;
 
     public DatabaseUtil(FirebaseHelper helper, Context context) {
         this.helper = helper;
         this.context = context;
-        dialog = new ProgressDialog(context);
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setTitle("Loading data");
-        load = "Please wait...";
-        dialog.setMessage(load);
 
     }
 
     @Override
     protected void onPreExecute() {
-        while (helper.getHouses() == null) {
-            helper.getHouseFromFirebase();
-            helper.getDetailsFromFireBase();
-            helper.getPhotosFromFirebase();
-            helper.getHousesAdressesFromFirebase();
-            helper.getUsersFromFireBase();
-        }
-        dialog.show();
+        super.onPreExecute();
     }
 
     @Override
@@ -58,33 +43,27 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
         this.adapter = (ListFragmentAdapter) objects[2];
         this.database = (SaveToDatabase) objects[3];
         this.recyclerView = (RecyclerView) objects[4];
+        this.dialog = (ProgressDialog)objects[5];
 
+        helper.getHouseFromFirebase();
+        while (!helper.isHousesTaskFinish()) {
 
-            if (database.houseDao().getHouses().size() < 1) {
-                while (database.houseDao().getHouses().size() < 1) {
-                    service.setHousesList(context);
+        }
+        helper.getDetailsFromFireBase();
+        while (!helper.isHousesTaskFinish()) {
 
-                }
-                service.setHousesList(context);
+        }
+        helper.getPhotosFromFirebase();
+        while (!helper.isHousesTaskFinish()) {
 
-                service.setHousesDetails(context);
+        }
+        helper.getHousesAdressesFromFirebase();
+        while (!helper.isHousesTaskFinish()) {
 
-                service.setAdresses(context);
+        }
+        helper.getUsersFromFireBase();
 
-                service.setPhotos(context);
-            } else {
-                service.setHousesList(context);
-
-                service.setHousesList(context);
-
-                service.setHousesDetails(context);
-
-                service.setAdresses(context);
-
-                service.setPhotos(context);
-            }
-
-            service.setUsers(helper.getUsers());
+        service.setUsers(helper.getUsers());
 
 
         if (helper.getHouses() != null) {
@@ -99,12 +78,15 @@ public class DatabaseUtil extends AsyncTask<Object, String, String> {
     @Override
     protected void onPostExecute(String s) {
         service.setMyHousesList(getMyHouses());
-        adapter.notifyDataSetChanged();
+        LinearLayoutManager manager = new LinearLayoutManager(context);
         adapter = new ListFragmentAdapter(database.houseDao().getHouses(), context);
+        recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+
         if (dialog.isShowing()){
             dialog.dismiss();
         }
+        super.onPostExecute(s);
     }
 
     public List<House> getMyHouses(){

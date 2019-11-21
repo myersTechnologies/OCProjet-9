@@ -1,38 +1,27 @@
 package com.openclassrooms.realestatemanager.ui.adapters.details;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
-import com.openclassrooms.realestatemanager.utils.places.GetPointsString;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder> {
 
     private List<String> points = new ArrayList<>();
-    private Context context;
     private House house;
 
 
-    public PointsAdapter(House house, Context context) {
+    public PointsAdapter(House house) {
         this.house = house;
-        this.context = context;
         getPoints();
     }
 
@@ -49,68 +38,71 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         String point = points.get(position);
         int icon = R.drawable.other;
-        if ( point.equals("transport")){
+        if (point.equals("Transports")){
             icon = R.drawable.transports;
         }
-        if (point.equals("amusement")){
+        if (point.equals("Diversion")){
             icon = R.drawable.parc_amusant;
         }
-        if (point.equals("education")){
+        if (point.equals("School")){
             icon = R.drawable.education;
         }
-        if (point.equals("establissement")){
+        if (point.equals("Establishment")){
             icon = R.drawable.store;
         }
-        if (point.equals("health")){
+        if (point.equals("Health")){
             icon = R.drawable.health;
         }
-        if(point.equals("utils")){
+        if(point.equals("Utils")){
             icon = R.drawable.utils;
         }
-        if (point.equals("political")){
+        if (point.equals("Politic")){
             icon = R.drawable.political;
         }
-        if (point.equals("pray")){
+        if (point.equals("Religion")){
             icon = R.drawable.pray;
         }
-        if (point.equals("food")){
+        if (point.equals("Food")){
             icon = R.drawable.food;
         }
-        if (point.equals("hotel")){
+        if (point.equals("Hotel")){
             icon = R.drawable.hotel;
         }
-        if (point.equals("court")){
+        if (point.equals("Court")){
             icon = R.drawable.court;
         }
-        if (point.equals("cart")){
+        if (point.equals("Market")){
             icon = R.drawable.cart;
         }
-        if (point.equals("money")){
+        if (point.equals("Bank")){
             icon = R.drawable.money;
         }
-        if (point.equals("police")){
+        if (point.equals("Police")){
             icon = R.drawable.police;
         }
-        if (point.equals("fire_station")){
+        if (point.equals("Fire Station")){
             icon = R.drawable.fire;
         }
-        if (point.equals("gym")){
+        if (point.equals("Gym")){
             icon = R.drawable.gym;
         }
-        if (point.equals("gas_station")){
+        if (point.equals("Gas Station")){
             icon = R.drawable.gas;
         }
-        if (point.equals("real_estate_agency")){
+        if (point.equals("Agency")){
             icon = R.drawable.logo;
         }
-        if (point.equals("stadium")){
+        if (point.equals("Stadium")){
             icon = R.drawable.stadium;
         }
-        if (point.equals("parking")){
+        if (point.equals("Parking")){
             icon = R.drawable.parking;
         }
-        if (point.equals("post_office")){
+        if (point.equals("Post Office")){
             icon = R.drawable.post_offce;
+        }
+        if (point.equals("Car Workshop")){
+            icon = R.drawable.car;
         }
 
         viewHolder.imageView.setImageResource(icon);

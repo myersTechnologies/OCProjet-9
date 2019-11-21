@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.ui.activities.analitycs;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -39,6 +38,7 @@ public class AnalitycsActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         if (service.getMyHouses().size() > 0) {
             AnalitycsAdapter adapter = new AnalitycsAdapter(service.getMyHouses(), houses);
+            recyclerView.getRecycledViewPool().setMaxRecycledViews(0,0);
             recyclerView.setAdapter(adapter);
         }
     }

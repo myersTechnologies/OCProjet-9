@@ -71,6 +71,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
            StatusHouseViewHolder holder = (StatusHouseViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext() , LinearLayoutManager.HORIZONTAL, false);
             holder.recyclerView.setLayoutManager(layoutManager);
+            holder.recyclerView.getRecycledViewPool().setMaxRecycledViews(0,0);
             List<House> saleHouses = new ArrayList<>();
             for (int i = 0; i < myHouses.size(); i++){
                 if (myHouses.get(i).isAvailable()){
@@ -88,6 +89,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             StatusHouseViewHolder holder = (StatusHouseViewHolder) holderView;
             LinearLayoutManager layoutManager = new LinearLayoutManager(holder.itemView.getContext() , LinearLayoutManager.HORIZONTAL, false);
             holder.recyclerView.setLayoutManager(layoutManager);
+            holder.recyclerView.getRecycledViewPool().setMaxRecycledViews(0,0);
             List<House> soldHouses = new ArrayList<>();
             for (int i = 0; i < myHouses.size(); i++){
                 if (!myHouses.get(i).isAvailable()){

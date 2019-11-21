@@ -7,8 +7,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.utils.PointsUtils;
+
 
 import java.io.IOException;
 import java.util.HashMap;

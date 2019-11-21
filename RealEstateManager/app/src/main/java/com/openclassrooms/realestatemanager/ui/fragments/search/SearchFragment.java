@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.ui.adapters.search.SearchAdapter;
-import com.openclassrooms.realestatemanager.utils.SearchHelper;
 
 public class SearchFragment extends Fragment {
 

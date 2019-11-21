@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
@@ -15,13 +16,10 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 
-import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Philippe on 21/02/2018.
@@ -84,44 +82,57 @@ public class Utils {
 
 
 
-    public static List<House> compareHousesLists(final List<House> housesFb){
-        if (housesFb.size() > 0) {
-                for (int i = 0; i < housesFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().insertHouse(housesFb.get(i));
-                }
+    public static void compareHousesLists(House house){
+       SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
+       if (database.houseDao().getHouses().size() > 0){
+           if (database.houseDao().getHouseById(house.getId()) == null){
+               database.houseDao().insertHouse(house);
+           } else {
+               database.houseDao().updateHouse(house);
+           }
+       } else {
+           database.houseDao().insertHouse(house);
+       }
+    }
+
+    public static void compareAdressLists(AdressHouse adressHouse){
+        SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
+        if (database.adressDao().getAdresses().size() > 0){
+            if (database.adressDao().getAdressById(adressHouse.getId()) == null){
+                database.adressDao().insertAdress(adressHouse);
+            } else {
+                database.adressDao().updateAddress(adressHouse);
             }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).houseDao().getHouses();
-    }
-
-    public static List<AdressHouse> compareAdressLists(List<AdressHouse> adressHousesFb){
-        if (adressHousesFb.size() > 0) {
-                for (int i = 0; i < adressHousesFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().insertAdress(adressHousesFb.get(i));
-                }
+        } else {
+            database.adressDao().insertAdress(adressHouse);
         }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).adressDao().getAdresses();
     }
 
-    public static List<HouseDetails> compareDetailsLists(List<HouseDetails> detailsFb){
-        if (detailsFb.size() > 0) {
-                for (int i = 0; i < detailsFb.size(); i++) {
-                    SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().insertDetails(detailsFb.get(i));
-
-                }
-        }
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).houseDetailsDao().getDetails();
-    }
-
-    public static List<Photo> comparePhotosLists(List<Photo> photosFb){
-
-        if (photosFb.size() > 0) {
-            for (int i = 0; i < photosFb.size(); i++) {
-                SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().insertPhoto(photosFb.get(i));
-
+    public static void compareDetailsLists(HouseDetails details){
+        SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
+        if (database.houseDetailsDao().getDetails().size() > 0){
+            if (database.houseDetailsDao().getDetailsWithId(details.getId()) == null){
+                database.houseDetailsDao().insertDetails(details);
+            } else {
+                database.houseDetailsDao().updateDetails(details);
             }
+        } else {
+            database.houseDetailsDao().insertDetails(details);
         }
 
-        return SaveToDatabase.getInstance(DI.getService().getActivity()).photoDao().getPhotos();
+    }
+
+    public static void comparePhotosLists(Photo photo){
+        SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
+        if (database.photoDao().getPhotos().size() > 0){
+            if (database.photoDao().getPhototWithId(photo.getId()) == null){
+                database.photoDao().insertPhoto(photo);
+            } else {
+                database.photoDao().updatePhoto(photo);
+            }
+        } else {
+            database.photoDao().insertPhoto(photo);
+        }
     }
 
     public static String getRealPathFromURI(Uri contentURI) {
@@ -173,4 +184,5 @@ public class Utils {
 
         return result;
     }
+
 }

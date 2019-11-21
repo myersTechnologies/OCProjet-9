@@ -2,9 +2,6 @@ package com.openclassrooms.realestatemanager.ui.activities.modify;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,7 +48,7 @@ public class ModifyActivity extends AppCompatActivity {
 
     private RecyclerView modifyHouseList;
     private LinearLayoutManager layoutManager;
-    private  static ModifyAdapter  adapter;
+    private static ModifyAdapter  adapter;
     private RealEstateManagerAPIService service;
     private House house;
     private List<String> textEmpty;
@@ -135,8 +132,11 @@ public class ModifyActivity extends AppCompatActivity {
     private boolean checkAllData(List<EditText> data){
         int dataSize = 0;
         textEmpty = new ArrayList<>();
-        List<Photo> checkPhotos = PhotoListAdapter.getAllPhotos();
+        List<Photo> checkPhotos = null;
+        if (PhotoListAdapter.getAllPhotos() != null){
+        checkPhotos = PhotoListAdapter.getAllPhotos();
         checkPhotos.remove(PhotoListAdapter.getAddPhoto());
+        }
         if (AddModifyHouseHelper.getHouse().getName() != "Select..."){
             dataSize++;
         } else {
@@ -150,19 +150,21 @@ public class ModifyActivity extends AppCompatActivity {
             }
         }
 
-        if ( checkPhotos.size() >= 1){
-            dataSize++;
-        } else {
-            textEmpty.add("Photos");
+        if (checkPhotos != null) {
+            if (checkPhotos.size() >= 1) {
+                dataSize++;
+            } else {
+                textEmpty.add("Photos");
+            }
         }
 
         int totalSize = data.size() + 2;
 
-        if (dataSize == totalSize) {
+        if (dataSize == totalSize || textEmpty.size() < 1) {
             return true;
         } else {
-            if (!AddModifyHouseHelper.getPhotos().contains(PhotoListAdapter.getAddPhoto())) {
-                AddModifyHouseHelper.getPhotos().add(PhotoListAdapter.getAddPhoto());
+            if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
             }
             return false;
         }
@@ -295,26 +297,12 @@ public class ModifyActivity extends AppCompatActivity {
         return adapter;
     }
 
-    private void sendNotification(){
-        String message;
-        String title;
-        if (!house.isAvailable()){
-            title = "Congratulations";
-            message = "You sold " + house.getName() + " ,Bravo!";
-        } else {
-            title = "Success";
-            message = "You modified " + house.getName() + " with success";
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
+            PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
         }
-        Notification.Builder builder = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.notif_icon)
-                .setAutoCancel(true)
-                .setContentTitle(title);
-        builder.setStyle(new Notification.BigTextStyle()
-                .bigText(message));
-
-        NotificationManager notif = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        notif.notify(0, builder.build());
-        PhotoListAdapter.getAllPhotos().clear();
     }
 
 }

@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters.addnewhouse;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.Spinner;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
-import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 
@@ -113,6 +111,7 @@ public class AddNewHouseAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             imageViewViewHolder.imageRecyclerView.setLayoutManager(layoutManager);
             adapter = new PhotoListAdapter(AddModifyHouseHelper.getPhotos(), AddModifyHouseHelper.getHouse().getId(), imageViewViewHolder.itemView.getContext());
             imageViewViewHolder.imageRecyclerView.setAdapter(adapter);
+            imageViewViewHolder.imageRecyclerView.getRecycledViewPool().setMaxRecycledViews(0,0);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
             StatusViewHolder statusViewHolder = (StatusViewHolder) holderView;
             setAvailibilityListener(statusViewHolder);

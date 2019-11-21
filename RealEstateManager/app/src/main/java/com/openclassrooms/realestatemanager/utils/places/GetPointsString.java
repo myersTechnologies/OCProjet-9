@@ -3,8 +3,6 @@ package com.openclassrooms.realestatemanager.utils.places;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.openclassrooms.realestatemanager.DI.DI;
@@ -14,9 +12,6 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
-import com.openclassrooms.realestatemanager.ui.adapters.details.PointsAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
-import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.PointsUtils;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
@@ -88,67 +83,70 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
         Log.d("TYPEPOINT", type);
         String typePoint = "other";
         if (PointsUtils.getTransports().contains(type)){
-            typePoint = "transport";
+            typePoint = "Transports";
         }
         if (PointsUtils.getAmusementPoints().contains(type)){
-            typePoint = "amusement";
+            typePoint = "Diversion";
         }
         if (PointsUtils.getEducationPoints().contains(type)){
-            typePoint = "education";
+            typePoint = "School";
         }
         if (PointsUtils.getEstablissementsPoints().contains(type)){
-            typePoint = "establissement";
+            typePoint = "Establishment";
         }
         if (PointsUtils.getHealthPoints().contains(type)){
-            typePoint = "health";
+            typePoint = "Health";
         }
         if (PointsUtils.getUtilsPoints().contains(type)){
-            typePoint = "utils";
+            typePoint = "Utils";
         }
         if (PointsUtils.getPoliticalPoints().contains(type)){
-            typePoint = "political";
+            typePoint = "Politic";
         }
         if (PointsUtils.getReligiousPoints().contains(type)){
-            typePoint = "pray";
+            typePoint = "Religion";
         }
         if (PointsUtils.getRestaurantsPoints().contains(type)){
-            typePoint = "food";
+            typePoint = "Food";
         }
         if (PointsUtils.getCampsAnHotels().contains(type)){
-            typePoint = "hotel";
+            typePoint = "Hotel";
         }
         if (PointsUtils.getCourtPoints().contains(type)){
-            typePoint = "court";
+            typePoint = "Court";
         }
         if (PointsUtils.getMarketPoints().contains(type)){
-            typePoint = "cart";
+            typePoint = "Market";
         }
         if (PointsUtils.getMoneyPoints().contains(type)){
-            typePoint = "money";
+            typePoint = "Bank";
         }
         if (type.equals("police")){
-            typePoint = "police";
+            typePoint = "Police";
         }
         if (type.equals("fire_station")){
-            typePoint = "fire";
+            typePoint = "Fire Station";
         }
         if (type.equals("gym")){
-            typePoint = "gym";
+            typePoint = "Gym";
         }
         if (type.equals("gas_station")){
-            typePoint = "gas";
+            typePoint = "Gas Station";
         }
         if (type.equals("real_estate_agency")){
-            typePoint = "estate";
+            typePoint = "Agency";
         }
         if (type.equals("stadium")){
-            typePoint = "stadium";
+            typePoint = "Stadium";
         }
         if (type.equals("parking")){
-            typePoint = "parking";
+            typePoint = "Parking";
         }
         if (type.equals("post_office") || type.equals("post_box")){
-            typePoint = "post";
+            typePoint = "Post Office";
+        }
+        if (type.equals("car_repair")){
+            typePoint = "Car WorkShop";
         }
        if (house.getPointsOfInterest() == null){
            house.setPointsOfInterest(typePoint);

@@ -33,7 +33,6 @@ import com.openclassrooms.realestatemanager.ui.activities.modify.ModifyActivity;
 import com.openclassrooms.realestatemanager.ui.activities.search.SearchActivity;
 import com.openclassrooms.realestatemanager.ui.activities.settings.Settings;
 import com.openclassrooms.realestatemanager.ui.fragments.map.MapFragment;
-import com.openclassrooms.realestatemanager.ui.fragments.search.SearchFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.second.ListFragment;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
 import com.openclassrooms.realestatemanager.utils.SearchHelper;
@@ -52,7 +51,6 @@ public class SecondActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
-
 
         service = DI.getService();
         service.setActivity(this, "Second");

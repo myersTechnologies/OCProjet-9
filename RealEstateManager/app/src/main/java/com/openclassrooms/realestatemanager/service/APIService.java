@@ -11,7 +11,6 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.util.List;
 
@@ -138,29 +137,25 @@ public class APIService implements RealEstateManagerAPIService {
 
     @Override
     public void setHousesDetails(Context context) {
-        helper = DI.getFirebaseDatabase();
-        Utils.compareDetailsLists(helper.getDetails());
+
 
     }
 
     @Override
     public void setPhotos(Context context) {
-        helper = DI.getFirebaseDatabase();
-        Utils.comparePhotosLists(helper.getPhotos());
+
 
     }
 
     @Override
     public void setAdresses(Context context) {
-        helper = DI.getFirebaseDatabase();
-        Utils.compareAdressLists(helper.getHousesAdresses());
+
 
     }
 
     @Override
     public void setHousesList(Context context) {
-        helper = DI.getFirebaseDatabase();
-        Utils.compareHousesLists(helper.getHouses());
+
     }
 
 

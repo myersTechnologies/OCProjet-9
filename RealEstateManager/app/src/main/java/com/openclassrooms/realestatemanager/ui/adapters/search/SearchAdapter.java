@@ -226,7 +226,6 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
 
                 if (adapterView.getItemAtPosition(i).toString() != "Select Type...") {
                     SearchHelper.getSearch().setName(adapterView.getItemAtPosition(i).toString());
-                    Toast.makeText(DI.getService().getActivity(), adapterView.getItemAtPosition(i).toString(), Toast.LENGTH_SHORT).show();
                 }
 
             }

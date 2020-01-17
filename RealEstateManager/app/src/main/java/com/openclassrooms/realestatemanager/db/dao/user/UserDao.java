@@ -19,7 +19,7 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE user_id = user_id")
     User getUser();
 
-
+    //provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertUserProvider(User user);
 
@@ -28,8 +28,5 @@ public interface UserDao {
 
     @Update
     int updateUserProvider(User user);
-
-    @Query("DELETE FROM user WHERE user_id = :userId")
-    int deleteUser(String userId);
 
 }

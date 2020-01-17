@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -42,9 +43,9 @@ public class DetailsActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 95);
         }
 
-        setToolbar();
+        configureAndShowDetailsFragment();
 
-        this.configureAndShowDetailsFragment();
+        setToolbar();
 
         tabLayout = findViewById(R.id.tabs);
         viewPager = findViewById(R.id.container);
@@ -63,6 +64,7 @@ public class DetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setTitle(service.getHouse().getName());
+
     }
 
     @Override
@@ -89,18 +91,18 @@ public class DetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, AddHouseActivity.class);
                 startActivity(intent);
                 AddModifyHouseHelper.setNewAdd(SaveToDatabase.getInstance(this));
-                return true;
+                break;
             case R.id.modify:
                 if (String.valueOf(service.getHouse().getAgentId()).equals(service.getUser().getUserId())) {
                     Intent modifyIntent = new Intent(this, ModifyActivity.class);
                     startActivity(modifyIntent);
                     AddModifyHouseHelper.setNull();
                 }
-                return true;
+               break;
             case android.R.id.home:
                 Intent listIntent = new Intent(this, SecondActivity.class);
                 startActivity(listIntent);
-                return true;
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -113,4 +115,5 @@ public class DetailsActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
         }
     }
+
 }

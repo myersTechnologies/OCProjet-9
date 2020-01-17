@@ -39,10 +39,6 @@ public class FirebaseService implements FirebaseHelper {
     private List<House> houses;
     private static String USERS = "users";
     private static String ID = "id";
-    private static String USER_ID = "userId";
-    private static String USER_PHOTO = "userPhoto";
-    private static String USERNAME = "userName";
-    private static String USER_EMAIL = "userEmail";
     private List<AdressHouse> adressHouses;
     private List<HouseDetails> detailsList;
     private List<Photo> photos;
@@ -287,7 +283,7 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public void addPhotoToFireStore(final Photo photo) {
         Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
-        final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", uploadImage.getLastPathSegment());
+        final File localFile = new File(Environment.getExternalStorageDirectory(), uploadImage.getLastPathSegment());
         if (!localFile.exists()) {
             final Dialogs dialogs = new Dialogs();
             dialogs.notificationUpload(photo, DI.getService().getActivity(),
@@ -385,7 +381,7 @@ public class FirebaseService implements FirebaseHelper {
                     final String photoUrl = postSnapshot.child("photoUrl").getValue().toString().replaceAll(",", ".");
                     final Photo photo = new Photo(photoUrl, description, houseId);
                     photo.setId(id);
-                    final File localFile = new File(Environment.getExternalStorageDirectory() + "/Pictures/", photo.getPhotoUrl());
+                    final File localFile = new File(Environment.getExternalStorageDirectory(), photo.getPhotoUrl());
                     if (!localFile.exists()) {
                         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
                         storageReference.child(photoUrl).getDownloadUrl().addOnFailureListener(new OnFailureListener() {

@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.ui.adapters.second;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,7 @@ import com.openclassrooms.realestatemanager.model.AdressHouse;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,6 +35,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     private RealEstateManagerAPIService service;
     private House house;
     private SaveToDatabase database;
+    private List<View> holders = new ArrayList<>();
 
     public ListFragmentAdapter(List<House> houses, Context context){
         this.houses = houses;
@@ -51,6 +55,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         house = houses.get(position);
         holder.houseName.setText(house.getName());
+        holders.add(holder.itemView);
 
         AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
         holder.houseAdress.setText(adressHouse.getCity());
@@ -91,6 +96,11 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             @Override
             public void onClick(View view) {
                 EventBus.getDefault().post(new DetailsEvent(houses.get(position)));
+                for (View views : holders){
+                    views.setBackgroundColor(Color.WHITE);
+                }
+                holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.colorAccent));
+
             }
         });
 

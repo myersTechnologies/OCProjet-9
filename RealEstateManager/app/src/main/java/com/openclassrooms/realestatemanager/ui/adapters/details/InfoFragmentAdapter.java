@@ -162,18 +162,20 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
 
             if (holderView.getItemViewType() == LAYOUT_FIVE) {
-                MapViewHolder mapViewHolder = (MapViewHolder) holderView;
+                if (Utils.isInternetAvailable(holderView.itemView.getContext())) {
+                    MapViewHolder mapViewHolder = (MapViewHolder) holderView;
 
-                Context context = holderView.itemView.getContext();
-                AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
-                LatLng latLng = getLocationFromAddress(context, adressHouse.getAdress() + "," + adressHouse.getCity());
-                String lat = String.valueOf(latLng.latitude);
-                String lng = String.valueOf(latLng.longitude);
-                String url = "http://maps.google.com/maps/api/staticmap?center="
-                        + lat + "," + lng +
-                        "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
-                        "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
-                Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
+                    Context context = holderView.itemView.getContext();
+                    AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
+                    LatLng latLng = getLocationFromAddress(context, adressHouse.getAdress() + "," + adressHouse.getCity());
+                    String lat = String.valueOf(latLng.latitude);
+                    String lng = String.valueOf(latLng.longitude);
+                    String url = "http://maps.google.com/maps/api/staticmap?center="
+                            + lat + "," + lng +
+                            "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
+                            "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
+                    Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
+                }
 
             }
             if (holderView.getItemViewType() == LAYOUT_SIX){

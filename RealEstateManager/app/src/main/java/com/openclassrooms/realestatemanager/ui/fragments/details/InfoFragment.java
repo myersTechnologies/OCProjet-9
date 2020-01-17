@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,6 +44,7 @@ public class InfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(false);
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         service = DI.getService();
         infoList = view.findViewById(R.id.info_list);
@@ -55,12 +57,18 @@ public class InfoFragment extends Fragment {
     }
 
     public void updateAdapter(House house){
-        details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
-        adapter = new InfoFragmentAdapter(house, details, getContext());
-        layoutManager = new LinearLayoutManager(getContext());
-        infoList.setLayoutManager(layoutManager);
-        infoList.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        if (house != null) {
+            details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
+            adapter = new InfoFragmentAdapter(house, details, getContext());
+            layoutManager = new LinearLayoutManager(getContext());
+            infoList.setLayoutManager(layoutManager);
+            infoList.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } else {
+            layoutManager = new LinearLayoutManager(getContext());
+            infoList.setLayoutManager(layoutManager);
+            infoList.setAdapter(null);
+        }
     }
 
 

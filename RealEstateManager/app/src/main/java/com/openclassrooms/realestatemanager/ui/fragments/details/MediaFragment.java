@@ -2,6 +2,7 @@ package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -50,8 +51,8 @@ public class MediaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
        View view = inflater.inflate(R.layout.fragment_media, container, false);
+        setRetainInstance(false);
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
         }
@@ -88,20 +89,26 @@ public class MediaFragment extends Fragment {
     }
 
     public void updateAdapter(House house){
-        this.house = house;
-        mediaPhotos = new ArrayList<>();
-        if (database.photoDao().getPhotos() != null) {
-            for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
-                Photo photo = database.photoDao().getPhotos().get(i);
-                if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
-                    mediaPhotos.add(photo);
+        if (house != null) {
+            this.house = house;
+            mediaPhotos = new ArrayList<>();
+            if (database.photoDao().getPhotos() != null) {
+                for (int i = 0; i < database.photoDao().getPhotos().size(); i++) {
+                    Photo photo = database.photoDao().getPhotos().get(i);
+                    if (photo.getHouseId().equals(String.valueOf(house.getId()))) {
+                        mediaPhotos.add(photo);
+                    }
                 }
             }
+            adapter = new MediaFragmentAdapter(mediaPhotos, getActivity());
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
+            photosList.setLayoutManager(gridLayoutManager);
+            photosList.setAdapter(adapter);
+        } else {
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
+            photosList.setLayoutManager(gridLayoutManager);
+            photosList.setAdapter(null);
         }
-        adapter = new MediaFragmentAdapter(mediaPhotos, getActivity());
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 1, GridLayoutManager.HORIZONTAL, false);
-        photosList.setLayoutManager(gridLayoutManager);
-        photosList.setAdapter(adapter);
     }
 
     protected void configureAndShowDetailsFragment() {
@@ -111,5 +118,6 @@ public class MediaFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_details, infoFragment).commit();
         }
     }
+
 }
 

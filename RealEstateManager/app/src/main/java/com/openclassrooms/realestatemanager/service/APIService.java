@@ -41,7 +41,7 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public void addHouseToList(House house, Context context) {
         database = SaveToDatabase.getInstance(context);
-        database.houseDao().insertHouse(house);
+        database.houseDao().saveHouse(house);
         helper = DI.getFirebaseDatabase();
         helper.addHouseToFirebase(house);
     }
@@ -116,7 +116,7 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public void addAdresses(AdressHouse adresses, Context context) {
         database = SaveToDatabase.getInstance(context);
-        database.adressDao().insertAdress(adresses);
+        database.adressDao().saveAdress(adresses);
         helper = DI.getFirebaseDatabase();
         helper.addAdressToFrirebase(adresses);
     }
@@ -124,13 +124,13 @@ public class APIService implements RealEstateManagerAPIService {
     @Override
     public void addPhotos(Photo photo, Context context) {
         database = SaveToDatabase.getInstance(context);
-        database.photoDao().insertPhoto(photo);
+        database.photoDao().savePhoto(photo);
     }
 
     @Override
     public void addHousesDetails(HouseDetails houseDetails, Context context) {
         database = SaveToDatabase.getInstance(context);
-        database.houseDetailsDao().insertDetails(houseDetails);
+        database.houseDetailsDao().saveDetails(houseDetails);
         helper = DI.getFirebaseDatabase();
         helper.addDetailsToFireBase(houseDetails);
     }

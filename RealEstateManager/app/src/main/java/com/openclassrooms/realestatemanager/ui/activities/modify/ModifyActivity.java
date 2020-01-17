@@ -33,6 +33,7 @@ import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
+import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
@@ -48,7 +49,7 @@ public class ModifyActivity extends AppCompatActivity {
 
     private RecyclerView modifyHouseList;
     private LinearLayoutManager layoutManager;
-    private static ModifyAdapter  adapter;
+    private ModifyAdapter  adapter;
     private RealEstateManagerAPIService service;
     private House house;
     private List<String> textEmpty;
@@ -114,17 +115,21 @@ public class ModifyActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 onBackPressed();
-                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+                try {
+                    PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+                } catch (Exception e){}
+                AddModifyHouseHelper.setNull();
                 return true;
 
             case R.id.confirm_add:
                 if (checkAllData(AddModifyHouseHelper.getData())) {
                     getViewsAndAddHouse();
-                    Intent intent = new Intent(this, DetailsActivity.class);
+                    Intent intent = new Intent(this, SecondActivity.class);
                     startActivity(intent);
                 } else {
                     setDialogErrorEmptyCases();
                 }
+                AddModifyHouseHelper.setNull();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -293,16 +298,14 @@ public class ModifyActivity extends AppCompatActivity {
         }
     }
 
-    public static ModifyAdapter getAdapter(){
-        return adapter;
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
-        if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
-            PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
-        }
+        try {
+            if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+            }
+        } catch (Exception e){}
     }
 
 }

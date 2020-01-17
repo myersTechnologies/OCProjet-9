@@ -20,7 +20,7 @@ public interface PhotoDao {
     List<Photo> getPhotos();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPhoto(Photo photo);
+    void savePhoto(Photo photo);
 
     @Query("SELECT * FROM photo WHERE house_id = :houseId")
     Photo getPhotoWithHouseId(String houseId);
@@ -40,11 +40,8 @@ public interface PhotoDao {
     @Query("SELECT * FROM Photo WHERE photo_id = :photoId")
     Cursor getPhotoWithCursor(String photoId);
 
-
     @Update
     int updatePhotoProvider(Photo photo);
 
-    @Query("DELETE FROM Photo WHERE photo_id = :photoId")
-    int deletePhotoFromProvider(String photoId);
 
 }

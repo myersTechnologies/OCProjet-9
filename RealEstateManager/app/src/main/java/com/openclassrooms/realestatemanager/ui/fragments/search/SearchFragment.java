@@ -30,6 +30,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        setRetainInstance(true);
         setToolbar();
         recyclerView = view.findViewById(R.id.search_rv);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());

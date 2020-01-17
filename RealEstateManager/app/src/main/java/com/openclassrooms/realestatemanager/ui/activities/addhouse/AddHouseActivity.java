@@ -328,8 +328,10 @@ public class AddHouseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())){
-            PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+        if (PhotoListAdapter.getAllPhotos() != null) {
+            if (PhotoListAdapter.getAllPhotos().contains(PhotoListAdapter.getAddPhoto())) {
+                PhotoListAdapter.getAllPhotos().remove(PhotoListAdapter.getAddPhoto());
+            }
         }
     }
 }

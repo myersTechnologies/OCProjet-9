@@ -28,7 +28,7 @@
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
-            android:layout_width="match_parent"
+            android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:textSize="9dp"
             android:paddingTop="7dp"
@@ -43,13 +43,6 @@
             ></com.google.android.gms.common.SignInButton>
 
 
-        <Button
-            android:id="@+id/offline_login"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:text="OffLine"
-            android:textSize="@dimen/content_text_size"
-            />
 
     </LinearLayout>
     </LinearLayout>

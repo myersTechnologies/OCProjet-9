@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.adapters.details.DescriptionAdapter;
 
+import java.util.ArrayList;
 
 
 public class DescriptionFragment extends Fragment {
@@ -32,6 +34,7 @@ public class DescriptionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(false);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_description, container, false);
         descriptionRv = view.findViewById(R.id.description_rv);
@@ -42,11 +45,17 @@ public class DescriptionFragment extends Fragment {
     }
 
     public void upDateDescription(House house){
-        HouseDetails details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
-        DescriptionAdapter adapter = new DescriptionAdapter(details);
-        LinearLayoutManager manager = new LinearLayoutManager(getContext());
-        descriptionRv.setLayoutManager(manager);
-        descriptionRv.setAdapter(adapter);
+        if (house != null) {
+            HouseDetails details = database.houseDetailsDao().getDetailsWithHouseId(house.getId());
+            DescriptionAdapter adapter = new DescriptionAdapter(details);
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            descriptionRv.setLayoutManager(manager);
+            descriptionRv.setAdapter(adapter);
+        } else {
+            LinearLayoutManager manager = new LinearLayoutManager(getContext());
+            descriptionRv.setLayoutManager(manager);
+            descriptionRv.setAdapter(null);
+        }
 
     }
 

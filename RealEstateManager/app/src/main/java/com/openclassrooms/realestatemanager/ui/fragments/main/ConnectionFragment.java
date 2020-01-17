@@ -13,7 +13,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -48,13 +47,11 @@ import com.openclassrooms.realestatemanager.model.Preferences;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-public class ConnectionFragment extends Fragment implements View.OnClickListener {
+public class ConnectionFragment extends Fragment {
 
-    private Button offlineLogin;
     private CallbackManager callbackManager;
     private LoginButton loginButton;
     private FirebaseAuth mAuth;
@@ -71,8 +68,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_connection, container, false);
-        setViews(view);
 
+        setRetainInstance(true);
         service = DI.getService();
         service.setActivity(getActivity(), "Connection");
 
@@ -84,13 +81,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         secondActivity = new Intent(getContext(), SecondActivity.class);
 
-       int MY_CAMERA_REQUEST_CODE = 100;
        int MY_STORAGE_REQUEST_CODE = 90;
        int MY_LOCATION_REQUEST_CODE = 80;
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
         }
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 70);
+        }
+
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_REQUEST_CODE);
         }
@@ -109,22 +110,16 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     private void checkIfButtonsShouldBeEnabled(){
-        if (!Utils.isInternetAvailable(getActivity())) {
-            loginButton.setEnabled(false);
-            googleSignIn.setEnabled(false);
-        } else {
-            loginButton.setEnabled(true);
-            googleSignIn.setEnabled(true);
+
             if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                 loginButton.setEnabled(false);
                 googleSignIn.setEnabled(false);
-                offlineLogin.setEnabled(false);
                 onAuthSuccess(FirebaseAuth.getInstance().getCurrentUser());
             } else {
                 signInWithFacebook();
                 signInWithGoogle();
             }
-        }
+
     }
 
     @Override
@@ -256,7 +251,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }
         } else {
             service.setPreferences(setPreferences());
-            database.preferencesDao().insertPreferences(setPreferences());
+            database.preferencesDao().savePreferences(setPreferences());
         }
 
         databaseRef.child(userId).setValue(user);
@@ -269,30 +264,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         return preferences;
     }
 
-
-    private void setViews(View view){
-
-        offlineLogin = view.findViewById(R.id.offline_login);
-        offlineLogin.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View view) {
-        Intent secondActivity = new Intent(getActivity(), SecondActivity.class);
-        int id = view.getId();
-        switch (id){
-            case R.id.offline_login:
-                User user = SaveToDatabase.getInstance(getActivity()).userDao().getUser();
-                if (user != null) {
-                    addNewUser(user.getUserId(), user.getName(), user.getEmail(), user.getPhotoUri());
-                } else {
-                    addNewUser("12221", "Offline user", "N/A", String.valueOf(R.drawable.main_image));
-                }
-
-                startActivity(secondActivity);
-                return;
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

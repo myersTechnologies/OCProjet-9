@@ -101,7 +101,7 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
         if (point.equals("Post Office")){
             icon = R.drawable.post_offce;
         }
-        if (point.equals("Car Workshop")){
+        if (point.equals("Car WorkShop")){
             icon = R.drawable.car;
         }
 

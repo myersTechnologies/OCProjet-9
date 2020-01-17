@@ -22,24 +22,20 @@ public interface HouseDao {
     List<House> getHouses();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertHouse(House house);
+    void saveHouse(House house);
 
     @Query("SELECT * FROM house WHERE id = :houseId")
     House getHouseById(String houseId);
-    @Update
-    void updateHouse(House house);
 
+    //for provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertHouseProvider(House photo);
+    long insertHouseProvider(House house);
 
     @Query("SELECT * FROM House WHERE id = :houseId")
     Cursor getHouseWithCursor(String houseId);
 
-
     @Update
     int updateHouseProvider(House house);
 
-    @Query("DELETE FROM House WHERE id = :houseId")
-    int deleteHouseFromProvider(String houseId);
 
 }

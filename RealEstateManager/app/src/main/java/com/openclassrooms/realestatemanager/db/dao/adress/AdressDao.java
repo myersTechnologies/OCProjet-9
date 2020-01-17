@@ -19,7 +19,7 @@ public interface AdressDao {
     List<AdressHouse> getAdresses();
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAdress(AdressHouse adressHouse);
+    void saveAdress(AdressHouse adressHouse);
 
    @Query("SELECT * FROM adresshouse WHERE house_id = :houseId")
    AdressHouse getAdressWithHouseId(String houseId);
@@ -28,8 +28,6 @@ public interface AdressDao {
     @Query("SELECT * FROM adresshouse WHERE adress_id = :adressId")
     AdressHouse getAdressById(String adressId);
 
-    @Update
-    void updateAddress(AdressHouse adressHouse);
 
 //Provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)

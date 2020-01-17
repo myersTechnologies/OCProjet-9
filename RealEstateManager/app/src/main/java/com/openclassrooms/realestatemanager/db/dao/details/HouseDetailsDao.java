@@ -21,7 +21,7 @@ public interface HouseDetailsDao {
     List<HouseDetails> getDetails();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertDetails(HouseDetails houseDetails);
+    void saveDetails(HouseDetails houseDetails);
 
     @Query("SELECT * FROM housedetails WHERE house_id = :houseId")
     HouseDetails getDetailsWithHouseId(String houseId);

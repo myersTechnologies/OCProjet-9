@@ -19,15 +19,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        } catch (Exception e){
 
-
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
 
         RealEstateManagerAPIService service = DI.getService();
 
         service.setActivity(this, "Main");
 
-       changeFragment(new ConnectionFragment(), "ConnectionFrag");
+        changeFragment(new ConnectionFragment(), "ConnectionFrag");
 
 
     }

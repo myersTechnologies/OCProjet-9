@@ -3,13 +3,18 @@ package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,6 +57,7 @@ public class ListFragment extends Fragment {
     private DescriptionFragment descriptionFragment;
     private ProgressDialog  dialog;
     private DatabaseUtil databaseUtil;
+    private View view;
 
     public ListFragment() {
         // Required empty public constructor
@@ -75,9 +81,7 @@ public class ListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
-
-        setRetainInstance(true);
+        view = inflater.inflate(R.layout.fragment_list, container, false);
         housesList = view.findViewById(R.id.houses_list_second_f);
         database = SaveToDatabase.getInstance(getActivity());
         service = DI.getService();
@@ -88,18 +92,10 @@ public class ListFragment extends Fragment {
         this.configureAndShowLocationFragment();
         this.configureAndShowDescriptionFragment();
 
+
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
-            houses = database.houseDao().getHouses();
-            if (DI.getFirebaseDatabase().getHouses() == null) {
-                layoutManager = new LinearLayoutManager(view.getContext());
-                adapter = new ListFragmentAdapter(houses, getActivity());
-                checkFirebase();
-            } else {
-                layoutManager = new LinearLayoutManager(view.getContext());
-                adapter = new ListFragmentAdapter(houses, getActivity());
-                initList();
-            }
+          setList();
         } else {
             layoutManager = new LinearLayoutManager(view.getContext());
             adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
@@ -110,13 +106,50 @@ public class ListFragment extends Fragment {
         return view;
     }
 
+    private void setList(){
+
+        houses = database.houseDao().getHouses();
+        if (DI.getFirebaseDatabase().getHouses() == null) {
+            layoutManager = new LinearLayoutManager(view.getContext());
+            adapter = new ListFragmentAdapter(houses, getActivity());
+            checkFirebase();
+        } else {
+            layoutManager = new LinearLayoutManager(view.getContext());
+            adapter = new ListFragmentAdapter(houses, getActivity());
+            initList();
+        }
+
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
             case R.id.sync:
-                checkFirebase();
-                break;
+               setList();
+                service.setHouse(null);
+                if (mediaFragment!= null && mediaFragment.isVisible()) {
+                    mediaFragment.updateAdapter(null);
+                    mapFragment.upDateMap(null);
+                    locationFragment.upDateLocation(null);
+                    descriptionFragment.upDateDescription(null);
+                    infoFragment.updateAdapter(null);
+                }
+               if (SearchHelper.getHousesList() != null) {
+                   SearchHelper.setNull();
+               }
+                return true;
+            case R.id.search:
+                service.setHouse(null);
+                if (mediaFragment!= null && mediaFragment.isVisible()) {
+                    mediaFragment.updateAdapter(null);
+                    mapFragment.upDateMap(null);
+                    locationFragment.upDateLocation(null);
+                    descriptionFragment.upDateDescription(null);
+                    infoFragment.updateAdapter(null);
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -147,7 +180,6 @@ public class ListFragment extends Fragment {
     private void initList() {
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
-
     }
 
     @Override
@@ -171,15 +203,17 @@ public class ListFragment extends Fragment {
     }
 
     @Subscribe
-    public void changeFragmentOnClick(DetailsEvent event) {
+    public void changeFragmentOnClick(final DetailsEvent event) {
         service.setHouse(event.house);
         if (mediaFragment!= null && mediaFragment.isVisible()){
             mediaFragment.updateAdapter(event.house);
-            configureAndShowDetailsFragment();
-            mapFragment.upDateMap(event.house);
             locationFragment.upDateLocation(event.house);
             descriptionFragment.upDateDescription(event.house);
-        }else {
+            infoFragment.updateAdapter(event.house);
+            configureAndShowDetailsFragment();
+            configureAndShowStaticMap();
+
+        } else {
             Intent intent = new Intent(getContext(), DetailsActivity.class);
             startActivity(intent);
         }
@@ -195,7 +229,8 @@ public class ListFragment extends Fragment {
 
 
     protected void configureAndShowMediaFragment() {
-        mediaFragment = (MediaFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_media);
+     mediaFragment = (MediaFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.fragment_media);
+
         if (mediaFragment == null && getActivity().findViewById(R.id.fragment_container_media) != null){
             mediaFragment = new MediaFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_media, mediaFragment).commit();
@@ -226,8 +261,6 @@ public class ListFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_description, descriptionFragment).commit();
         }
     }
-
-
 }
 
 

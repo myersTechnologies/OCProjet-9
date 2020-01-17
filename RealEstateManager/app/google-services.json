@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "721627397832-dpqg4rvk78irm6bn9fhahqkoab5rdd1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.openclassrooms.realestatemanager",
+            "certificate_hash": "2a20781e1f9a1d22501dfe5e0e05f88e34d9746a"
+          }
+        },
+        {
+          "client_id": "721627397832-ef881bsr13f5mlaidkf9mke9m41242pm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.openclassrooms.realestatemanager",
+            "certificate_hash": "1ef13aacc7565402f9a7a9fbe99a2f0c721397fa"
+          }
+        },
+        {
           "client_id": "721627397832-nhs40f3dp4om5tl9872l9iks3ccjnkt9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

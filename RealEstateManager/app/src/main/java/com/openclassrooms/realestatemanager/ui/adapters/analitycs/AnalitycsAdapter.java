@@ -122,7 +122,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 house = houses.get(j);
                 int price = Integer.parseInt(houses.get(j).getPrice().replaceAll(",", ""));
                 String valeurBruteTotal =  formatter.format(price).replaceAll("\\s", "");
-                int total = countAllListSize + Integer.parseInt(valeurBruteTotal);
+                int total = Math.abs(countAllListSize + Integer.parseInt(valeurBruteTotal.replaceAll(",", "")));
                 totalHouses =  getPriceWithMonetarySystem(String.valueOf(total), house, formatter);
                 countAllListSize = countAllListSize + price;
             }
@@ -133,7 +133,7 @@ public class AnalitycsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 if (!myHouses.get(i).isAvailable()){
                     int price = Integer.parseInt(myHouses.get(i).getPrice().replaceAll(",", ""));
                     String myValeurBrute = formatter.format(price).replaceAll("\\s", "");
-                    int total = countTotal + Integer.parseInt(myValeurBrute);
+                    int total = countTotal + Integer.parseInt(myValeurBrute.replaceAll(",", ""));
                     totalOwn = getPriceWithMonetarySystem(String.valueOf(total), myHouse, formatter);
                     countTotal = countTotal + price;
                 }

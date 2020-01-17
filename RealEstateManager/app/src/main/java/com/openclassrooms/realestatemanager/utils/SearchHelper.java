@@ -228,7 +228,7 @@ public class SearchHelper {
         points.add("Stadium");
         points.add("Parking");
         points.add("Post Office");
-        points.add("Car Workshop");
+        points.add("Car WorkShop");
         return points;
     }
 

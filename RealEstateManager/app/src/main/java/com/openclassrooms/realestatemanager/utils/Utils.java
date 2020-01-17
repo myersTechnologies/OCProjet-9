@@ -46,7 +46,7 @@ public class Utils {
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      * @return
      */
-    //changed simpledateformat yyyy/MM/dd to ss/MM/yyyy
+    //changed simpledateformat yyyy/MM/dd to dd/MM/yyyy
     public static String getTodayDate(){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         return dateFormat.format(new Date());
@@ -84,55 +84,30 @@ public class Utils {
 
     public static void compareHousesLists(House house){
        SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
-       if (database.houseDao().getHouses().size() > 0){
-           if (database.houseDao().getHouseById(house.getId()) == null){
-               database.houseDao().insertHouse(house);
-           } else {
-               database.houseDao().updateHouse(house);
-           }
-       } else {
-           database.houseDao().insertHouse(house);
-       }
+
+       database.houseDao().saveHouse(house);
+
     }
 
     public static void compareAdressLists(AdressHouse adressHouse){
         SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
-        if (database.adressDao().getAdresses().size() > 0){
-            if (database.adressDao().getAdressById(adressHouse.getId()) == null){
-                database.adressDao().insertAdress(adressHouse);
-            } else {
-                database.adressDao().updateAddress(adressHouse);
-            }
-        } else {
-            database.adressDao().insertAdress(adressHouse);
-        }
+
+        database.adressDao().saveAdress(adressHouse);
+
     }
 
     public static void compareDetailsLists(HouseDetails details){
         SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
-        if (database.houseDetailsDao().getDetails().size() > 0){
-            if (database.houseDetailsDao().getDetailsWithId(details.getId()) == null){
-                database.houseDetailsDao().insertDetails(details);
-            } else {
-                database.houseDetailsDao().updateDetails(details);
-            }
-        } else {
-            database.houseDetailsDao().insertDetails(details);
-        }
+
+        database.houseDetailsDao().saveDetails(details);
+
 
     }
 
     public static void comparePhotosLists(Photo photo){
         SaveToDatabase database = SaveToDatabase.getInstance(DI.getService().getActivity());
-        if (database.photoDao().getPhotos().size() > 0){
-            if (database.photoDao().getPhototWithId(photo.getId()) == null){
-                database.photoDao().insertPhoto(photo);
-            } else {
-                database.photoDao().updatePhoto(photo);
-            }
-        } else {
-            database.photoDao().insertPhoto(photo);
-        }
+        database.photoDao().savePhoto(photo);
+
     }
 
     public static String getRealPathFromURI(Uri contentURI) {

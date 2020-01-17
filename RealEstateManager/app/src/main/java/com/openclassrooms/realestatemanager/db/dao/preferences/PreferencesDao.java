@@ -21,8 +21,9 @@ public interface PreferencesDao {
    Preferences getPreferences();
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPreferences(Preferences preferences);
+    void savePreferences(Preferences preferences);
 
+   //provider
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insertPreferencesProvider(Preferences preferences);
 
@@ -33,6 +34,4 @@ public interface PreferencesDao {
     @Update
     int updatePreferencesProvider(Preferences preferences);
 
-    @Query("DELETE FROM Preferences WHERE preferences_id = :preferencesId")
-    int deletePreferencesFromProvider(String preferencesId);
 }

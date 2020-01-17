@@ -1,6 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ public class LocationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(false);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_location, container, false);
         title = view.findViewById(R.id.location_title);
@@ -47,12 +49,19 @@ public class LocationFragment extends Fragment {
     }
 
     public void upDateLocation(House house) {
-        AdressHouse findedHouse =  database.adressDao().getAdressWithHouseId(house.getId());
-        textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
-                "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
-        if (title.getVisibility() == View.GONE) {
-            titleImg.setVisibility(View.VISIBLE);
-            title.setVisibility(View.VISIBLE);
+        if (house != null) {
+            AdressHouse findedHouse = database.adressDao().getAdressWithHouseId(house.getId());
+            title.setText("Location");
+            textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
+                    "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
+            if (title.getVisibility() == View.GONE) {
+                titleImg.setVisibility(View.VISIBLE);
+                title.setVisibility(View.VISIBLE);
+            }
+        } else {
+            textView.setText("");
+            title.setVisibility(View.GONE);
+            titleImg.setVisibility(View.GONE);
         }
 
     }

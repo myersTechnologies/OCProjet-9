@@ -228,7 +228,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onClick(View view) {
                 SaveToDatabase database = SaveToDatabase.getInstance(holder.itemView.getContext());
-                database.preferencesDao().insertPreferences(service.getPreferences());
+                database.preferencesDao().savePreferences(service.getPreferences());
                 Intent intent = new Intent(context, SecondActivity.class);
                 context.startActivity(intent);
             }

@@ -11,26 +11,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp">
 
     <ImageView
         android:id="@+id/location_img"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:src="@drawable/ic_place_black_24dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="8dp"/>
-        <TextView
-            android:id="@+id/location_title"
+
+        android:layout_gravity="center_vertical"/>
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/title_text_size"
             android:layout_gravity="center_vertical"
-            android:text="Location"
-            android:maxLines="1"
-            android:inputType="text"/>
+            app:cardCornerRadius="10dp">
+            <TextView
+                android:id="@+id/location_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/title_text_size"
+                android:layout_gravity="center_vertical"
+                android:text="Location"
+                android:maxLines="1"
+                android:inputType="text"
+                android:background="@color/titleColor"/>
+        </android.support.v7.widget.CardView>
+
 </LinearLayout>
 
 
@@ -46,7 +57,9 @@
         android:gravity="center"
         android:textSize="@dimen/content_text_size"
         android:hint="number and name of the road"
-        android:inputType="text"/>
+        android:inputType="text"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"/>
     <EditText
         android:id="@+id/location_edit_city_text_edit"
         android:layout_width="match_parent"
@@ -60,6 +73,8 @@
         android:textSize="@dimen/content_text_size"
         android:maxLines="1"
         android:inputType="text"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
         />
 
     <EditText
@@ -67,12 +82,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:gravity="center"
         android:hint="zip code"
         android:inputType="number"
         android:textSize="@dimen/content_text_size"
         app:layout_constraintTop_toBottomOf="@id/location_edit_city_text_edit"
-        tools:layout_editor_absoluteX="10dp" />
+        tools:layout_editor_absoluteX="10dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"/>
 
     <EditText
         android:id="@+id/location_edit_state_text_edit"
@@ -87,6 +106,8 @@
         android:textSize="@dimen/content_text_size"
         android:maxLines="1"
         android:inputType="text"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
         />
 
     <EditText
@@ -102,6 +123,8 @@
         android:textSize="@dimen/content_text_size"
         android:maxLines="1"
         android:inputType="text"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
         />
 
 </android.support.constraint.ConstraintLayout>

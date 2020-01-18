@@ -11,6 +11,6 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/content_text_size"
         android:layout_marginHorizontal="20dp"
-        android:maxLines="1"/>
+        android:maxLines="1" />
 
 </android.support.constraint.ConstraintLayout>

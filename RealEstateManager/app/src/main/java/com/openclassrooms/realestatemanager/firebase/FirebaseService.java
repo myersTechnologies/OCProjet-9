@@ -1,9 +1,7 @@
 package com.openclassrooms.realestatemanager.firebase;
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -29,6 +27,7 @@ import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.model.User;
 import com.openclassrooms.realestatemanager.utils.Utils;
 
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +43,7 @@ public class FirebaseService implements FirebaseHelper {
     private List<Photo> photos;
     private List<String> photosArray;
     private boolean isHouseEmpty;
+    private boolean isPhotosEmpty;
 
     @Override
     public void setUsersList(List<User> users) {
@@ -282,7 +282,7 @@ public class FirebaseService implements FirebaseHelper {
 
     @Override
     public void addPhotoToFireStore(final Photo photo) {
-        Uri uploadImage = Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl()))));
+        Uri uploadImage = Uri.fromFile(new File(photo.getPhotoUrl()));
         final File localFile = new File(Environment.getExternalStorageDirectory(), uploadImage.getLastPathSegment());
         if (!localFile.exists()) {
             final Dialogs dialogs = new Dialogs();
@@ -317,7 +317,7 @@ public class FirebaseService implements FirebaseHelper {
     @Override
     public void removePhoto(final Photo photo) {
         if (photos.contains(photo)) {
-            final File file  = new File(getRealPathFromURI(Uri.parse(photo.getPhotoUrl())));
+            final File file  = new File(photo.getPhotoUrl());
             Uri deleteImage = Uri.fromFile(file);
             StorageReference storageRef = FirebaseStorage.getInstance().getReference();
             StorageReference photoRef = storageRef.child(deleteImage.getLastPathSegment());
@@ -348,19 +348,9 @@ public class FirebaseService implements FirebaseHelper {
         return isHouseEmpty;
     }
 
-    private String getRealPathFromURI(Uri contentURI) {
-        String filePath;
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = DI.getService().getActivity().getContentResolver().query(contentURI, proj, null, null, null);
-        if (cursor == null) {
-            filePath = contentURI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-            filePath = cursor.getString(idx);
-            cursor.close();
-        }
-        return filePath;
+    @Override
+    public boolean isPhotoEmpty() {
+        return isPhotosEmpty;
     }
 
     @Override
@@ -368,13 +358,13 @@ public class FirebaseService implements FirebaseHelper {
 
         photosArray = new ArrayList<>();
         photos = new ArrayList<>();
-        isHouseEmpty = false;
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseRef = firebaseDatabase.getReference("photos");
         databaseRef.orderByChild("id").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    isPhotosEmpty = false;
                     String id = postSnapshot.child("id").getValue().toString();
                     final String houseId = postSnapshot.child("houseId").getValue().toString();
                     String description = postSnapshot.child("description").getValue().toString();
@@ -395,7 +385,10 @@ public class FirebaseService implements FirebaseHelper {
                                     urlRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                                         @Override
                                         public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-
+                                            photo.setPhotoUrl(localFile.toString());
+                                            photos.add(photo);
+                                            Utils.comparePhotosLists(photo);
+                                            isPhotosEmpty = true;
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override
@@ -407,17 +400,19 @@ public class FirebaseService implements FirebaseHelper {
                                         public void onProgress(FileDownloadTask.TaskSnapshot taskSnapshot) {
                                         }
                                     });
-                                photos.add(photo);
-                                Utils.comparePhotosLists(photo);
                             }
                         });
                     }  else {
                         photo.setPhotoUrl(localFile.toString());
                         photos.add(photo);
                         Utils.comparePhotosLists(photo);
+                        isPhotosEmpty = true;
                     }
+
                 }
-                isHouseEmpty = true;
+                if (houses.size() < 1) {
+                    isPhotosEmpty = true;
+                }
             }
 
             @Override

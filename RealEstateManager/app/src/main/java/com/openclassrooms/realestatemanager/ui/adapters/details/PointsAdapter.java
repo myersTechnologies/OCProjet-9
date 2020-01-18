@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.adapters.details;
 
+import android.content.Context;
+
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.openclassrooms.realestatemanager.R;
+
 import com.openclassrooms.realestatemanager.model.House;
 
 import java.util.ArrayList;
@@ -18,10 +21,11 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
 
     private List<String> points = new ArrayList<>();
     private House house;
+    private Context context;
 
-
-    public PointsAdapter(House house) {
+    public PointsAdapter(House house, Context context) {
         this.house = house;
+        this.context = context;
         getPoints();
     }
 
@@ -128,10 +132,14 @@ public class PointsAdapter extends RecyclerView.Adapter<PointsAdapter.ViewHolder
 
     //get google maps points of interest
     public void getPoints(){
-        String[] point = house.getPointsOfInterest().split(",");
-        for (int i = 0; i < point.length; i++){
-            points.add(point[i]);
+        if (house.getPointsOfInterest() != null) {
+            String[] point = house.getPointsOfInterest().split(",");
+            for (int i = 0; i < point.length; i++) {
+                points.add(point[i]);
+            }
         }
     }
+
+
 
 }

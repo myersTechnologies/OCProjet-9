@@ -46,20 +46,20 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
         this.dialog = (ProgressDialog)objects[5];
 
         helper.getHouseFromFirebase();
+        publishProgress("1");
         while (!helper.isHousesTaskFinish()) {
-
         }
+        publishProgress("2");
         helper.getDetailsFromFireBase();
         while (!helper.isHousesTaskFinish()) {
-
         }
+        publishProgress("3");
         helper.getPhotosFromFirebase();
-        while (!helper.isHousesTaskFinish()) {
-
+        while (!helper.isPhotoEmpty()) {
         }
+        publishProgress("4");
         helper.getHousesAdressesFromFirebase();
         while (!helper.isHousesTaskFinish()) {
-
         }
         helper.getUsersFromFireBase();
 
@@ -74,6 +74,28 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
     }
 
 
+    @Override
+    protected void onProgressUpdate(String... values) {
+
+        if (values[0] == "1") {
+            dialog.setMessage("Downloading Estates");
+        }
+
+
+        if (values[0] == "2") {
+            dialog.setMessage("Downloading Details");
+        }
+
+        if (values[0] == "3") {
+            dialog.setMessage("Downloading Photos");
+        }
+
+
+        if (values[0] == "4") {
+            dialog.setMessage("Downloading Locations");
+        }
+
+    }
 
     @Override
     protected void onPostExecute(String s) {

@@ -135,30 +135,5 @@ public class APIService implements RealEstateManagerAPIService {
         helper.addDetailsToFireBase(houseDetails);
     }
 
-    @Override
-    public void setHousesDetails(Context context) {
-
-
-    }
-
-    @Override
-    public void setPhotos(Context context) {
-
-
-    }
-
-    @Override
-    public void setAdresses(Context context) {
-
-
-    }
-
-    @Override
-    public void setHousesList(Context context) {
-
-    }
-
-
-
 
 }

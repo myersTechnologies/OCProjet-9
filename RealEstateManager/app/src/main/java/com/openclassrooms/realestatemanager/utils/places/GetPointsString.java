@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.utils.places;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
@@ -13,7 +12,6 @@ import com.openclassrooms.realestatemanager.model.HouseDetails;
 import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.utils.PointsUtils;
-import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +28,7 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
     private AdressHouse adress;
     private List<Photo> photos;
 
+
     @Override
     protected String doInBackground(Object... objects) {
         String url = (String) objects[0];
@@ -39,6 +38,8 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
         details = (HouseDetails) objects[4];
         adress = (AdressHouse) objects[5];
         photos = (List<Photo>)objects[6];
+
+
         DownloadUrl downloadUrl = new DownloadUrl();
 
         try {
@@ -72,15 +73,15 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
             if (!photo.getDescription().equals("Add new photo")) {
                 service.addPhotos(photo, context);
                 final FirebaseHelper helper = DI.getFirebaseDatabase();
-                helper.addPhotoToFirebase(photo, Uri.fromFile(new File(Utils.getRealPathFromURI(Uri.parse(photo.getPhotoUrl())))));
+                helper.addPhotoToFirebase(photo, Uri.fromFile(new File(photo.getPhotoUrl())));
                 helper.addPhotoToFireStore(photo);
             }
         }
+
     }
 
     private void addPoint(HashMap<String, String> googlePlace){
         String type = googlePlace.get("type");
-        Log.d("TYPEPOINT", type);
         String typePoint = "other";
         if (PointsUtils.getTransports().contains(type)){
             typePoint = "Transports";
@@ -155,5 +156,6 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
                house.setPointsOfInterest(house.getPointsOfInterest() + "," + typePoint);
            }
        }
+
     }
 }

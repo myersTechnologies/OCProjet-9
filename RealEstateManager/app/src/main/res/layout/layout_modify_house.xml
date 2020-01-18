@@ -26,15 +26,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/name_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Name"
-                android:textSize="@dimen/title_text_size"
-                android:textColor="@android:color/black"
-                android:layout_marginTop="5dp"
-                />
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="10dp">
+                    <TextView
+                        android:id="@+id/name_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Name"
+                        android:textSize="@dimen/title_text_size"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="5dp"
+                        android:background="@color/titleColor"
+                        />
+                </android.support.v7.widget.CardView>
+
 
             <Spinner
                 android:id="@+id/name_edit_text_edit"
@@ -66,15 +73,22 @@
            android:layout_height="wrap_content"
            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/surface_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Surface"
-        android:textSize="@dimen/title_text_size"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="5dp"
-        />
+           <android.support.v7.widget.CardView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:cardCornerRadius="10dp">
+               <TextView
+                   android:id="@+id/surface_title"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:text="Surface"
+                   android:background="@color/titleColor"
+                   android:textSize="@dimen/title_text_size"
+                   android:textColor="@android:color/white"
+                   android:layout_marginTop="5dp"
+                   />
+
+           </android.support.v7.widget.CardView>
 
     <EditText
         android:id="@+id/surface_edit_text_edit"
@@ -84,7 +98,8 @@
         android:textSize="@dimen/content_text_size"
         android:gravity="center"
         android:inputType="number"
-        android:maxLines="1"/>
+        android:maxLines="1"
+        android:backgroundTint="@color/colorPrimaryDark"/>
        </LinearLayout>
     </LinearLayout>
 
@@ -104,13 +119,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/rooms_title"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/title_text_size"
-                    android:text="Number of rooms"/>
+                    app:cardCornerRadius="10dp">
+                    <TextView
+                        android:id="@+id/rooms_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:background="@color/titleColor"
+                        android:textSize="@dimen/title_text_size"
+                        android:text="Number of rooms"/>
+                </android.support.v7.widget.CardView>
+
 
                 <EditText
                     android:id="@+id/rooms_edit_text_edit"
@@ -120,6 +142,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLines="1"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     />
             </LinearLayout>
         </LinearLayout>
@@ -142,13 +165,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/bathrooms_title"
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/title_text_size"
-                    android:text="Number of bathrooms"/>
+                    app:cardCornerRadius="10dp">
+                    <TextView
+                        android:id="@+id/bathrooms_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:background="@color/titleColor"
+                        android:textSize="@dimen/title_text_size"
+                        android:text="Number of bathrooms"/>
+                </android.support.v7.widget.CardView>
+
 
                 <EditText
                     android:id="@+id/bathrooms_edit_text_edit"
@@ -158,6 +188,7 @@
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLines="1"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     />
             </LinearLayout>
 
@@ -180,13 +211,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/bedrooms_title"
+
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/title_text_size"
-                    android:text="Number of bedrooms"/>
+                    app:cardCornerRadius="10dp">
+                    <TextView
+                        android:id="@+id/bedrooms_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:background="@color/titleColor"
+                        android:textSize="@dimen/title_text_size"
+                        android:text="Number of bedrooms"/>
+                </android.support.v7.widget.CardView>
+
 
                 <EditText
                     android:id="@+id/bedrooms_edit_text_edit"
@@ -196,6 +235,7 @@
                     android:textSize="@dimen/content_text_size"
                     android:inputType="number"
                     android:maxLines="1"
+                    android:backgroundTint="@color/colorPrimaryDark"
                     />
             </LinearLayout>
 
@@ -206,24 +246,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <TextView
-        android:id="@+id/price_title"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Price"
-        android:textColor="@android:color/black"
-        android:textSize="@dimen/title_text_size"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        app:cardCornerRadius="10dp">
+        <TextView
+            android:id="@+id/price_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:background="@color/titleColor"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/title_text_size"
+            android:layout_marginTop="5dp" />
+    </android.support.v7.widget.CardView>
 
     <EditText
         android:id="@+id/price_text_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:hint="Price"
         android:textSize="@dimen/content_text_size"
@@ -231,6 +273,8 @@
         android:inputType="number"
         android:digits="0123456789,"
         android:maxLines="1"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:textColorHint="@color/colorPrimaryDark"
         />
 </LinearLayout>
 

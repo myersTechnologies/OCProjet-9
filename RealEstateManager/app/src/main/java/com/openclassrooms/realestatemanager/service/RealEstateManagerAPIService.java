@@ -33,9 +33,5 @@ public interface RealEstateManagerAPIService {
     void addAdresses (AdressHouse adresses, Context context);
     void addPhotos(Photo photo, Context context);
     void addHousesDetails(HouseDetails houseDetails, Context context);
-    void setHousesDetails(Context context);
-    void setPhotos(Context context);
-    void setAdresses(Context context);
-    void setHousesList(Context context);
 
 }

@@ -8,5 +8,5 @@
     <dimen name="title_text_size">30sp</dimen>
     <dimen name="content_text_size">28sp</dimen>
     <dimen name="header_title">34sp</dimen>
-    <dimen name="child_header_title">30sp</dimen>
+    <dimen name="child_header_title">32sp</dimen>
 </resources>

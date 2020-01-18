@@ -61,6 +61,8 @@ public class Dialogs {
 
         NotificationManager notification = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notification.notify(0, builderSend.build());
-        PhotoListAdapter.getAllPhotos().clear();
+        if (PhotoListAdapter.getAllPhotos() != null) {
+            PhotoListAdapter.getAllPhotos().clear();
+        }
     }
 }

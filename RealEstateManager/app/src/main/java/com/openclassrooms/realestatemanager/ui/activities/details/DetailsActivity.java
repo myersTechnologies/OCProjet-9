@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -75,10 +74,8 @@ public class DetailsActivity extends AppCompatActivity {
         item.setVisible(true);
         if (infoFragment != null && infoFragment.isVisible()){
             menu.findItem(R.id.search).setVisible(true);
-            menu.findItem(R.id.sync).setVisible(true);
         } else {
             menu.findItem(R.id.search).setVisible(false);
-            menu.findItem(R.id.sync).setVisible(false);
         }
         return true;
     }

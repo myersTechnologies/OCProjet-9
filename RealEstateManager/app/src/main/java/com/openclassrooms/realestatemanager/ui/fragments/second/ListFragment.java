@@ -3,21 +3,17 @@ package com.openclassrooms.realestatemanager.ui.fragments.second;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.baoyz.widget.PullRefreshLayout;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
@@ -58,6 +54,7 @@ public class ListFragment extends Fragment {
     private ProgressDialog  dialog;
     private DatabaseUtil databaseUtil;
     private View view;
+    private PullRefreshLayout layout;
 
     public ListFragment() {
         // Required empty public constructor
@@ -85,6 +82,9 @@ public class ListFragment extends Fragment {
         housesList = view.findViewById(R.id.houses_list_second_f);
         database = SaveToDatabase.getInstance(getActivity());
         service = DI.getService();
+        layout = view.findViewById(R.id.refresh_layout);
+        setRefreshLayout();
+
 
         this.configureAndShowMediaFragment();
         this.configureAndShowDetailsFragment();
@@ -106,12 +106,47 @@ public class ListFragment extends Fragment {
         return view;
     }
 
+    private void updateToNull(){
+        if (mediaFragment!= null && mediaFragment.isVisible()) {
+            mediaFragment.updateAdapter(null);
+            mapFragment.upDateMap(null);
+            locationFragment.upDateLocation(null);
+            descriptionFragment.upDateDescription(null);
+            infoFragment.updateAdapter(null);
+        }
+    }
+
+    private void setRefreshLayout(){
+        layout.setRefreshStyle(PullRefreshLayout.STYLE_CIRCLES);
+        layout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                layout.setRefreshing(true);
+                if (adapter != null){
+                    setList();
+                    service.setHouse(null);
+                    updateToNull();
+                    if (SearchHelper.getHousesList() != null) {
+                        SearchHelper.setNull();
+                    }
+
+
+                    layout.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            layout.setRefreshing(false);
+
+                        }
+                    }, 3000);
+                }
+            }
+        });
+    }
+
     private void setList(){
 
         houses = database.houseDao().getHouses();
         if (DI.getFirebaseDatabase().getHouses() == null) {
-            layoutManager = new LinearLayoutManager(view.getContext());
-            adapter = new ListFragmentAdapter(houses, getActivity());
             checkFirebase();
         } else {
             layoutManager = new LinearLayoutManager(view.getContext());
@@ -119,36 +154,16 @@ public class ListFragment extends Fragment {
             initList();
         }
 
-
+       updateToNull();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
-            case R.id.sync:
-               setList();
-                service.setHouse(null);
-                if (mediaFragment!= null && mediaFragment.isVisible()) {
-                    mediaFragment.updateAdapter(null);
-                    mapFragment.upDateMap(null);
-                    locationFragment.upDateLocation(null);
-                    descriptionFragment.upDateDescription(null);
-                    infoFragment.updateAdapter(null);
-                }
-               if (SearchHelper.getHousesList() != null) {
-                   SearchHelper.setNull();
-               }
-                return true;
             case R.id.search:
                 service.setHouse(null);
-                if (mediaFragment!= null && mediaFragment.isVisible()) {
-                    mediaFragment.updateAdapter(null);
-                    mapFragment.upDateMap(null);
-                    locationFragment.upDateLocation(null);
-                    descriptionFragment.upDateDescription(null);
-                    infoFragment.updateAdapter(null);
-                }
+               updateToNull();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -201,6 +216,7 @@ public class ListFragment extends Fragment {
             dialog.dismiss();
         }
     }
+
 
     @Subscribe
     public void changeFragmentOnClick(final DetailsEvent event) {

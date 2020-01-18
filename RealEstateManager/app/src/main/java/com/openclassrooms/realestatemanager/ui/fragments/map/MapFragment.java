@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +44,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
 
     private GoogleMap mapView;
     private LatLng current;
-    private Location currentLocation;
 
 
     public MapFragment() {
@@ -75,7 +73,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
             super.onLocationResult(locationResult);
             Location location = locationResult.getLastLocation();
             if (location != null) {
-                currentLocation = location;
                 current = new LatLng(location.getLatitude(), location.getLongitude());
 
                 mapView.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -110,7 +107,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleM
         String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
               current.latitude  + "," + current.longitude +
                 "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
-        Log.d("URLHERE",url);
         Object dataTransfer[] = new Object[3];
         dataTransfer[0] = url;
         dataTransfer[1] = getContext();

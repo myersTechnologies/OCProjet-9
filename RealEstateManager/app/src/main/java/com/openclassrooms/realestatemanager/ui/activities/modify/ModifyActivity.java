@@ -35,9 +35,9 @@ import com.openclassrooms.realestatemanager.model.Photo;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.ModifyAdapter;
-import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
+import com.openclassrooms.realestatemanager.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -261,7 +261,7 @@ public class ModifyActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     try {
                         Uri imageUri = data.getData();
-                        Photo photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                        Photo photo = new Photo(Utils.getRealPathFromURI(Uri.parse(imageUri.toString())), descriptionText.getText().toString(),
                                 String.valueOf(AddModifyHouseHelper.getHouse().getId()));
                         photo.setId(UUID.randomUUID().toString());
                         AddModifyHouseHelper.getPhotos().add(photo);

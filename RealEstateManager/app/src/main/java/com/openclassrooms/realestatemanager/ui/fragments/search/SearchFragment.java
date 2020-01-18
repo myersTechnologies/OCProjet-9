@@ -45,9 +45,9 @@ public class SearchFragment extends Fragment {
 
 
     private void setToolbar(){
+        toolbar = getActivity().findViewById(R.id.toolbar);
         if (toolbar != null) {
             if (!DI.getService().activityName().equals("Search")) {
-                toolbar = getActivity().findViewById(R.id.toolbar);
                 toolbar.setTitle("Search");
                 toolbar.getMenu().findItem(R.id.add).setVisible(false);
                 toolbar.getMenu().findItem(R.id.search).setVisible(false);

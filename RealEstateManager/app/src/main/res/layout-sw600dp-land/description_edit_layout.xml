@@ -34,7 +34,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:hint="write a description"
-        android:textSize="15sp"
+        android:textSize="@dimen/content_text_size"
         android:backgroundTint="@color/colorPrimaryDark"
         android:textColorHint="@color/colorPrimaryDark"
         />

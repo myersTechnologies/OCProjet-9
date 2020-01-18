@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import com.openclassrooms.realestatemanager.ui.adapters.addnewhouse.AddNewHouseA
 import com.openclassrooms.realestatemanager.ui.adapters.modify.PhotoListAdapter;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
 import com.openclassrooms.realestatemanager.utils.AddModifyHouseHelper;
+import com.openclassrooms.realestatemanager.utils.Utils;
 import com.openclassrooms.realestatemanager.utils.places.GetPointsString;
 
 import java.io.IOException;
@@ -203,20 +205,34 @@ public class AddHouseActivity extends AppCompatActivity {
         adress.setId(String.valueOf(house.getId()));
         adress.setHouseId(String.valueOf(house.getId()));
 
-        LatLng current = getLocationFromAddress(this, adress.getAdress() + "," + adress.getCity());
-        String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-                current.latitude  + "," + current.longitude +
-                "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
-        Object dataTransfer[] = new Object[7];
-        dataTransfer[0] = url;
-        dataTransfer[1] = house;
-        dataTransfer[2] = service;
-        dataTransfer[3] = this;
-        dataTransfer[4] = AddModifyHouseHelper.getHouseDetails();
-        dataTransfer[5] = adress;
-        dataTransfer[6] = PhotoListAdapter.getAllPhotos();
-        GetPointsString getNearbyPlacesData = new GetPointsString();
-        getNearbyPlacesData.execute(dataTransfer);
+        if (Utils.isInternetAvailable(getApplicationContext())) {
+            LatLng current = getLocationFromAddress(this, adress.getAdress() + "," + adress.getCity());
+            String url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+                    current.latitude + "," + current.longitude +
+                    "&radius=100&type=point_of_interst&key=AIzaSyBE7FhkDrMMk12zVVn_HR1IlcGZoKc3-oQ";
+            Object dataTransfer[] = new Object[7];
+            dataTransfer[0] = url;
+            dataTransfer[1] = house;
+            dataTransfer[2] = service;
+            dataTransfer[3] = this;
+            dataTransfer[4] = AddModifyHouseHelper.getHouseDetails();
+            dataTransfer[5] = adress;
+            dataTransfer[6] = PhotoListAdapter.getAllPhotos();
+            GetPointsString getNearbyPlacesData = new GetPointsString();
+            getNearbyPlacesData.execute(dataTransfer);
+        } else {
+            service.addHouseToList(house, getApplicationContext());
+            service.setHouse(house);
+            service.addHousesDetails(AddModifyHouseHelper.getHouseDetails(), getApplicationContext());
+            service.addAdresses(adress, getApplicationContext());
+
+            for (int i = 0; i < PhotoListAdapter.getAllPhotos().size(); i++) {
+                final Photo photo = PhotoListAdapter.getAllPhotos().get(i);
+                if (!photo.getDescription().equals("Add new photo")) {
+                    service.addPhotos(photo, getApplicationContext());
+                }
+            }
+        }
 
         Handler postHandler = new Handler();
         postHandler.postDelayed(new Runnable() {
@@ -285,8 +301,9 @@ public class AddHouseActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     try {
                         Uri imageUri = data.getData();
+                        Log.d("PHOTO_URL", Utils.getRealPathFromURI(Uri.parse(imageUri.toString())));
                         Photo photo;
-                        photo = new Photo(imageUri.toString(), descriptionText.getText().toString(),
+                        photo = new Photo(Utils.getRealPathFromURI(Uri.parse(imageUri.toString())), descriptionText.getText().toString(),
                                 AddModifyHouseHelper.getHouse().getId());
                         photo.setId(UUID.randomUUID().toString());
                         AddModifyHouseHelper.getPhotos().add(photo);

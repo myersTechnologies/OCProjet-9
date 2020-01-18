@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.ui.adapters.search;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,9 +22,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.model.AdressHouse;
@@ -500,9 +497,7 @@ public class SearchAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder
             super(itemView);
 
             button = itemView.findViewById(R.id.delete_account_btn);
-            button.setBackgroundColor(Color.TRANSPARENT);
             button.setText("Search");
-            button.setTextColor(Color.BLACK);
         }
     }
 

@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
@@ -28,8 +29,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
+import com.openclassrooms.realestatemanager.events.SettingsEvent;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.second.SecondActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -117,15 +121,13 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             getMenuImageListener(imageViewHolder);
         } else if (holderView.getItemViewType() == LAYOUT_SIX){
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
-            buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
             buttonViewHolder.button.setText("Default settings");
-            buttonViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
             getButtonDefaultListener(buttonViewHolder);
         } else if (holderView.getItemViewType() == LAYOUT_SEVEN){
             ButtonViewHolder buttonViewHolder = (ButtonViewHolder) holderView;
-            buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
+            buttonViewHolder.cardView.setCardBackgroundColor(context.getResources().getColor(android.R.color.holo_green_dark));
+            buttonViewHolder.button.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_dark));
             buttonViewHolder.button.setText("Confirm changes");
-            buttonViewHolder.button.setTextColor(context.getResources().getColor(android.R.color.black));
             getConfirmChanges(buttonViewHolder);
         }
 
@@ -229,8 +231,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             public void onClick(View view) {
                 SaveToDatabase database = SaveToDatabase.getInstance(holder.itemView.getContext());
                 database.preferencesDao().savePreferences(service.getPreferences());
-                Intent intent = new Intent(context, SecondActivity.class);
-                context.startActivity(intent);
+                EventBus.getDefault().post(new SettingsEvent(true));
             }
         });
     }
@@ -295,10 +296,12 @@ public class SettingsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ButtonViewHolder extends RecyclerView.ViewHolder{
 
         private Button button;
+        private CardView cardView;
 
         public ButtonViewHolder(View itemView) {
             super(itemView);
             button = itemView.findViewById(R.id.delete_account_btn);
+            cardView = itemView.findViewById(R.id.card_view);
         }
     }
     static class UserNameViewHolder extends RecyclerView.ViewHolder{

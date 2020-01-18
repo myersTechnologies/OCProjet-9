@@ -44,12 +44,14 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private int LAYOUT_SIX = 5;
     private int COUNT_ALL = 6;
     private int COUNT_SECOND = 3;
+    private Context context;
 
     public InfoFragmentAdapter(House house, HouseDetails details, Context context) {
         this.house = house;
         service = DI.getService();
         this.details = details;
         database = SaveToDatabase.getInstance(context);
+        this.context = context;
     }
 
     @Override
@@ -168,19 +170,21 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     Context context = holderView.itemView.getContext();
                     AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
                     LatLng latLng = getLocationFromAddress(context, adressHouse.getAdress() + "," + adressHouse.getCity());
-                    String lat = String.valueOf(latLng.latitude);
-                    String lng = String.valueOf(latLng.longitude);
-                    String url = "http://maps.google.com/maps/api/staticmap?center="
-                            + lat + "," + lng +
-                            "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
-                            "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
-                    Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
+                    try {
+                        String lat = String.valueOf(latLng.latitude);
+                        String lng = String.valueOf(latLng.longitude);
+                        String url = "http://maps.google.com/maps/api/staticmap?center="
+                                + lat + "," + lng +
+                                "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
+                                "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
+                        Glide.with(holderView.itemView.getContext()).load(url).into(mapViewHolder.imageView);
+                    }catch (NullPointerException e){}
                 }
 
             }
             if (holderView.getItemViewType() == LAYOUT_SIX){
                 PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
-                PointsAdapter adapter = new PointsAdapter(house);
+                PointsAdapter adapter = new PointsAdapter(house, context );
                 LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
                 pointsViewHolder.pointsRv.setLayoutManager(manager);
                 pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0,0);
@@ -223,7 +227,7 @@ public class InfoFragmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
             if (holderView.getItemViewType() == LAYOUT_TREE){
                 PointsViewHolder pointsViewHolder = (PointsViewHolder)holderView;
-                PointsAdapter adapter = new PointsAdapter(house);
+                PointsAdapter adapter = new PointsAdapter(house, context);
                 LinearLayoutManager manager = new LinearLayoutManager(pointsViewHolder.itemView.getContext(), LinearLayoutManager.HORIZONTAL, false);
                 pointsViewHolder.pointsRv.setLayoutManager(manager);
                 pointsViewHolder.pointsRv.getRecycledViewPool().setMaxRecycledViews(0, 0);

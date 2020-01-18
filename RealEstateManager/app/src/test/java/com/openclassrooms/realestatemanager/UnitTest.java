@@ -32,11 +32,14 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class UnitTest {
 
+    /**
+     * change in assert equals date to today's date otherwise it will send error
+     */
     @Test
     public void getDateUtilsClass(){
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         String date = dateFormat.format(new Date());
-        assertEquals(date, "16/01/2020");
+        assertEquals(date, "18/01/2020");
     }
 
 

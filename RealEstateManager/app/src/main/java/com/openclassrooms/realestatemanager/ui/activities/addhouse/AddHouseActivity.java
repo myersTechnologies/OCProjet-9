@@ -73,7 +73,7 @@ public class AddHouseActivity extends AppCompatActivity {
             DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(addNewHouseToDoList.getContext(),
                     layoutManager.getOrientation());
             addNewHouseToDoList.addItemDecoration(dividerItemDecoration);
-        addNewHouseToDoList.getRecycledViewPool().setMaxRecycledViews(0,0);
+            addNewHouseToDoList.getRecycledViewPool().setMaxRecycledViews(0,0);
             service.setActivity(this, "AddHouse");
     }
 
@@ -151,6 +151,7 @@ public class AddHouseActivity extends AppCompatActivity {
                 }
             }
 
+            //All edittext (data size) + helper fields (3)
             totalSize = data.size() + 3;
 
 

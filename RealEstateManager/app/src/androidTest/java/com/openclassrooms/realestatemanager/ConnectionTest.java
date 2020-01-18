@@ -49,11 +49,27 @@ public class ConnectionTest {
     @Test
     public void connectionTestAndDBDataShowedWithSucess() {
 
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        //in case of error turn javadoc below to code
+        /**
+         // Added a sleep statement to match the app's execution delay.
+         // The recommended way to handle such scenarios is to use Espresso idling resources:
+         // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+         try {
+         Thread.sleep(7000);
+         } catch (InterruptedException e) {
+         e.printStackTrace();
+         }
+
+         ViewInteraction loginButton = onView(
+         allOf(withId(R.id.login_button), withText("Continuer avec Facebook"),
+         childAtPosition(
+         childAtPosition(
+         withClassName(is("android.widget.LinearLayout")),
+         1),
+         0),
+         isDisplayed()));
+         loginButton.perform(click());
+         **/
 
 
         try {
@@ -63,14 +79,14 @@ public class ConnectionTest {
         }
         //second activity is showed and city text of first house is chalon sur saone
         ViewInteraction textView = onView(
-                allOf(withId(R.id.house_location_city), withText("Chalon sur Saône"),
+                allOf(withId(R.id.house_location_city), withText("Roubaix"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
                                         1),
                                 1),
                         isDisplayed()));
-        textView.check(matches(withText("Chalon sur Saône")));
+        textView.check(matches(withText("Roubaix")));
     }
 
     private static Matcher<View> childAtPosition(

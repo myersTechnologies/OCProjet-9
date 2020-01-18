@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.baoyz.widget.PullRefreshLayout;
+import com.openclassrooms.realestatemanager.DI.DI;
 import com.openclassrooms.realestatemanager.db.SaveToDatabase;
 import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
@@ -24,10 +26,18 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
     private SaveToDatabase database;
     private RecyclerView recyclerView;
     private ProgressDialog dialog;
+    private PullRefreshLayout layout;
 
-    public DatabaseUtil(FirebaseHelper helper, Context context) {
+    public DatabaseUtil(FirebaseHelper helper, Context context, ListFragmentAdapter adapter, RecyclerView recyclerView, ProgressDialog dialog,
+                        PullRefreshLayout layout) {
         this.helper = helper;
         this.context = context;
+        this.service = DI.getService();
+        this.database = SaveToDatabase.getInstance(context);
+        this.adapter = adapter;
+        this.recyclerView = recyclerView;
+        this.dialog = dialog;
+        this.layout = layout;
 
     }
 
@@ -38,39 +48,34 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
 
     @Override
     protected String doInBackground(Object... objects) {
-        this.service = (RealEstateManagerAPIService) objects[0];
-        this.helper = (FirebaseHelper) objects[1];
-        this.adapter = (ListFragmentAdapter) objects[2];
-        this.database = (SaveToDatabase) objects[3];
-        this.recyclerView = (RecyclerView) objects[4];
-        this.dialog = (ProgressDialog)objects[5];
 
-        helper.getHouseFromFirebase();
-        publishProgress("1");
-        while (!helper.isHousesTaskFinish()) {
-        }
-        publishProgress("2");
-        helper.getDetailsFromFireBase();
-        while (!helper.isHousesTaskFinish()) {
-        }
-        publishProgress("3");
-        helper.getPhotosFromFirebase();
-        while (!helper.isPhotoEmpty()) {
-        }
-        publishProgress("4");
-        helper.getHousesAdressesFromFirebase();
-        while (!helper.isHousesTaskFinish()) {
-        }
-        helper.getUsersFromFireBase();
+            helper.getHouseFromFirebase();
+            publishProgress("1");
+            while (!helper.isHousesTaskFinish()) {
+                if (isCancelled()) break;
+            }
+            publishProgress("2");
+            helper.getDetailsFromFireBase();
+            while (!helper.isHousesTaskFinish()) {
+                if (isCancelled()) break;
+            }
+            publishProgress("3");
+            helper.getPhotosFromFirebase();
+            while (!helper.isPhotoEmpty()) {
+                if (isCancelled()) break;
+            }
+            publishProgress("4");
+            helper.getHousesAdressesFromFirebase();
+            while (!helper.isHousesTaskFinish()) {
+                if (isCancelled()) break;
+            }
+            helper.getUsersFromFireBase();
 
-        service.setUsers(helper.getUsers());
+            service.setUsers(helper.getUsers());
 
 
-        if (helper.getHouses() != null) {
-            return "ok";
-        } else {
-            return "failed";
-        }
+        return "ok";
+
     }
 
 
@@ -108,6 +113,9 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
         if (dialog.isShowing()){
             dialog.dismiss();
         }
+        layout.setRefreshing(false);
+        cancel(true);
+
         super.onPostExecute(s);
     }
 

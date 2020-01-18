@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.openclassrooms.realestatemanager.DI.DI;
@@ -122,22 +123,10 @@ public class ListFragment extends Fragment {
             @Override
             public void onRefresh() {
                 layout.setRefreshing(true);
-                if (adapter != null){
-                    setList();
-                    service.setHouse(null);
-                    updateToNull();
-                    if (SearchHelper.getHousesList() != null) {
-                        SearchHelper.setNull();
-                    }
-
-
-                    layout.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            layout.setRefreshing(false);
-
-                        }
-                    }, 3000);
+                setList();
+                service.setHouse(null);
+                if (SearchHelper.getHousesList() != null) {
+                    SearchHelper.setNull();
                 }
             }
         });
@@ -146,15 +135,8 @@ public class ListFragment extends Fragment {
     private void setList(){
 
         houses = database.houseDao().getHouses();
-        if (DI.getFirebaseDatabase().getHouses() == null) {
-            checkFirebase();
-        } else {
-            layoutManager = new LinearLayoutManager(view.getContext());
-            adapter = new ListFragmentAdapter(houses, getActivity());
-            initList();
-        }
-
-       updateToNull();
+        updateToNull();
+        checkFirebase();
     }
 
     @Override
@@ -170,7 +152,6 @@ public class ListFragment extends Fragment {
     }
 
     private void checkFirebase(){
-        FirebaseHelper helper = DI.getFirebaseDatabase();
         dialog = new ProgressDialog(getActivity());
         dialog.setCanceledOnTouchOutside(false);
         dialog.setTitle("Loading data");
@@ -178,17 +159,8 @@ public class ListFragment extends Fragment {
         dialog.show();
 
         //Loads all list from firebase to sql database
-        Object dataTransfer[] = new Object[6];
-        dataTransfer[0] = service;
-        dataTransfer[1] = DI.getFirebaseDatabase();
-            dataTransfer[2] = adapter;
-            dataTransfer[3] = database;
-            dataTransfer[4] = housesList;
-            dataTransfer[5] = dialog;
-            databaseUtil = new DatabaseUtil(helper, getActivity());
-            databaseUtil.execute(dataTransfer);
-
-        initList();
+        databaseUtil = new DatabaseUtil(DI.getFirebaseDatabase(), getActivity(), adapter, housesList, dialog, layout);
+        databaseUtil.execute();
     }
 
 

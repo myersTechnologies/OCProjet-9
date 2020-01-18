@@ -72,7 +72,7 @@ public class GetPointsString extends AsyncTask<Object, String, String> {
             final Photo photo = photos.get(i);
             if (!photo.getDescription().equals("Add new photo")) {
                 service.addPhotos(photo, context);
-                final FirebaseHelper helper = DI.getFirebaseDatabase();
+                FirebaseHelper helper = DI.getFirebaseDatabase();
                 helper.addPhotoToFirebase(photo, Uri.fromFile(new File(photo.getPhotoUrl())));
                 helper.addPhotoToFireStore(photo);
             }

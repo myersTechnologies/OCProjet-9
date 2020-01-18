@@ -20,7 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="parent"
-                android:backgroundTint="@color/titleColor"
+                android:backgroundTint="@color/backgroundAccent"
                 app:cardCornerRadius="20dp">
                 <TextView
                     android:layout_width="match_parent"

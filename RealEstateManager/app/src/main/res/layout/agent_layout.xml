@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -40,7 +45,8 @@
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@id/agent_avatar"
         android:textSize="@dimen/content_text_size"/>
+    </android.support.constraint.ConstraintLayout>
 
 
 
-</android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

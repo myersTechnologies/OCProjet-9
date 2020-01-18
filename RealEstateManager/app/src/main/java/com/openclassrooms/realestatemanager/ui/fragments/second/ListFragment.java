@@ -136,7 +136,12 @@ public class ListFragment extends Fragment {
 
         houses = database.houseDao().getHouses();
         updateToNull();
-        checkFirebase();
+        if (DI.getFirebaseDatabase().getHouses() == null) {
+            dialog = new ProgressDialog(getActivity());
+            checkFirebase(dialog);
+        } else {
+            checkFirebase(null);
+        }
     }
 
     @Override
@@ -151,12 +156,13 @@ public class ListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void checkFirebase(){
-        dialog = new ProgressDialog(getActivity());
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setTitle("Loading data");
-        dialog.setMessage("Please wait...");
-        dialog.show();
+    private void checkFirebase(ProgressDialog dialog){
+        if (dialog != null) {
+            dialog.setCanceledOnTouchOutside(false);
+            dialog.setTitle("Loading data");
+            dialog.setMessage("Please wait...");
+            dialog.show();
+        }
 
         //Loads all list from firebase to sql database
         databaseUtil = new DatabaseUtil(DI.getFirebaseDatabase(), getActivity(), adapter, housesList, dialog, layout);

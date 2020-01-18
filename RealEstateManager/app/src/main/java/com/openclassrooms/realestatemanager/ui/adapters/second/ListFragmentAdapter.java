@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         house = houses.get(position);
         holder.houseName.setText(house.getName());
-        holders.add(holder.itemView);
+        holders.add(holder.cardView);
 
         AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
         holder.houseAdress.setText(adressHouse.getCity());
@@ -99,10 +100,11 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             Glide.with(holder.itemView.getContext()).load(photoList.get(0).getPhotoUrl()).into(holder.houseImage);
         }
 
-        if (house.getPointsOfInterest() == null){
-            checkPointsOfInterest(adressHouse, house, photoList, database.houseDetailsDao().getDetailsWithHouseId(house.getId()));
+        if (Utils.isInternetAvailable(context)) {
+            if (house.getPointsOfInterest() == null) {
+                checkPointsOfInterest(adressHouse, house, photoList, database.houseDetailsDao().getDetailsWithHouseId(house.getId()));
+            }
         }
-
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +113,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
                 for (View views : holders){
                     views.setBackgroundColor(Color.WHITE);
                 }
-                holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.colorAccent));
+                holder.cardView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.colorAccent));
 
             }
         });
@@ -174,6 +176,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
         private TextView houseName;
         private TextView houseAdress;
         private TextView housePrice;
+        private CardView cardView;
 
         private ViewHolder(View itemView) {
             super(itemView);
@@ -182,7 +185,7 @@ public class ListFragmentAdapter  extends RecyclerView.Adapter<ListFragmentAdapt
             houseName = itemView.findViewById(R.id.house_title);
             housePrice = itemView.findViewById(R.id.house_price);
             houseAdress = itemView.findViewById(R.id.house_location_city);
-
+            cardView = itemView.findViewById(R.id.list_cv);
         }
     }
 

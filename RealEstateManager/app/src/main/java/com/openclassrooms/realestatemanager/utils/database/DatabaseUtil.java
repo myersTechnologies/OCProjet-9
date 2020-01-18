@@ -38,7 +38,6 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
         this.recyclerView = recyclerView;
         this.dialog = dialog;
         this.layout = layout;
-
     }
 
     @Override
@@ -82,22 +81,24 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
     @Override
     protected void onProgressUpdate(String... values) {
 
-        if (values[0] == "1") {
-            dialog.setMessage("Downloading Estates");
-        }
+        if (dialog != null) {
+            if (values[0] == "1") {
+                dialog.setMessage("Downloading Estates");
+            }
 
 
-        if (values[0] == "2") {
-            dialog.setMessage("Downloading Details");
-        }
+            if (values[0] == "2") {
+                dialog.setMessage("Downloading Details");
+            }
 
-        if (values[0] == "3") {
-            dialog.setMessage("Downloading Photos");
-        }
+            if (values[0] == "3") {
+                dialog.setMessage("Downloading Photos");
+            }
 
 
-        if (values[0] == "4") {
-            dialog.setMessage("Downloading Locations");
+            if (values[0] == "4") {
+                dialog.setMessage("Downloading Locations");
+            }
         }
 
     }
@@ -110,8 +111,10 @@ public final class DatabaseUtil extends AsyncTask<Object, String, String> {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
 
-        if (dialog.isShowing()){
-            dialog.dismiss();
+        if (dialog != null) {
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
         layout.setRefreshing(false);
         cancel(true);

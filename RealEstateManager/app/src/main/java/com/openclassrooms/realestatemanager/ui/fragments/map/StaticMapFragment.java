@@ -52,15 +52,17 @@ public class StaticMapFragment extends Fragment {
     private void setImage(House house){
         if (house != null) {
             if (Utils.isInternetAvailable(getContext())) {
-                AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
-                LatLng latLng = getLocationFromAddress(getActivity(), adressHouse.getAdress() + "," + adressHouse.getCity());
-                String lat = String.valueOf(latLng.latitude);
-                String lng = String.valueOf(latLng.longitude);
-                String url = "http://maps.google.com/maps/api/staticmap?center="
-                        + lat + "," + lng +
-                        "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
-                        "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
-                Picasso.get().load(url).into(imageView);
+                try {
+                    AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
+                    LatLng latLng = getLocationFromAddress(getActivity(), adressHouse.getAdress() + "," + adressHouse.getCity());
+                    String lat = String.valueOf(latLng.latitude);
+                    String lng = String.valueOf(latLng.longitude);
+                    String url = "http://maps.google.com/maps/api/staticmap?center="
+                            + lat + "," + lng +
+                            "&zoom=16&size=400x400&maptype=roadmap&markers=color:blue%7Clabel:H%7C" + lat + "," + lng +
+                            "&sensor=false&key=AIzaSyDEBMyDO9BpymrK3TCry1vCHdRlvmkIGxo";
+                    Picasso.get().load(url).into(imageView);
+                } catch(NullPointerException e){}
             }
         } else {
             imageView.setImageResource(0);

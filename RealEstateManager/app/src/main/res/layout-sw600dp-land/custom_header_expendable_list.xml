@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="10dp"
+    android:layout_marginTop="10dp"
     android:paddingRight="5dp"
     android:paddingLeft="5dp">
 
@@ -15,7 +15,6 @@
             android:textSize="@dimen/title_text_size"
             android:text="Photos"
             android:background="@color/titleColor"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="10dp"/>
+            android:textColor="@android:color/white" />
 
 </android.support.v7.widget.CardView>

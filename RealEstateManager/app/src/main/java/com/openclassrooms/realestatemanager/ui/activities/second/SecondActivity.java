@@ -141,6 +141,7 @@ public class SecondActivity extends AppCompatActivity
                 }
                 return true;
             case R.id.search:
+                service.setHouse(null);
                 Intent searchIntent = new Intent(this, SearchActivity.class);
                 startActivity(searchIntent);
                 SearchHelper.setNull();

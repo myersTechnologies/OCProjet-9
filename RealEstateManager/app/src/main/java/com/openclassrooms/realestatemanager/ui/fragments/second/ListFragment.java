@@ -23,6 +23,7 @@ import com.openclassrooms.realestatemanager.firebase.FirebaseHelper;
 import com.openclassrooms.realestatemanager.model.House;
 import com.openclassrooms.realestatemanager.service.RealEstateManagerAPIService;
 import com.openclassrooms.realestatemanager.ui.activities.details.DetailsActivity;
+import com.openclassrooms.realestatemanager.ui.activities.search.SearchActivity;
 import com.openclassrooms.realestatemanager.ui.fragments.details.DescriptionFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.details.LocationFragment;
 import com.openclassrooms.realestatemanager.ui.adapters.second.ListFragmentAdapter;
@@ -74,6 +75,7 @@ public class ListFragment extends Fragment {
         if (adapter != null){
             adapter.notifyDataSetChanged();
         }
+
     }
 
     @Override
@@ -86,18 +88,15 @@ public class ListFragment extends Fragment {
         layout = view.findViewById(R.id.refresh_layout);
         setRefreshLayout();
 
-
         this.configureAndShowMediaFragment();
-        this.configureAndShowDetailsFragment();
-        this.configureAndShowStaticMap();
-        this.configureAndShowLocationFragment();
-        this.configureAndShowDescriptionFragment();
-
 
         //check if search model is null if it is just load as default else list searched houses
         if (SearchHelper.getHousesList() == null) {
-          setList();
+            updateToNull();
+            service.setHouse(null);
+            setList();
         } else {
+            updateToNull();
             layoutManager = new LinearLayoutManager(view.getContext());
             adapter = new ListFragmentAdapter(SearchHelper.getHouses(), getActivity());
             initList();
@@ -109,11 +108,13 @@ public class ListFragment extends Fragment {
 
     private void updateToNull(){
         if (mediaFragment!= null && mediaFragment.isVisible()) {
-            mediaFragment.updateAdapter(null);
-            mapFragment.upDateMap(null);
-            locationFragment.upDateLocation(null);
-            descriptionFragment.upDateDescription(null);
-            infoFragment.updateAdapter(null);
+            if (service.getHouse() != null) {
+                mediaFragment.updateAdapter(null);
+                mapFragment.upDateMap(null);
+                locationFragment.upDateLocation(null);
+                descriptionFragment.upDateDescription(null);
+                infoFragment.updateAdapter(null);
+            }
         }
     }
 
@@ -124,6 +125,7 @@ public class ListFragment extends Fragment {
             public void onRefresh() {
                 layout.setRefreshing(true);
                 setList();
+                updateToNull();
                 service.setHouse(null);
                 if (SearchHelper.getHousesList() != null) {
                     SearchHelper.setNull();
@@ -135,7 +137,6 @@ public class ListFragment extends Fragment {
     private void setList(){
 
         houses = database.houseDao().getHouses();
-        updateToNull();
         if (DI.getFirebaseDatabase().getHouses() == null) {
             dialog = new ProgressDialog(getActivity());
             checkFirebase(dialog);
@@ -149,8 +150,7 @@ public class ListFragment extends Fragment {
         int id = item.getItemId();
         switch (id){
             case R.id.search:
-                service.setHouse(null);
-               updateToNull();
+                updateToNull();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -173,6 +173,7 @@ public class ListFragment extends Fragment {
     private void initList() {
         housesList.setLayoutManager(layoutManager);
         housesList.setAdapter(adapter);
+        updateToNull();
     }
 
     @Override
@@ -199,6 +200,12 @@ public class ListFragment extends Fragment {
     @Subscribe
     public void changeFragmentOnClick(final DetailsEvent event) {
         service.setHouse(event.house);
+        if (mapFragment == null && getActivity().findViewById(R.id.fragment_container_media) != null){
+            this.configureAndShowDetailsFragment();
+            this.configureAndShowStaticMap();
+            this.configureAndShowLocationFragment();
+            this.configureAndShowDescriptionFragment();
+        }
         if (mediaFragment!= null && mediaFragment.isVisible()){
             mediaFragment.updateAdapter(event.house);
             locationFragment.upDateLocation(event.house);
@@ -206,7 +213,6 @@ public class ListFragment extends Fragment {
             infoFragment.updateAdapter(event.house);
             configureAndShowDetailsFragment();
             configureAndShowStaticMap();
-
         } else {
             Intent intent = new Intent(getContext(), DetailsActivity.class);
             startActivity(intent);

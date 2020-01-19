@@ -30,8 +30,8 @@
 
     <ImageView
         android:id="@+id/agent_avatar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         app:layout_constraintTop_toBottomOf="@id/agent_title_cv"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="10dp" />
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/agent_title_cv"
-        android:layout_marginLeft="160dp"
+        android:layout_marginLeft="120dp"
         android:textColor="@android:color/black"
         app:layout_constraintBottom_toBottomOf="@id/agent_avatar"
         android:textSize="@dimen/content_text_size"/>

@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.ui.fragments.details;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,14 +54,14 @@ public class LocationFragment extends Fragment {
             title.setText("Location");
             textView.setText(findedHouse.getAdress() + "\n" + findedHouse.getCity() + "\n" + findedHouse.getState() +
                     "\n" + findedHouse.getZipCode() + "\n" + findedHouse.getCountry());
-            if (title.getVisibility() == View.GONE) {
-                titleImg.setVisibility(View.VISIBLE);
-                title.setVisibility(View.VISIBLE);
-            }
+            title.setVisibility(View.VISIBLE);
+            titleImg.setVisibility(View.VISIBLE);
+            textView.setVisibility(View.VISIBLE);
         } else {
             textView.setText("");
             title.setVisibility(View.GONE);
             titleImg.setVisibility(View.GONE);
+            textView.setVisibility(View.GONE);
         }
 
     }

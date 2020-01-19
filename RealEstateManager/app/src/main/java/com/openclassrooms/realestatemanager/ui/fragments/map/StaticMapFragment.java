@@ -52,6 +52,7 @@ public class StaticMapFragment extends Fragment {
     private void setImage(House house){
         if (house != null) {
             if (Utils.isInternetAvailable(getContext())) {
+                imageView.setVisibility(View.VISIBLE);
                 try {
                     AdressHouse adressHouse = database.adressDao().getAdressWithHouseId(house.getId());
                     LatLng latLng = getLocationFromAddress(getActivity(), adressHouse.getAdress() + "," + adressHouse.getCity());
@@ -66,6 +67,7 @@ public class StaticMapFragment extends Fragment {
             }
         } else {
             imageView.setImageResource(0);
+            imageView.setVisibility(View.GONE);
         }
 
 

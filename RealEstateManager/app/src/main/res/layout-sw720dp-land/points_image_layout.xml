@@ -21,8 +21,8 @@
             android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/points_image"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,9 +44,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textSize="@dimen/content_text_size"
                     android:textColor="@android:color/white"
                     android:layout_marginTop="2dp"
+                    android:textSize="@dimen/content_text_size"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="2dp"
                     android:layout_marginBottom="2dp"

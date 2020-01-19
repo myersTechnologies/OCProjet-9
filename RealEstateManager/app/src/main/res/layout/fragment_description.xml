@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     tools:context=".ui.fragments.details.DescriptionFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/description_fragment">
+    android:id="@+id/description_fragment"
+    android:background="@color/backgroundAccent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/description_rv"

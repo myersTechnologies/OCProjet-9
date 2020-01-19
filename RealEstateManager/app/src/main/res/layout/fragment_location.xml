@@ -6,8 +6,10 @@
     tools:context=".ui.fragments.details.LocationFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/location_fragment"
-    android:layout_marginTop="10dp">
+    android:layout_marginTop="10dp"
+    android:background="@color/backgroundAccent">
     <android.support.v7.widget.CardView
+        android:id="@+id/location_header_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp">
